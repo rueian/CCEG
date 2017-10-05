@@ -1,0 +1,110 @@
+<?php
+
+namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+
+use App\Blueprint;
+use App\Step;
+use App\StepConnection;
+use App\RuntimeStorage;
+
+class Runtime extends Model
+{
+    protected $guarded = [];
+
+    public function blueprint()
+    {
+        return $this->belongsTo('App\Blueprint');
+    }
+
+    public function storages()
+    {
+        return $this->hasMany('App\RuntimeStorage');
+    }
+
+    public function steps()
+    {
+        return $this->hasMany('App\Step');
+    }
+
+    public function connections()
+    {
+        return $this->hasMany('App\StepConnection');
+    }
+
+    public function getStepSequence()
+    {
+        $storages = $this->storages;
+        $steps = $this->steps;
+        $connections = $this->connections;
+
+        // remap storages and steps into a list identified by its index
+        $nodes = collect();
+        $storageMap = [];
+        $stepMap = [];
+
+        foreach($storages as $storage) {
+            $storageMap[$storage->id] = $nodes->count();
+            $nodes->push(new Node($storage));
+        }
+
+        foreach($steps as $step) {
+            $stepMap[$step->id] = $nodes->count();
+            $nodes->push(new Node($step));
+        }
+
+        // build the Adjacency lists and refs count
+        foreach($connections as $conn) {
+            $stepNode = $nodes[$stepMap[$conn->step_id]];
+            $storageNode = $nodes[$storageMap[$conn->runtime_storage_id]];
+
+            if ($conn->type == 'input') {
+                $storageNode->adj_list->push($stepNode);
+                $stepNode->refed_count++;
+            } else {
+                $stepNode->adj_list->push($storageNode);
+                $storageNode->refed_count++;
+            }
+        }
+
+        // Topological Ordering - Kahn's Algorithm
+        $candidates = $nodes->filter(function($n) {
+            return $n->refed_count == 0;
+        });
+
+        $result = collect();
+        foreach($nodes as $n) {
+            if ($candidates->isEmpty()) break;
+
+            $c = $candidates->pop();
+
+            if ($c->v instanceof Step) {
+                $result->push($c->v);
+            }
+
+            foreach($c->adj_list as $a) {
+                $a->refed_count--;
+                if ($a->refed_count == 0) {
+                    $candidates->push($a);
+                }
+            }
+        }
+
+        return $result;
+    }
+}
+
+class Node
+{
+    public $v;
+    public $refed_count;
+    public $adj_list;
+
+    public function __construct(&$v) {
+        $this->v = $v;
+        $this->refed_count = 0;
+        $this->adj_list = collect();
+    }
+}
