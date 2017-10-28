@@ -15,6 +15,6 @@ class StepConnection extends Model
 
     public function storage()
     {
-        return $this->belongsTo('App\RuntimeStorage');
+        return $this->belongsTo('App\RuntimeStorage', 'runtime_storage_id');
     }
 }

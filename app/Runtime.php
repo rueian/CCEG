@@ -14,6 +14,10 @@ class Runtime extends Model
 {
     protected $guarded = [];
 
+    protected $casts = [
+        'error' => 'array'
+    ];
+
     public function blueprint()
     {
         return $this->belongsTo('App\Blueprint');
@@ -93,6 +97,41 @@ class Runtime extends Model
         }
 
         return $result;
+    }
+
+    public function runOneStep()
+    {
+        $steps = $this->getStepSequence();
+
+        foreach($steps as $s) {
+            if ($s->state == 'ready' || $s->state == 'error') {
+                DB::beginTransaction();
+                try {
+                    $s->run();
+                    $s->state = 'done';
+                    $s->save();
+                    DB::commit();
+                } catch (\Exception $e) {
+                    DB::rollback();
+
+                    $s->state = 'error';
+                    $s->error = ['message' => $e->getMessage()];
+                    $s->save();
+
+                    $this->state = 'error';
+                    $this->error = [
+                        'step_id' => $s->id,
+                        'message' => $e->getMessage()
+                    ];
+
+                    $this->save();
+
+                    throw $e;
+                }
+
+                return $s;
+            }
+        }
     }
 }
 
