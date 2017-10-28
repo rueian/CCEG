@@ -28,7 +28,7 @@ class InitTables extends Migration
             $table->json('error')->nullable();
             $table->timestamps();
 
-            $table->foreign('blueprint_id')->references('id')->on('blueprints');
+            $table->foreign('blueprint_id')->references('id')->on('blueprints')->onDelete('cascade');
         });
 
         Schema::create('runtime_storages', function($table) {
@@ -43,7 +43,7 @@ class InitTables extends Migration
 
             $table->unique(['runtime_id', 'key']);
 
-            $table->foreign('runtime_id')->references('id')->on('runtimes');
+            $table->foreign('runtime_id')->references('id')->on('runtimes')->onDelete('cascade');
         });
 
         Schema::create('steps', function($table) {
@@ -57,7 +57,7 @@ class InitTables extends Migration
             $table->json('error')->nullable();
             $table->timestamps();
 
-            $table->foreign('runtime_id')->references('id')->on('runtimes');
+            $table->foreign('runtime_id')->references('id')->on('runtimes')->onDelete('cascade');
         });
 
         Schema::create('step_connections', function($table) {
