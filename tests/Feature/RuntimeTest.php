@@ -56,7 +56,7 @@ class RuntimeTest extends TestCase
         }));
     }
 
-    public function testOneStepRun()
+    public function testOneStepRunSQL()
     {
         $b = new Blueprint;
         $b->name = 'blueprint1';
@@ -116,6 +116,47 @@ class RuntimeTest extends TestCase
 
         $this->assertEquals($t2[0], (object)['a' => 6, 'b' => 4, 'c' => 0]);
         $this->assertEquals($t2[1], (object)['a' => 0, 'b' => 5, 'c' => 1]);
+    }
+
+    public function testOneStepRunSMT()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+
+        $smtInput = "
+            (declare-const x Int)
+            (declare-const y Int)
+            (assert (= x 5))
+            (assert (= (+ x y) 10))
+            (check-sat)
+            (get-model)
+        ";
+
+        $s1 = RuntimeStorage::createSMTInputStorage($r, 'key1', $smtInput);
+
+        $s2 = RuntimeStorage::createSMTOutputStorage($r, 'key2', '');
+
+        Step::createSMTStep($r, 'step_name', 'step_note', $s1, $s2, []);
+
+        $r->runOneStep();
+
+        $s2->refresh();
+
+        $this->assertEquals($s2->payload['content'],
+"sat
+(model 
+  (define-fun y () Int
+    5)
+  (define-fun x () Int
+    5)
+)\n"
+        );
     }
 
     private function createSimpleStep($r)

@@ -73,16 +73,60 @@ class Step extends Model
             }
 
             DB::statement($query);
+            return;
+        }
+
+        if ($this->type == 'smt') {
+            $inputContent = $input->storage->payload['content'];
+
+            $descriptorspec = [
+                ['pipe', 'r'],  // stdin is a pipe that the child will read from
+                ['pipe', 'w'],  // stdout is a pipe that the child will write to
+                ['pipe', 'w']   // stderr is a pipe that the child will write to
+            ];
+
+            $z3Path = base_path('z3');
+            $process = proc_open("$z3Path -smt2 -in 2>&1", $descriptorspec, $pipes, '/tmp', []);
+            if (is_resource($process)) {
+                fwrite($pipes[0], $inputContent);
+                fclose($pipes[0]);
+
+                $out = stream_get_contents($pipes[1]);
+                fclose($pipes[1]);
+                fclose($pipes[2]);
+
+                $returnValue = proc_close($process);
+
+                if ($returnValue != 0) {
+                    throw new \Exception($out);
+                } else {
+                    $payload = $output->storage->payload;
+                    $payload['content'] = $out;
+                    $output->storage->payload = $payload;
+                    $output->storage->save();
+                }
+            }
+            return;
         }
     }
 
+    static public function createSMTStep($runtime, $name, $note, $input, $output, $param)
+    {
+        return static::createStep('smt', $runtime, $name, $note, $input, $output, $param);
+    }
+
     static public function createSQLStep($runtime, $name, $note, $input, $output, $param)
+    {
+        return static::createStep('sql', $runtime, $name, $note, $input, $output, $param);
+    }
+
+    static public function createStep($type, $runtime, $name, $note, $input, $output, $param)
     {
         $step = new Step;
         $step->runtime_id = $runtime->id;
         $step->name = $name;
         $step->note = $note;
-        $step->type = 'sql';
+        $step->type = $type;
         $step->param = $param;
         $step->state = 'ready';
         $step->save();

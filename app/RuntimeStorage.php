@@ -32,6 +32,32 @@ class RuntimeStorage extends Model
         }
     }
 
+    static public function createSMTInputStorage($runtime, $key, $content)
+    {
+        return static::createSMTStorage('smt_input', $runtime, $key, $content);
+    }
+
+    static public function createSMTOutputStorage($runtime, $key, $content)
+    {
+        return static::createSMTStorage('smt_output', $runtime, $key, $content);
+    }
+
+    static public function createSMTStorage($type, $runtime, $key, $content)
+    {
+        $storage = new RuntimeStorage;
+        $storage->runtime_id = $runtime->id;
+        $storage->key = $key;
+        $storage->type = $type;
+        $storage->state = 'init';
+        $storage->payload = [
+            'content' => $content
+        ];
+
+        $storage->save();
+
+        return $storage;
+    }
+
     static public function createTableStorage($runtime, $key, $table, $schema)
     {
         $storage = new RuntimeStorage;
