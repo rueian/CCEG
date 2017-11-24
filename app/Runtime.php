@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 use App\Blueprint;
 use App\Step;
@@ -112,6 +113,10 @@ class Runtime extends Model
                     $s->save();
                     DB::commit();
                 } catch (\Exception $e) {
+                    Log::error('runOneStep failed: ' . $e->getMessage(), [
+                        'runtime_id' => $this->id
+                    ]);
+
                     DB::rollback();
 
                     $s->state = 'error';
