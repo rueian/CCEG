@@ -108,6 +108,33 @@ class Step extends Model
             }
             return;
         }
+
+        if ($this->type == 'smt_output_to_table') {
+            // translate SMT (get-value into table row)
+            $inputContent = $input->storage->payload['content'];
+            $lines = explode("\n", trim($inputContent));
+
+            if (count($lines) > 1) {
+                if ($lines[0] != "sat") {
+                    throw \Exception("smt model is not available");
+                }
+
+                $outputTable = $output->storage->payload['table'];
+
+                $query = "INSERT INTO $outputTable (variable, value) VALUES ";
+
+                $values = [];
+                for($i = 1; $i < count($lines); $i++) {
+                    preg_match('/\(\(([a-z]*) (.*)\)\)/', $lines[$i], $matches);
+                    $k = $matches[1];
+                    $v = $matches[2];
+                    $values[] = "('$k', $v)";
+                }
+                $query .= implode(', ', $values);
+                DB::statement($query);
+            }
+            return;
+        }
     }
 
     static public function createSMTStep($runtime, $name, $note, $input, $output, $param)
@@ -118,6 +145,11 @@ class Step extends Model
     static public function createSQLStep($runtime, $name, $note, $input, $output, $param)
     {
         return static::createStep('sql', $runtime, $name, $note, $input, $output, $param);
+    }
+
+    static public function createSMTOutputToTableStep($runtime, $name, $note, $input, $output, $param)
+    {
+        return static::createStep('smt_output_to_table', $runtime, $name, $note, $input, $output, $param);
     }
 
     static public function createStep($type, $runtime, $name, $note, $input, $output, $param)

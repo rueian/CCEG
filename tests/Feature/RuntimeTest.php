@@ -135,28 +135,49 @@ class RuntimeTest extends TestCase
             (assert (= x 5))
             (assert (= (+ x y) 10))
             (check-sat)
-            (get-model)
+            (get-value (x))
+            (get-value (y))
         ";
 
         $s1 = RuntimeStorage::createSMTInputStorage($r, 'key1', $smtInput);
-
         $s2 = RuntimeStorage::createSMTOutputStorage($r, 'key2', '');
-
         Step::createSMTStep($r, 'step_name', 'step_note', $s1, $s2, []);
-
         $r->runOneStep();
-
         $s2->refresh();
 
         $this->assertEquals($s2->payload['content'],
 "sat
-(model 
-  (define-fun y () Int
-    5)
-  (define-fun x () Int
-    5)
-)\n"
+((x 5))
+((y 5))
+"
         );
+    }
+
+    public function testOneStepRunSMTToTable()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+
+        $smtOutput = "sat
+((x 5))
+((y 6))
+";
+
+        $s1 = RuntimeStorage::createSMTOutputStorage($r, 'key1', $smtOutput);
+        $s2 = RuntimeStorage::createSMTResultTableStorage($r, 'key2', 'table3');
+        Step::createSMTOutputToTableStep($r, 'step_name', 'step_note', $s1, $s2, []);
+        $r->runOneStep();
+
+        $t3 = DB::table('table3')->select('variable', 'value')->orderBy('variable')->get();
+
+        $this->assertEquals($t3[0], (object)['variable' => 'x', 'value' => '5']);
+        $this->assertEquals($t3[1], (object)['variable' => 'y', 'value' => '6']);
     }
 
     private function createSimpleStep($r)

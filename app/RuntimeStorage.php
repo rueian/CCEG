@@ -80,4 +80,18 @@ class RuntimeStorage extends Model
 
         return $storage;
     }
+
+    static public function createSMTResultTableStorage($runtime, $key, $table)
+    {
+        return static::createTableStorage($runtime, $key, $table, collect([
+            [
+                'name' => 'variable',
+                'type' => 'varchar(255)'
+            ],
+            [
+                'name' => 'value',
+                'type' => 'varchar(255)'
+            ],
+        ]));
+    }
 }
