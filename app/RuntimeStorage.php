@@ -58,8 +58,10 @@ class RuntimeStorage extends Model
         return $storage;
     }
 
-    static public function createTableStorage($runtime, $key, $table, $schema)
+    static public function createTableStorage($runtime, $key, $schema)
     {
+        $table = 'runtime_'.$runtime->id.'_storage_'.$key;
+
         $storage = new RuntimeStorage;
         $storage->runtime_id = $runtime->id;
         $storage->key = $key;
@@ -72,7 +74,7 @@ class RuntimeStorage extends Model
 
         $storage->save();
 
-        $columns = $schema->map(function($column) {
+        $columns = collect($schema)->map(function($column) {
             return $column['name'] . ' ' . $column['type'] . ' NULL';
         })->implode(',');
 
@@ -81,9 +83,9 @@ class RuntimeStorage extends Model
         return $storage;
     }
 
-    static public function createSMTResultTableStorage($runtime, $key, $table)
+    static public function createSMTResultTableStorage($runtime, $key)
     {
-        return static::createTableStorage($runtime, $key, $table, collect([
+        return static::createTableStorage($runtime, $key, [
             [
                 'name' => 'variable',
                 'type' => 'varchar(255)'
@@ -92,6 +94,6 @@ class RuntimeStorage extends Model
                 'name' => 'value',
                 'type' => 'varchar(255)'
             ],
-        ]));
+        ]);
     }
 }

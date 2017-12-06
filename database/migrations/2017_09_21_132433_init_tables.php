@@ -17,7 +17,7 @@ class InitTables extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('note')->nullable();
-            $table->json('playload')->nullable();
+            $table->json('payload')->nullable();
             $table->timestamps();
         });
 

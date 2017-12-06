@@ -138,6 +138,21 @@ class Runtime extends Model
             }
         }
     }
+
+    public function dropStorageTables()
+    {
+        DB::beginTransaction();
+        try {
+            foreach($this->storages as $storage) {
+                if ($storage->type == 'table') {
+                    DB::statement('DROP TABLE IF EXISTS ' . $storage->payload['table']);
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+    }
 }
 
 class Node
