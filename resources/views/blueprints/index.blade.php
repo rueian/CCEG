@@ -32,7 +32,7 @@
         <p class="card-text">
           {{ $blueprint->note }}
         </p>
-        <a href="#" class="btn btn-lg btn-primary" style="bottom: -4rem; position: relative;">進入</a>
+        <a href="{{ url('/blueprints/'.$blueprint->id.'/edit') }}" class="btn btn-lg btn-primary" style="bottom: -4rem; position: relative;">進入</a>
       </div>
     </div>
   </div>
