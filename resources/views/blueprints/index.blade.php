@@ -17,6 +17,7 @@
       <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
         <div class="card-body text-center">
           <p class="card-text text-secondary" style="font-size: 3rem;">
+            <i class="fas fa-plus-circle"></i>
             新增藍圖
           </p>
         </div>
