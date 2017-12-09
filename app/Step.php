@@ -57,7 +57,7 @@ class Step extends Model
         $runner = static::$runnerMap[$type];
 
         if (!$runner) {
-            throw new \Exception('Un supported step type: '.$this->type);
+            throw new \Exception('Un supported step type: '.$type);
         }
 
         $step = new Step;

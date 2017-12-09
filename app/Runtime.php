@@ -6,11 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-use App\Blueprint;
-use App\Step;
-use App\StepConnection;
-use App\RuntimeStorage;
-
 class Runtime extends Model
 {
     protected $guarded = [];
@@ -52,12 +47,12 @@ class Runtime extends Model
 
         foreach($storages as $storage) {
             $storageMap[$storage->id] = $nodes->count();
-            $nodes->push(new Node($storage));
+            $nodes->push(new KahnNode($storage));
         }
 
         foreach($steps as $step) {
             $stepMap[$step->id] = $nodes->count();
-            $nodes->push(new Node($step));
+            $nodes->push(new KahnNode($step));
         }
 
         // build the Adjacency lists and refs count
@@ -66,17 +61,17 @@ class Runtime extends Model
             $storageNode = $nodes[$storageMap[$conn->runtime_storage_id]];
 
             if ($conn->type == 'output') {
-                $stepNode->adj_list->push($storageNode);
-                $storageNode->refed_count++;
+                $stepNode->adjList->push($storageNode);
+                $storageNode->refCount++;
             } else {
-                $storageNode->adj_list->push($stepNode);
-                $stepNode->refed_count++;
+                $storageNode->adjList->push($stepNode);
+                $stepNode->refCount++;
             }
         }
 
         // Topological Ordering - Kahn's Algorithm
         $candidates = $nodes->filter(function($n) {
-            return $n->refed_count == 0;
+            return $n->refCount == 0;
         });
 
         $result = collect();
@@ -89,9 +84,9 @@ class Runtime extends Model
                 $result->push($c->v);
             }
 
-            foreach($c->adj_list as $a) {
-                $a->refed_count--;
-                if ($a->refed_count == 0) {
+            foreach($c->adjList as $a) {
+                $a->refCount--;
+                if ($a->refCount == 0) {
                     $candidates->push($a);
                 }
             }
@@ -147,18 +142,5 @@ class Runtime extends Model
     public function dropRuntimeDatabase()
     {
         DB::statement('DROP DATABASE IF EXISTS cceg_runtime_' . $this->id);
-    }
-}
-
-class Node
-{
-    public $v;
-    public $refed_count;
-    public $adj_list;
-
-    public function __construct(&$v) {
-        $this->v = $v;
-        $this->refed_count = 0;
-        $this->adj_list = collect();
     }
 }
