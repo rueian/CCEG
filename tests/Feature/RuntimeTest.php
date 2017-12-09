@@ -38,25 +38,405 @@ class RuntimeTest extends TestCase
 
         $this->createSimpleConnection($r, $g1, $s3);
         $this->createSimpleConnection($r, $s3, $g2);
+        $this->createSimpleConnection($r, $g1, $s2);
         $this->createSimpleConnection($r, $g2, $s2);
         $this->createSimpleConnection($r, $s2, $g3);
+        $this->createSimpleConnection($r, $g2, $s4);
         $this->createSimpleConnection($r, $g3, $s4);
         $this->createSimpleConnection($r, $s4, $g4);
+        $this->createSimpleConnection($r, $g2, $s1);
         $this->createSimpleConnection($r, $g4, $s1);
         $this->createSimpleConnection($r, $s1, $g5);
 
         $squence = $r->getStepSequence();
 
-        $this->assertEquals($squence->map(function($s) {
+        $this->assertEquals(collect([$s3, $s2, $s4, $s1])->map(function($s) {
             return $s->id;
-        }), collect([$s3, $s2, $s4, $s1])->map(function($s) {
+        }), $squence->map(function($s) {
             return $s->id;
         }));
 
         $b->delete();
     }
 
-    public function testOneStepRunSQL()
+    public function testOneStepRunSQLSelectMap()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+        $r->createRuntimeDatabase();
+
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        Step::createStep($r, 'key', 'sql_select_map', 'name', 'note', [
+            'select' => [
+                [ 'expr' => 'a', 'as' => 'b', 'type' => 'integer' ],
+                [ 'expr' => 'b', 'as' => 'a', 'type' => 'integer' ],
+            ],
+        ], [
+            'input' => $s1
+        ], $s2);
+
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (1,4), (2,3);');
+
+        $r->runOneStep();
+
+        $t2 = DB::table($s2->payload['table'])->select('a', 'b')->orderBy('b')->get();
+
+        $this->assertEquals((object)['a' => 4, 'b' => 1], $t2[0]);
+        $this->assertEquals((object)['a' => 3, 'b' => 2], $t2[1]);
+
+        $r->dropRuntimeDatabase();
+        $b->delete();
+    }
+
+    public function testOneStepRunSQLOrderBy()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+        $r->createRuntimeDatabase();
+
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        Step::createStep($r, 'key', 'sql_order_by', 'name', 'note', [
+            'order' => [
+                [
+                    'column' => 'a',
+                    'asc' => true
+                ],
+                [
+                    'column' => 'b',
+                    'asc' => false
+                ]
+            ],
+        ], [
+            'input' => $s1
+        ], $s2);
+
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (2,3), (1,4), (2, 5);');
+
+        $r->runOneStep();
+
+        $t2 = DB::table($s2->payload['table'])->select('a', 'b')->get();
+
+        $this->assertEquals((object)['a' => 1, 'b' => 4], $t2[0]);
+        $this->assertEquals((object)['a' => 2, 'b' => 5], $t2[1]);
+        $this->assertEquals((object)['a' => 2, 'b' => 3], $t2[2]);
+
+        $r->dropRuntimeDatabase();
+        $b->delete();
+    }
+
+    public function testOneStepRunSQLLimitOffset()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+        $r->createRuntimeDatabase();
+
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        Step::createStep($r, 'key', 'sql_limit_offset', 'name', 'note', [
+            'limit' => 2,
+            'offset' => 2,
+        ], [
+            'input' => $s1
+        ], $s2);
+
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (2,3), (1,4), (2, 5), (6, 9), (7, 3);');
+
+        $r->runOneStep();
+
+        $t2 = DB::table($s2->payload['table'])->select('a', 'b')->get();
+
+        $this->assertEquals(2, count($t2));
+        $this->assertEquals((object)['a' => 2, 'b' => 5], $t2[0]);
+        $this->assertEquals((object)['a' => 6, 'b' => 9], $t2[1]);
+
+        $r->dropRuntimeDatabase();
+        $b->delete();
+    }
+
+    public function testOneStepRunSQLLeftJoin()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+        $r->createRuntimeDatabase();
+
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+            [
+                'name' => 'c',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'd',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s3 = RuntimeStorage::createTableStorage($r, 'key3', [
+            [
+                'name' => 'key1_a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'key1_b',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'key2_c',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'key2_d',
+                'type' => 'integer'
+            ],
+        ]);
+
+        Step::createStep($r, 'key', 'sql_left_join', 'name', 'note', [
+            'join' => [
+                'left' => 'b',
+                'right' => 'c'
+            ],
+        ], [
+            'left' => $s1,
+            'right' => $s2,
+        ], $s3);
+
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (2,3), (1,4);');
+        DB::statement('INSERT INTO ' . $s2->payload['table'] . ' VALUES (3,8), (4,9);');
+
+        $r->runOneStep();
+
+        $t2 = DB::table($s3->payload['table'])->select('key1_a', 'key1_b', 'key2_c', 'key2_d')->get();
+
+        $this->assertEquals(2, count($t2));
+        $this->assertEquals((object)['key1_a' => 2, 'key1_b' => 3, 'key2_c' => 3, 'key2_d' => 8], $t2[0]);
+        $this->assertEquals((object)['key1_a' => 1, 'key1_b' => 4, 'key2_c' => 4, 'key2_d' => 9], $t2[1]);
+
+        $r->dropRuntimeDatabase();
+        $b->delete();
+    }
+
+    public function testOneStepRunSQLFilterBySemiJoin()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+        $r->createRuntimeDatabase();
+
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+            [
+                'name' => 'c',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'd',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s3 = RuntimeStorage::createTableStorage($r, 'key3', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        Step::createStep($r, 'key', 'sql_filter_by_semi_join', 'name', 'note', [
+            'semi' => [
+                'column' => 'b',
+                'in' => true,
+                'select' => 'c'
+            ],
+        ], [
+            'input' => $s1,
+            'semi' => $s2,
+        ], $s3);
+
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (2,3), (1,2), (7,4);');
+        DB::statement('INSERT INTO ' . $s2->payload['table'] . ' VALUES (3,8), (4,9);');
+
+        $r->runOneStep();
+
+        $t2 = DB::table($s3->payload['table'])->select('a', 'b')->get();
+
+        $this->assertEquals(2, count($t2));
+        $this->assertEquals((object)['a' => 2, 'b' => 3], $t2[0]);
+        $this->assertEquals((object)['a' => 7, 'b' => 4], $t2[1]);
+
+        $r->dropRuntimeDatabase();
+        $b->delete();
+    }
+
+    public function testOneStepRunSQLFilterByCondition()
+    {
+        $b = new Blueprint;
+        $b->name = 'blueprint1';
+        $b->save();
+
+        $r = new Runtime;
+        $r->blueprint_id = $b->id;
+        $r->state = 'init';
+        $r->save();
+        $r->createRuntimeDatabase();
+
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
+        ]);
+
+        Step::createStep($r, 'key', 'sql_filter_by_condition', 'name', 'note', [
+            'where' => 'a > 5',
+        ], [
+            'input' => $s1
+        ], $s2);
+
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (2,3), (1,4), (2, 5), (6, 9), (7, 3);');
+
+        $r->runOneStep();
+
+        $t2 = DB::table($s2->payload['table'])->select('a', 'b')->get();
+
+        $this->assertEquals(2, count($t2));
+        $this->assertEquals((object)['a' => 6, 'b' => 9], $t2[0]);
+        $this->assertEquals((object)['a' => 7, 'b' => 3], $t2[1]);
+
+        $r->dropRuntimeDatabase();
+        $b->delete();
+    }
+
+    public function testOneStepRunGroupBy()
     {
         $b = new Blueprint;
         $b->name = 'blueprint1';
@@ -85,38 +465,43 @@ class RuntimeTest extends TestCase
 
         $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
             [
-                'name' => 'a',
+                'name' => 'd',
                 'type' => 'integer'
             ],
             [
-                'name' => 'b',
-                'type' => 'integer'
-            ],
-            [
-                'name' => 'c',
+                'name' => 'e',
                 'type' => 'integer'
             ],
         ]);
 
-        Step::createSQLStep($r, 'step_name', 'step_note', $s1, $s2, [
-            'selects' => [
-                [ 'select' => 'a', 'rename' => 'b' ],
-                [ 'select' => 'b', 'rename' => 'c' ],
-                [ 'select' => 'c', 'rename' => 'a' ]
+        Step::createStep($r, 'key', 'sql_group_by', 'name', 'note', [
+            'group' => [
+                'a',
+                'b'
             ],
-            'where' => 'a > 1',
-            'order' => 'b',
-            'limit' => '2'
-        ]);
+            'select' => [
+                [
+                    'expr' => 'sum(c)',
+                    'as' => 'd',
+                    'type' => 'integer'
+                ],
+                [
+                    'expr' => 'b',
+                    'as' => 'e',
+                    'type' => 'integer'
+                ]
+            ]
+        ], [
+            'input' => $s1,
+        ], $s2);
 
-        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (1,1,0), (2,3,0), (3,2,0), (4,0,6), (5,1,0), (6,5,0);');
+        DB::statement('INSERT INTO ' . $s1->payload['table'] . ' VALUES (2,3,4), (2,3,7);');
 
         $r->runOneStep();
 
-        $t2 = DB::table($s2->payload['table'])->select('a', 'b', 'c')->orderBy('b')->get();
+        $t2 = DB::table($s2->payload['table'])->select('d', 'e')->get();
 
-        $this->assertEquals($t2[0], (object)['a' => 6, 'b' => 4, 'c' => 0]);
-        $this->assertEquals($t2[1], (object)['a' => 0, 'b' => 5, 'c' => 1]);
+        $this->assertEquals((object)['d' => 11, 'e' => 3], $t2[0]);
 
         $r->dropRuntimeDatabase();
         $b->delete();
@@ -146,16 +531,17 @@ class RuntimeTest extends TestCase
 
         $s1 = RuntimeStorage::createSMTInputStorage($r, 'key1', $smtInput);
         $s2 = RuntimeStorage::createSMTOutputStorage($r, 'key2', '');
-        Step::createSMTStep($r, 'step_name', 'step_note', $s1, $s2, []);
+        Step::createStep($r, 'key', 'smt', 'name', 'note', [], [
+            'input' => $s1
+        ], $s2);
         $r->runOneStep();
         $s2->refresh();
 
-        $this->assertEquals($s2->payload['content'],
+        $this->assertEquals(
 "sat
 ((x 5))
 ((y 5))
-"
-        );
+", $s2->payload['content']);
 
         $r->dropRuntimeDatabase();
 
@@ -180,14 +566,16 @@ class RuntimeTest extends TestCase
 ";
 
         $s1 = RuntimeStorage::createSMTOutputStorage($r, 'key1', $smtOutput);
-        $s2 = RuntimeStorage::createSMTResultTableStorage($r, 'key2', 'table3');
-        Step::createSMTOutputToTableStep($r, 'step_name', 'step_note', $s1, $s2, []);
+        $s2 = RuntimeStorage::createSMTResultTableStorage($r, 'key3', 'table3');
+        Step::createStep($r, 'key', 'smt_output_to_table', 'name', 'note', [], [
+            'input' => $s1
+        ], $s2);
         $r->runOneStep();
 
         $t3 = DB::table($s2->payload['table'])->select('variable', 'value')->orderBy('variable')->get();
 
-        $this->assertEquals($t3[0], (object)['variable' => 'x', 'value' => '5']);
-        $this->assertEquals($t3[1], (object)['variable' => 'y', 'value' => '6']);
+        $this->assertEquals((object)['variable' => 'x', 'value' => '5'], $t3[0]);
+        $this->assertEquals((object)['variable' => 'y', 'value' => '6'], $t3[1]);
 
         $r->dropRuntimeDatabase();
         $b->delete();
@@ -197,6 +585,7 @@ class RuntimeTest extends TestCase
     {
         $s = new Step;
         $s->runtime_id = $r->id;
+        $s->key = rand() . "key";
         $s->type = 'sql';
         $s->state = 'ready';
         $s->save();

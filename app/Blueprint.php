@@ -35,51 +35,36 @@ class Blueprint extends Model
             $r->createRuntimeDatabase();
 
             $blueprintStorages = $this->payload['storages'];
-            foreach($blueprintStorages as $s) {
+            foreach($blueprintStorages as $key => $s) {
                 switch ($s['type']) {
                     case 'table':
-                        $storage = RuntimeStorage::createTableStorage($r, $s['key'], $s['schema']);
+                        $storage = RuntimeStorage::createTableStorage($r, $key, $s['schema']);
                         break;
                     case 'smt_result':
-                        $storage = RuntimeStorage::createSMTResultTableStorage($r, $s['key']);
+                        $storage = RuntimeStorage::createSMTResultTableStorage($r, $key);
                         break;
                     case 'smt_input':
-                        $storage = RuntimeStorage::createSMTInputStorage($r, $s['key'], $s['content']);
+                        $storage = RuntimeStorage::createSMTInputStorage($r, $key, $s['content']);
                         break;
                     case 'smt_output':
-                        $storage = RuntimeStorage::createSMTOutputStorage($r, $s['key'], $s['content']);
+                        $storage = RuntimeStorage::createSMTOutputStorage($r, $key, $s['content']);
                         break;
                     default:
                         throw new \Exception('Unsupported storage type: '.$s['type']);
                 }
-                $storageMap[$s['key']] = $storage;
+                $storageMap[$key] = $storage;
             }
 
             $blueprintSteps = $this->payload['steps'];
-            foreach($blueprintSteps as $s) {
-                $input = $storageMap[$s['input']];
+            foreach($blueprintSteps as $key => $s) {
+                $inputs = [];
+                foreach($s['inputs'] as $type => $k) {
+                    $inputs[$type] = $storageMap[$k];
+                }
+
                 $output = $storageMap[$s['output']];
 
-                if (!$input) {
-                    throw new \Exception('Undefined storage key: '.$s['input']);
-                }
-                if (!$output) {
-                    throw new \Exception('Undefined storage key: '.$s['output']);
-                }
-
-                switch ($s['type']) {
-                    case 'sql':
-                        Step::createSQLStep($r, $s['name'], $s['note'], $input, $output, $s['param']);
-                        break;
-                    case 'smt':
-                        Step::createSMTStep($r, $s['name'], $s['note'], $input, $output, $s['param']);
-                        break;
-                    case 'smt_output_to_table':
-                        Step::createSMTOutputToTableStep($r, $s['name'], $s['note'], $input, $output, $s['param']);
-                        break;
-                    default:
-                        throw new \Exception('Unsupported step type: '.$s['type']);
-                }
+                Step::createStep($r, $key, $s['type'], $s['name'], $s['note'], $s['param'], $inputs, $output);
             }
         } catch (\Exception $e) {
             DB::rollback();

@@ -49,6 +49,7 @@ class InitTables extends Migration
         Schema::create('steps', function($table) {
             $table->increments('id');
             $table->unsignedInteger('runtime_id')->index();
+            $table->string('key');
             $table->string('name')->nullable();
             $table->text('note')->nullable();
             $table->string('type');
@@ -56,6 +57,8 @@ class InitTables extends Migration
             $table->string('state');
             $table->json('error')->nullable();
             $table->timestamps();
+
+            $table->unique(['runtime_id', 'key']);
 
             $table->foreign('runtime_id')->references('id')->on('runtimes')->onDelete('cascade');
         });

@@ -13,8 +13,7 @@ class BlueprintTest extends TestCase
         $b->name = 'test';
         $b->payload = [
             'storages' => [
-                [
-                    'key' => 't1',
+                't1' => [
                     'type' => 'table',
                     'schema' => [
                         [
@@ -23,8 +22,7 @@ class BlueprintTest extends TestCase
                         ],
                     ],
                 ],
-                [
-                    'key' => 't2',
+                't2' => [
                     'type' => 'table',
                     'schema' => [
                         [
@@ -33,8 +31,7 @@ class BlueprintTest extends TestCase
                         ],
                     ],
                 ],
-                [
-                    'key' => 't3',
+                't3' => [
                     'type' => 'smt_input',
                     'content' => "
                         (declare-const x Int)
@@ -46,42 +43,46 @@ class BlueprintTest extends TestCase
                         (get-value (y))
                     ",
                 ],
-                [
-                    'key' => 't4',
+                't4' => [
                     'type' => 'smt_output',
                     'content' => '',
                 ],
-                [
-                    'key' => 't5',
+                't5' => [
                     'type' => 'smt_result',
                 ],
             ],
             'steps' => [
-                [
-                    'type' => 'sql',
+                's1' => [
+                    'type' => 'sql_select_map',
                     'name' => 'sql_step',
                     'note' => '',
-                    'input' => 't1',
+                    'inputs' => [
+                        'input' => 't1'
+                    ],
                     'output' => 't2',
                     'param' => [
                         'selects' => [
-                            [ 'select' => 'a', 'rename' => 'b' ],
+                            [ 'expr' => 'a', 'as' => 'b', 'type' => 'integer' ],
                         ],
                     ],
                 ],
-                [
+                's2' => [
                     'type' => 'smt',
                     'name' => 'smt_step',
                     'note' => '',
-                    'input' => 't3',
+                    'inputs' => [
+                        'input' => 't3'
+                    ],
                     'output' => 't4',
                     'param' => [],
                 ],
-                [
+                's3' => [
                     'type' => 'smt_output_to_table',
                     'name' => 'smt_result_step',
                     'note' => '',
-                    'input' => 't4',
+                    'inputs' => [
+                        'input' => 't4'
+                    ],
                     'output' => 't5',
                     'param' => [],
                 ],

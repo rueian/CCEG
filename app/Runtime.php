@@ -65,12 +65,12 @@ class Runtime extends Model
             $stepNode = $nodes[$stepMap[$conn->step_id]];
             $storageNode = $nodes[$storageMap[$conn->runtime_storage_id]];
 
-            if ($conn->type == 'input') {
-                $storageNode->adj_list->push($stepNode);
-                $stepNode->refed_count++;
-            } else {
+            if ($conn->type == 'output') {
                 $stepNode->adj_list->push($storageNode);
                 $storageNode->refed_count++;
+            } else {
+                $storageNode->adj_list->push($stepNode);
+                $stepNode->refed_count++;
             }
         }
 
