@@ -23,6 +23,7 @@ class RuntimeTest extends TestCase
         $r->blueprint_id = $b->id;
         $r->state = 'init';
         $r->save();
+        $r->createRuntimeDatabase();
 
         $s1 = $this->createSimpleStep($r);
         $s2 = $this->createSimpleStep($r);
@@ -65,6 +66,7 @@ class RuntimeTest extends TestCase
         $r->blueprint_id = $b->id;
         $r->state = 'init';
         $r->save();
+        $r->createRuntimeDatabase();
 
         $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
             [
@@ -116,7 +118,7 @@ class RuntimeTest extends TestCase
         $this->assertEquals($t2[0], (object)['a' => 6, 'b' => 4, 'c' => 0]);
         $this->assertEquals($t2[1], (object)['a' => 0, 'b' => 5, 'c' => 1]);
 
-        $r->dropStorageTables();
+        $r->dropRuntimeDatabase();
         $b->delete();
     }
 
@@ -130,6 +132,7 @@ class RuntimeTest extends TestCase
         $r->blueprint_id = $b->id;
         $r->state = 'init';
         $r->save();
+        $r->createRuntimeDatabase();
 
         $smtInput = "
             (declare-const x Int)
@@ -154,6 +157,8 @@ class RuntimeTest extends TestCase
 "
         );
 
+        $r->dropRuntimeDatabase();
+
         $b->delete();
     }
 
@@ -167,6 +172,7 @@ class RuntimeTest extends TestCase
         $r->blueprint_id = $b->id;
         $r->state = 'init';
         $r->save();
+        $r->createRuntimeDatabase();
 
         $smtOutput = "sat
 ((x 5))
@@ -183,7 +189,7 @@ class RuntimeTest extends TestCase
         $this->assertEquals($t3[0], (object)['variable' => 'x', 'value' => '5']);
         $this->assertEquals($t3[1], (object)['variable' => 'y', 'value' => '6']);
 
-        $r->dropStorageTables();
+        $r->dropRuntimeDatabase();
         $b->delete();
     }
 

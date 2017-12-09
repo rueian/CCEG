@@ -93,7 +93,7 @@ class BlueprintTest extends TestCase
         $r = $b->buildRuntime();
         $this->assertEquals(true, $r->exists);
 
-        $r->dropStorageTables();
+        $r->dropRuntimeDatabase();
         $b->delete();
     }
 }

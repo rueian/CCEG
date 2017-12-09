@@ -139,19 +139,14 @@ class Runtime extends Model
         }
     }
 
-    public function dropStorageTables()
+    public function createRuntimeDatabase()
     {
-        DB::beginTransaction();
-        try {
-            foreach($this->storages as $storage) {
-                if ($storage->type == 'table') {
-                    DB::statement('DROP TABLE IF EXISTS ' . $storage->payload['table']);
-                }
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-            throw $e;
-        }
+        DB::statement('CREATE DATABASE IF NOT EXISTS cceg_runtime_' . $this->id);
+    }
+
+    public function dropRuntimeDatabase()
+    {
+        DB::statement('DROP DATABASE IF EXISTS cceg_runtime_' . $this->id);
     }
 }
 

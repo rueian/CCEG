@@ -32,6 +32,8 @@ class Blueprint extends Model
             $r->state = 'init';
             $r->save();
 
+            $r->createRuntimeDatabase();
+
             $blueprintStorages = $this->payload['storages'];
             foreach($blueprintStorages as $s) {
                 switch ($s['type']) {

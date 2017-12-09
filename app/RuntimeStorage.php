@@ -60,7 +60,7 @@ class RuntimeStorage extends Model
 
     static public function createTableStorage($runtime, $key, $schema)
     {
-        $table = 'runtime_'.$runtime->id.'_storage_'.$key;
+        $table = 'cceg_runtime_'.$runtime->id.'.'.$key;
 
         $storage = new RuntimeStorage;
         $storage->runtime_id = $runtime->id;
