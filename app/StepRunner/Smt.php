@@ -2,7 +2,7 @@
 
 namespace App\StepRunner;
 
-class Smt extends Runner
+class Smt implements Runner
 {
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {

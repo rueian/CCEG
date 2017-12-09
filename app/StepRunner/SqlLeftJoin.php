@@ -5,7 +5,7 @@ namespace App\StepRunner;
 use Illuminate\Support\Facades\DB;
 
 // 此 Runner 的 output table 的 schema 為兩張 join table 組合，欄位前面都加上原 table_
-class SqlLeftJoin extends Runner
+class SqlLeftJoin implements Runner
 {
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {

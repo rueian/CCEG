@@ -2,8 +2,8 @@
 
 namespace App\StepRunner;
 
-abstract class Runner
+interface Runner
 {
-    abstract static function run($step);
-    abstract static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload);
+    static function run($step);
+    static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload);
 }

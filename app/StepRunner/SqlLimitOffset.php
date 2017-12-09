@@ -5,7 +5,7 @@ namespace App\StepRunner;
 use Illuminate\Support\Facades\DB;
 
 // 此 Runner 的 input table 與 output table 的必須 schema 完全一樣
-class SqlLimitOffset extends Runner
+class SqlLimitOffset implements Runner
 {
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {

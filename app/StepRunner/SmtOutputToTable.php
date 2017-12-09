@@ -4,7 +4,7 @@ namespace App\StepRunner;
 
 use Illuminate\Support\Facades\DB;
 
-class SmtOutputToTable extends Runner
+class SmtOutputToTable implements Runner
 {
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
