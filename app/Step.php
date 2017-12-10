@@ -3,10 +3,25 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
-use App\StepConnection;
-
+/**
+ * App\Step
+ *
+ * @property int $id
+ * @property int $runtime_id
+ * @property string $key
+ * @property string|null $name
+ * @property string|null $note
+ * @property string $type
+ * @property array $param
+ * @property string $state
+ * @property array $error
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\StepConnection[] $connections
+ * @property-read \App\Runtime $runtime
+ * @mixin \Eloquent
+ */
 class Step extends Model
 {
     public static $runnerMap = [
@@ -38,6 +53,9 @@ class Step extends Model
         return $this->hasMany('App\StepConnection');
     }
 
+    /**
+     * @throws \Exception
+     */
     public function run()
     {
         $conns = $this->connections;
@@ -52,6 +70,18 @@ class Step extends Model
         $runner::run($this);
     }
 
+    /**
+     * @param $runtime
+     * @param $key
+     * @param $type
+     * @param $name
+     * @param $note
+     * @param $param
+     * @param $inputs
+     * @param $output
+     * @return Step
+     * @throws \Exception
+     */
     static public function createStep($runtime, $key, $type, $name, $note, $param, $inputs, $output)
     {
         $runner = static::$runnerMap[$type];

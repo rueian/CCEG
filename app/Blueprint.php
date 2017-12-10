@@ -5,10 +5,19 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-use App\Step;
-use App\RuntimeStorage;
-use App\Runtime;
 
+/**
+ * App\Blueprint
+ *
+ * @property int $id
+ * @property string $name
+ * @property string|null $note
+ * @property array $payload
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Runtime[] $runtimes
+ * @mixin \Eloquent
+ */
 class Blueprint extends Model
 {
     protected $guarded = [];
@@ -22,6 +31,10 @@ class Blueprint extends Model
         return $this->hasMany('App\Runtime');
     }
 
+    /**
+     * @return Runtime
+     * @throws \Exception
+     */
     public function buildRuntime()
     {
         $r = new Runtime;

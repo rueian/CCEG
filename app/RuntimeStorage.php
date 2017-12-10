@@ -5,6 +5,22 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * App\RuntimeStorage
+ *
+ * @property int $id
+ * @property int $runtime_id
+ * @property string $key
+ * @property string $type
+ * @property array $payload
+ * @property string $state
+ * @property mixed|null $error
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\StepConnection[] $connections
+ * @property-read \App\Runtime $runtime
+ * @mixin \Eloquent
+ */
 class RuntimeStorage extends Model
 {
     protected $guarded = [];

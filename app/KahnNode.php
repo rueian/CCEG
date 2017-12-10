@@ -8,7 +8,8 @@ class KahnNode
     public $refCount;
     public $adjList;
 
-    public function __construct(&$v) {
+    public function __construct(&$v)
+    {
         $this->v = $v;
         $this->refCount = 0;
         $this->adjList = collect();

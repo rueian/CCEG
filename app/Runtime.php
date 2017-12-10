@@ -6,6 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * App\Runtime
+ *
+ * @property int $id
+ * @property int $blueprint_id
+ * @property string $state
+ * @property array $error
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ * @property-read \App\Blueprint $blueprint
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\StepConnection[] $connections
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Step[] $steps
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\RuntimeStorage[] $storages
+ * @mixin \Eloquent
+ */
 class Runtime extends Model
 {
     protected $guarded = [];
@@ -95,6 +110,10 @@ class Runtime extends Model
         return $result;
     }
 
+    /**
+     * @return Step
+     * @throws \Exception
+     */
     public function runOneStep()
     {
         $steps = $this->getStepSequence();
@@ -132,6 +151,8 @@ class Runtime extends Model
                 return $s;
             }
         }
+
+        return null;
     }
 
     public function createRuntimeDatabase()
