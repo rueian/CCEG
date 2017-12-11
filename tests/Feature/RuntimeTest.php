@@ -71,7 +71,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key1',  [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -82,7 +82,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key2', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -127,7 +127,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key1', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -138,7 +138,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key2', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -190,7 +190,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key1', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -201,7 +201,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key2', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -245,7 +245,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key1', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -256,7 +256,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key2', [
             [
                 'name' => 'c',
                 'type' => 'integer'
@@ -267,7 +267,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s3 = RuntimeStorage::createTableStorage($r, 'key3', [
+        $s3 = RuntimeStorage::createTableStorage($r, 'key3', 'key3', [
             [
                 'name' => 'key1_a',
                 'type' => 'integer'
@@ -323,7 +323,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key1', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -334,7 +334,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key2', [
             [
                 'name' => 'c',
                 'type' => 'integer'
@@ -345,7 +345,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s3 = RuntimeStorage::createTableStorage($r, 'key3', [
+        $s3 = RuntimeStorage::createTableStorage($r, 'key3', 'key3', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -394,7 +394,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key3', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -405,7 +405,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key3', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -448,7 +448,7 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $s1 = RuntimeStorage::createTableStorage($r, 'key1', [
+        $s1 = RuntimeStorage::createTableStorage($r, 'key1', 'key3', [
             [
                 'name' => 'a',
                 'type' => 'integer'
@@ -463,7 +463,7 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        $s2 = RuntimeStorage::createTableStorage($r, 'key2', [
+        $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key3', [
             [
                 'name' => 'd',
                 'type' => 'integer'
@@ -529,8 +529,8 @@ class RuntimeTest extends TestCase
             (get-value (y))
         ";
 
-        $s1 = RuntimeStorage::createSmtInputStorage($r, 'key1', $smtInput);
-        $s2 = RuntimeStorage::createSmtOutputStorage($r, 'key2', '');
+        $s1 = RuntimeStorage::createSmtInputStorage($r, 'key1', 'key3', $smtInput);
+        $s2 = RuntimeStorage::createSmtOutputStorage($r, 'key2', 'key3', '');
         Step::createStep($r, 'key', 'smt', 'name', 'note', [], [
             'input' => $s1
         ], $s2);
@@ -565,7 +565,7 @@ class RuntimeTest extends TestCase
 ((y 6))
 ";
 
-        $s1 = RuntimeStorage::createSmtOutputStorage($r, 'key1', $smtOutput);
+        $s1 = RuntimeStorage::createSmtOutputStorage($r, 'key1', 'key3', $smtOutput);
         $s2 = RuntimeStorage::createSmtResultTableStorage($r, 'key3', 'table3');
         Step::createStep($r, 'key', 'smt_output_to_table', 'name', 'note', [], [
             'input' => $s1

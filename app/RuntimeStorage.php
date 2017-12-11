@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $runtime_id
  * @property string $key
+ * @property string $name
  * @property string $type
  * @property array $payload
  * @property string $state
@@ -33,6 +34,8 @@ class RuntimeStorage extends Model
         'smt_result' => SmtResultTableStorageBuilder::class
     ];
 
+    public static $userCreatable = ['table', 'smt_input'];
+
     protected $guarded = [];
 
     protected $casts = [
@@ -49,6 +52,21 @@ class RuntimeStorage extends Model
         return $this->hasMany('App\StepConnection');
     }
 
+    static public function getAllFormSchema()
+    {
+        $formSchemaMap = [];
+
+        foreach (static::$userCreatable as $type) {
+            $builder = static::$builderMap[$type];
+            $formSchemaMap[$type] = [
+                'schema' => $builder::getFormSchema(),
+                'name' => $builder::getName()
+            ];
+        }
+
+        return $formSchemaMap;
+    }
+
 
     /**
      * @param $runtime
@@ -58,39 +76,39 @@ class RuntimeStorage extends Model
      * @return RuntimeStorage
      * @throws \Exception
      */
-    static public function createStorage($runtime, $key, $type, $payload)
+    static public function createStorage($runtime, $key, $type, $name, $payload)
     {
         $builder = static::$builderMap[$type];
         if (!$builder) {
             throw new \Exception('Un supported storage type: '.$type);
         }
 
-        return $builder::build($runtime, $key, $payload);
+        return $builder::build($runtime, $key, $name, $payload);
     }
 
-    static public function createSmtInputStorage($runtime, $key, $content)
+    static public function createSmtInputStorage($runtime, $key, $name, $content)
     {
-        return SmtInputStorageBuilder::build($runtime, $key, [
+        return SmtInputStorageBuilder::build($runtime, $key, $name, [
             'content' => $content
         ]);
     }
 
-    static public function createSmtOutputStorage($runtime, $key, $content)
+    static public function createSmtOutputStorage($runtime, $key, $name, $content)
     {
-        return SmtOutputStorageBuilder::build($runtime, $key, [
+        return SmtOutputStorageBuilder::build($runtime, $key, $name, [
             'content' => $content
         ]);
     }
 
-    static public function createTableStorage($runtime, $key, $schema)
+    static public function createTableStorage($runtime, $key, $name, $schema)
     {
-        return TableStorageBuilder::build($runtime, $key, [
+        return TableStorageBuilder::build($runtime, $key, $name, [
             'schema' => $schema
         ]);
     }
 
-    static public function createSmtResultTableStorage($runtime, $key)
+    static public function createSmtResultTableStorage($runtime, $key, $name)
     {
-        return SmtResultTableStorageBuilder::build($runtime, $key, []);
+        return SmtResultTableStorageBuilder::build($runtime, $key, $name, []);
     }
 }

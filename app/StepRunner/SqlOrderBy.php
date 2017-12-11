@@ -7,6 +7,16 @@ use Illuminate\Support\Facades\DB;
 // 此 Runner 的 input table 與 output table 的必須 schema 完全一樣
 class SqlOrderBy implements Runner
 {
+    static function supportedInputStorageType()
+    {
+        return 'table';
+    }
+
+    static function getName()
+    {
+        return 'SQL 排序';
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $targetSchema = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']]['schema'];

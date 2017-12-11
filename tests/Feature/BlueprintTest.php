@@ -14,6 +14,7 @@ class BlueprintTest extends TestCase
         $b->payload = [
             'storages' => [
                 't1' => [
+                    'name' => 'aaa',
                     'type' => 'table',
                     'schema' => [
                         [
@@ -23,6 +24,7 @@ class BlueprintTest extends TestCase
                     ],
                 ],
                 't2' => [
+                    'name' => 'aaa',
                     'type' => 'table',
                     'schema' => [
                         [
@@ -32,6 +34,7 @@ class BlueprintTest extends TestCase
                     ],
                 ],
                 't3' => [
+                    'name' => 'aaa',
                     'type' => 'smt_input',
                     'content' => "
                         (declare-const x Int)
@@ -44,10 +47,12 @@ class BlueprintTest extends TestCase
                     ",
                 ],
                 't4' => [
+                    'name' => 'aaa',
                     'type' => 'smt_output',
                     'content' => '',
                 ],
                 't5' => [
+                    'name' => 'aaa',
                     'type' => 'smt_result',
                 ],
             ],

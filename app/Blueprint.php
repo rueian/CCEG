@@ -51,7 +51,7 @@ class Blueprint extends Model
 
             $storageMap = [];
             foreach($blueprintStorages as $key => $s) {
-                $storageMap[$key] = RuntimeStorage::createStorage($r, $key, $s['type'], $s);
+                $storageMap[$key] = RuntimeStorage::createStorage($r, $key, $s['type'], $s['name'], $s);
             }
 
             $blueprintSteps = $this->payload['steps'];

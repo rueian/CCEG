@@ -35,6 +35,7 @@ class InitTables extends Migration
             $table->increments('id');
             $table->unsignedInteger('runtime_id');
             $table->string('key');
+            $table->string('name')->nullable();
             $table->string('type');
             $table->json('payload')->nullable();
             $table->string('state');

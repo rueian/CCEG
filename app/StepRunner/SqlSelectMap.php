@@ -7,6 +7,16 @@ use Illuminate\Support\Facades\DB;
 // 此 Runner 的 output table 的必須 select 完全一樣
 class SqlSelectMap implements Runner
 {
+    static function supportedInputStorageType()
+    {
+        return 'table';
+    }
+
+    static function getName()
+    {
+        return 'SQL Select 映射';
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $targetSchema = collect($bluePrintStepPayload['param']['select'])->map(function($select) {

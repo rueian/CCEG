@@ -12,12 +12,22 @@ use App\RuntimeStorage;
 
 class SmtOutputStorageBuilder implements Builder
 {
+    static function getName()
+    {
+        return 'SMT 輸出資料';
+    }
 
-    static function build($runtime, $key, $payload)
+    static function getFormSchema()
+    {
+        return [];
+    }
+
+    static function build($runtime, $key, $name, $payload)
     {
         $storage = new RuntimeStorage;
         $storage->runtime_id = $runtime->id;
         $storage->key = $key;
+        $storage->name = $name;
         $storage->type = 'smt_output';
         $storage->state = 'init';
         $storage->payload = [

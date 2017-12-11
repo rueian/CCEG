@@ -11,10 +11,19 @@ namespace App\StorageBuilder;
 
 class SmtResultTableStorageBuilder implements Builder
 {
-
-    static function build($runtime, $key, $payload)
+    static function getName()
     {
-        return TableStorageBuilder::build($runtime, $key, [
+        return 'SMT 輸出表格';
+    }
+
+    static function getFormSchema()
+    {
+        return [];
+    }
+
+    static function build($runtime, $key, $name, $payload)
+    {
+        return TableStorageBuilder::build($runtime, $key, $name, [
             'schema' => [
                 [
                     'name' => 'variable',

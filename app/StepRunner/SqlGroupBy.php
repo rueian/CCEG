@@ -7,6 +7,16 @@ use Illuminate\Support\Facades\DB;
 // 此 Runner 的 output table 的必須 select 完全一樣
 class SqlGroupBy implements Runner
 {
+    static function supportedInputStorageType()
+    {
+        return 'table';
+    }
+
+    static function getName()
+    {
+        return 'SQL Group By 聚合';
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $targetSchema = collect($bluePrintStepPayload['param']['select'])->map(function($select) {

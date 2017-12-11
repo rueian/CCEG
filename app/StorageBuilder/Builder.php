@@ -5,5 +5,7 @@ namespace App\StorageBuilder;
 
 interface Builder
 {
-    static function build($runtime, $key, $payload);
+    static function getName();
+    static function build($runtime, $key, $name, $payload);
+    static function getFormSchema();
 }

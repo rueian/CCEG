@@ -1,7 +1,7 @@
 @extends('main')
 
 @section('jumbotron')
-<div class="jumbotron jumbotron-fluid">
+<div class="jumbotron">
   <div class="container">
     <h1 class="display-3">
       <a href="#" data-pk="{{ $blueprint->id }}" data-name="name" data-type="text" data-url="{{ url('/blueprints/editable') }}" data-title="流程名稱" data-editable="">{{ $blueprint->name }}</a>
@@ -203,20 +203,14 @@
 
 <!-- Storage Modal -->
 <div class="modal fade" id="storageModal" tabindex="-1" role="dialog" aria-labelledby="storageModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="storageModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="storageModalLabel">新增資料源</h4>
       </div>
       <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+          <div id="storageForm"></div>
       </div>
     </div>
   </div>
@@ -227,10 +221,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="stepModalLabel">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="storageModalLabel">新增步驟</h4>
       </div>
       <div class="modal-body">
         <div id="stepForm"></div>
@@ -243,4 +235,7 @@
   </div>
 </div>
 
+<script>
+    window.StorageFormSchema = @json(App\RuntimeStorage::getAllFormSchema());
+</script>
 @endsection

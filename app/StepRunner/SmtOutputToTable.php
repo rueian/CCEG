@@ -6,6 +6,16 @@ use Illuminate\Support\Facades\DB;
 
 class SmtOutputToTable implements Runner
 {
+    static function supportedInputStorageType()
+    {
+        return 'smt_output';
+    }
+
+    static function getName()
+    {
+        return 'SMT 輸出轉成 SQL 表格';
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         return [

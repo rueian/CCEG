@@ -4,6 +4,16 @@ namespace App\StepRunner;
 
 class Smt implements Runner
 {
+    static function supportedInputStorageType()
+    {
+        return 'smt_input';
+    }
+
+    static function getName()
+    {
+        return 'SMT';
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         return [

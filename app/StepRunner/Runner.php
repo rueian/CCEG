@@ -6,4 +6,6 @@ interface Runner
 {
     static function run($step);
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload);
+    static function supportedInputStorageType();
+    static function getName();
 }
