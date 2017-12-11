@@ -48,24 +48,10 @@ class Blueprint extends Model
             $r->createRuntimeDatabase();
 
             $blueprintStorages = $this->payload['storages'];
+
+            $storageMap = [];
             foreach($blueprintStorages as $key => $s) {
-                switch ($s['type']) {
-                    case 'table':
-                        $storage = RuntimeStorage::createTableStorage($r, $key, $s['schema']);
-                        break;
-                    case 'smt_result':
-                        $storage = RuntimeStorage::createSMTResultTableStorage($r, $key);
-                        break;
-                    case 'smt_input':
-                        $storage = RuntimeStorage::createSMTInputStorage($r, $key, $s['content']);
-                        break;
-                    case 'smt_output':
-                        $storage = RuntimeStorage::createSMTOutputStorage($r, $key, $s['content']);
-                        break;
-                    default:
-                        throw new \Exception('Unsupported storage type: '.$s['type']);
-                }
-                $storageMap[$key] = $storage;
+                $storageMap[$key] = RuntimeStorage::createStorage($r, $key, $s['type'], $s);
             }
 
             $blueprintSteps = $this->payload['steps'];

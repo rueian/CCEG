@@ -507,7 +507,7 @@ class RuntimeTest extends TestCase
         $b->delete();
     }
 
-    public function testOneStepRunSMT()
+    public function testOneStepRunSmt()
     {
         $b = new Blueprint;
         $b->name = 'blueprint1';
@@ -529,8 +529,8 @@ class RuntimeTest extends TestCase
             (get-value (y))
         ";
 
-        $s1 = RuntimeStorage::createSMTInputStorage($r, 'key1', $smtInput);
-        $s2 = RuntimeStorage::createSMTOutputStorage($r, 'key2', '');
+        $s1 = RuntimeStorage::createSmtInputStorage($r, 'key1', $smtInput);
+        $s2 = RuntimeStorage::createSmtOutputStorage($r, 'key2', '');
         Step::createStep($r, 'key', 'smt', 'name', 'note', [], [
             'input' => $s1
         ], $s2);
@@ -548,7 +548,7 @@ class RuntimeTest extends TestCase
         $b->delete();
     }
 
-    public function testOneStepRunSMTToTable()
+    public function testOneStepRunSmtToTable()
     {
         $b = new Blueprint;
         $b->name = 'blueprint1';
@@ -565,8 +565,8 @@ class RuntimeTest extends TestCase
 ((y 6))
 ";
 
-        $s1 = RuntimeStorage::createSMTOutputStorage($r, 'key1', $smtOutput);
-        $s2 = RuntimeStorage::createSMTResultTableStorage($r, 'key3', 'table3');
+        $s1 = RuntimeStorage::createSmtOutputStorage($r, 'key1', $smtOutput);
+        $s2 = RuntimeStorage::createSmtResultTableStorage($r, 'key3', 'table3');
         Step::createStep($r, 'key', 'smt_output_to_table', 'name', 'note', [], [
             'input' => $s1
         ], $s2);
