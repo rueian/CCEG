@@ -14,3 +14,4 @@ require('./loader');
  */
 
 require('./components/StorageForm');
+require('./components/StepForm');

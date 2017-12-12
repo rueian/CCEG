@@ -239,6 +239,7 @@
     window.Props = {
         blueprint: @json($blueprint),
         storageFormSchema: @json(App\RuntimeStorage::getAllFormSchema()),
+        stepFormSchema: @json(App\Step::getAllFormSchema($blueprint->payload)),
     };
 </script>
 @endsection

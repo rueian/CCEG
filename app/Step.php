@@ -118,4 +118,24 @@ class Step extends Model
 
         return $step;
     }
+
+    static public function getAllFormSchema($blueprintPayload)
+    {
+        $blueprintStroages = isset($blueprintPayload['storages']) ? $blueprintPayload['storages'] : [];
+
+        $formSchemaMap = [];
+        foreach (static::$runnerMap as $type => $runner) {
+            foreach ($blueprintStroages as $key => $storage) {
+                if ($storage['type'] == $runner::supportedInputStorageType()) {
+                    $formSchemaMap[$type] = [
+                        'name' => $runner::getName(),
+                        'schema' => $runner::getFormSchema($blueprintStroages)
+                    ];
+                    break;
+                }
+            }
+        }
+
+        return $formSchemaMap;
+    }
 }

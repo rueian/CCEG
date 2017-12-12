@@ -8,4 +8,5 @@ interface Runner
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload);
     static function supportedInputStorageType();
     static function getName();
+    static function getFormSchema($bluePrintStorages);
 }

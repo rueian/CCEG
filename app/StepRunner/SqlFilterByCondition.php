@@ -17,6 +17,65 @@ class SqlFilterByCondition implements Runner
         return 'SQL 用條件篩選';
     }
 
+    static function getFormSchema($bluePrintStorages)
+    {
+        $inputKeys = [];
+        foreach ($bluePrintStorages as $key => $storage) {
+            if ($storage['type'] == static::supportedInputStorageType()) {
+                $inputKeys[] = $key;
+            }
+        }
+
+        return [
+            'type' => 'object',
+            'required' => [
+                'name',
+                'key',
+                'inputs',
+                'param'
+            ],
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                    'title' => '步驟名稱'
+                ],
+                'key' => [
+                    'type' => 'string',
+                    'title' => '步驟代號'
+                ],
+                'note' => [
+                    'type' => 'string',
+                    'title' => '步驟備註'
+                ],
+                'inputs' => [
+                    'type' => 'object',
+                    'title' => '選擇輸入資料源',
+                    'required' => [
+                        'input'
+                    ],
+                    'properties' => [
+                        'input' => [
+                            'type' => 'string',
+                            'enum' => $inputKeys
+                        ]
+                    ]
+                ],
+                'param' => [
+                    'type' => 'object',
+                    'title' => '步驟參數',
+                    'required' => [
+                        'where'
+                    ],
+                    'properties' => [
+                        'where' => [
+                            'type' => 'string',
+                        ]
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $targetSchema = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']]['schema'];

@@ -17,6 +17,97 @@ class SqlGroupBy implements Runner
         return 'SQL Group By 聚合';
     }
 
+    static function getFormSchema($bluePrintStorages)
+    {
+        $inputKeys = [];
+        foreach ($bluePrintStorages as $key => $storage) {
+            if ($storage['type'] == static::supportedInputStorageType()) {
+                $inputKeys[] = $key;
+            }
+        }
+
+        return [
+            'type' => 'object',
+            'required' => [
+                'name',
+                'key',
+                'inputs',
+                'param'
+            ],
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                    'title' => '步驟名稱'
+                ],
+                'key' => [
+                    'type' => 'string',
+                    'title' => '步驟代號'
+                ],
+                'note' => [
+                    'type' => 'string',
+                    'title' => '步驟備註'
+                ],
+                'inputs' => [
+                    'type' => 'object',
+                    'title' => '選擇輸入資料源',
+                    'required' => [
+                        'input',
+                    ],
+                    'properties' => [
+                        'input' => [
+                            'type' => 'string',
+                            'enum' => $inputKeys
+                        ]
+                    ]
+                ],
+                'param' => [
+                    'type' => 'object',
+                    'title' => '步驟參數',
+                    'required' => [
+                        'group',
+                        'select',
+                    ],
+                    'properties' => [
+                        'group' => [
+                            'type' => 'array',
+                            'items' => [
+                                'type' => 'string'
+                            ]
+                        ],
+                        'select' => [
+                            'type' => 'array',
+                            'items' => [
+                                'type' => 'object',
+                                'required' => [
+                                    'expr',
+                                    'as',
+                                    'type'
+                                ],
+                                'properties' => [
+                                    'expr' => [
+                                        'type' => 'string'
+                                    ],
+                                    'as' => [
+                                        'type' => 'string'
+                                    ],
+                                    'type' => [
+                                        'type' => 'string',
+                                        'enum' => [
+                                            'integer',
+                                            'float',
+                                            'double',
+                                            'varchar',
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $targetSchema = collect($bluePrintStepPayload['param']['select'])->map(function($select) {

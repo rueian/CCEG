@@ -17,6 +17,78 @@ class SqlFilterBySemiJoin implements Runner
         return 'SQL 用另一張格表篩選';
     }
 
+    static function getFormSchema($bluePrintStorages)
+    {
+        $inputKeys = [];
+        foreach ($bluePrintStorages as $key => $storage) {
+            if ($storage['type'] == static::supportedInputStorageType()) {
+                $inputKeys[] = $key;
+            }
+        }
+
+        return [
+            'type' => 'object',
+            'required' => [
+                'name',
+                'key',
+                'inputs',
+                'param'
+            ],
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                    'title' => '步驟名稱'
+                ],
+                'key' => [
+                    'type' => 'string',
+                    'title' => '步驟代號'
+                ],
+                'note' => [
+                    'type' => 'string',
+                    'title' => '步驟備註'
+                ],
+                'inputs' => [
+                    'type' => 'object',
+                    'title' => '選擇輸入資料源',
+                    'required' => [
+                        'input',
+                        'semi'
+                    ],
+                    'properties' => [
+                        'input' => [
+                            'type' => 'string',
+                            'enum' => $inputKeys
+                        ],
+                        'semi' => [
+                            'type' => 'string',
+                            'enum' => $inputKeys
+                        ]
+                    ]
+                ],
+                'param' => [
+                    'type' => 'object',
+                    'title' => '步驟參數',
+                    'required' => [
+                        'column',
+                        'in',
+                        'select'
+                    ],
+                    'properties' => [
+                        'column' => [
+                            'type' => 'string',
+                        ],
+                        'in' => [
+                            'type' => 'boolean'
+                        ],
+                        'select' => [
+                            'type' => 'string'
+                        ]
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $targetSchema = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']]['schema'];
@@ -44,13 +116,11 @@ class SqlFilterBySemiJoin implements Runner
         $semiTable = $semi->storage->payload['table'];
         $outputTable = $output->storage->payload['table'];
 
-        // [
-        //     'semi' => [
-        //         'column' => 'xxx',
-        //         'in' => true
-        //         'select' => 'yyy'
-        //     ]
-        // ]
+//        [
+//            'column' => 'xxx',
+//            'in' => true,
+//            'select' => 'yyy',
+//        ]
 
         $query = "INSERT INTO $outputTable SELECT * FROM $inputTable";
         if (isset($step->param['semi'])) {

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import Form from "react-jsonschema-form";
 import {refreshPage, handleAxiosError} from "../axios-handler";
 
-export default class StorageForm extends Component {
+export default class StepForm extends Component {
     constructor(props) {
         super(props);
 
@@ -17,7 +17,7 @@ export default class StorageForm extends Component {
 
         e.formData.type = this.state.type;
 
-        axios.post(`/blueprints/${id}/storage`, e.formData)
+        axios.post(`/blueprints/${id}/step`, e.formData)
             .then(refreshPage)
             .catch(handleAxiosError);
     };
@@ -30,7 +30,7 @@ export default class StorageForm extends Component {
 
     render() {
         let form;
-        let formSchema = this.props.storageFormSchema;
+        let formSchema = this.props.stepFormSchema;
 
         if (this.state.type !== '') {
             form = <Form schema={formSchema[this.state.type].schema} onSubmit={this.handleOnSubmit.bind(this)} />
@@ -40,7 +40,7 @@ export default class StorageForm extends Component {
             <div>
                 <form>
                     <div className="form-group">
-                        <label>選擇資料源類別</label>
+                        <label>選擇步驟累別</label>
                         <select className="form-control form-control-lg" onChange={this.handleTypeChange.bind(this)}>
                             <option key="empty" value="" />
                             {Object.keys(formSchema).map((k, i) => (
@@ -56,6 +56,6 @@ export default class StorageForm extends Component {
     }
 }
 
-if (document.getElementById('storageForm')) {
-    ReactDOM.render(<StorageForm {...window.Props} />, document.getElementById('storageForm'));
+if (document.getElementById('stepForm')) {
+    ReactDOM.render(<StepForm {...window.Props} />, document.getElementById('stepForm'));
 }

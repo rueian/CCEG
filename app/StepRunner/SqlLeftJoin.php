@@ -17,6 +17,74 @@ class SqlLeftJoin implements Runner
         return 'SQL Join 連接另一張表';
     }
 
+    static function getFormSchema($bluePrintStorages)
+    {
+        $inputKeys = [];
+        foreach ($bluePrintStorages as $key => $storage) {
+            if ($storage['type'] == static::supportedInputStorageType()) {
+                $inputKeys[] = $key;
+            }
+        }
+
+        return [
+            'type' => 'object',
+            'required' => [
+                'name',
+                'key',
+                'inputs',
+                'param'
+            ],
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                    'title' => '步驟名稱'
+                ],
+                'key' => [
+                    'type' => 'string',
+                    'title' => '步驟代號'
+                ],
+                'note' => [
+                    'type' => 'string',
+                    'title' => '步驟備註'
+                ],
+                'inputs' => [
+                    'type' => 'object',
+                    'title' => '選擇輸入資料源',
+                    'required' => [
+                        'left',
+                        'right'
+                    ],
+                    'properties' => [
+                        'left' => [
+                            'type' => 'string',
+                            'enum' => $inputKeys
+                        ],
+                        'right' => [
+                            'type' => 'string',
+                            'enum' => $inputKeys
+                        ]
+                    ]
+                ],
+                'param' => [
+                    'type' => 'object',
+                    'title' => '步驟參數',
+                    'required' => [
+                        'left',
+                        'right',
+                    ],
+                    'properties' => [
+                        'left' => [
+                            'type' => 'string',
+                        ],
+                        'right' => [
+                            'type' => 'string'
+                        ],
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         $leftTable = $bluePrintStepPayload['inputs']['left'];
@@ -80,12 +148,10 @@ class SqlLeftJoin implements Runner
         $outputColumns = $outputColumns->implode(',');
         $selectColumns = $selectColumns->implode(',');
 
-        // [
-        //     'join' => [
-        //         'left' => 'xxx',
-        //         'right' => 'yyy'
-        //     ]
-        // ]
+//        [
+//            'left' => 'xxx',
+//            'right' => 'yyy'
+//        ]
 
         $leftColumn = $step->param['join']['left'];
         $rightColumn = $step->param['join']['right'];
