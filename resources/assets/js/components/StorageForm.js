@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Form from "react-jsonschema-form";
+import {refreshPage, handleAxiosError} from "../axios-handler";
 
 export default class StorageForm extends Component {
     constructor(props) {
@@ -12,7 +13,11 @@ export default class StorageForm extends Component {
     }
 
     handleOnSubmit(e) {
+        let id = this.props.blueprint.id;
 
+        axios.post(`/blueprints/${id}/storage`, e.formData)
+            .then(refreshPage)
+            .catch(handleAxiosError);
     };
 
     handleTypeChange(e) {
@@ -23,9 +28,10 @@ export default class StorageForm extends Component {
 
     render() {
         let form;
+        let formSchema = this.props.storageFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form schema={this.props.formSchema[this.state.type].schema} onSubmit={this.handleOnSubmit.bind(this)} />
+            form = <Form schema={formSchema[this.state.type].schema} onSubmit={this.handleOnSubmit.bind(this)} />
         }
 
         return (
@@ -35,8 +41,8 @@ export default class StorageForm extends Component {
                         <label>選擇資料源類別</label>
                         <select className="form-control form-control-lg" onChange={this.handleTypeChange.bind(this)}>
                             <option key="empty" value="" />
-                            {Object.keys(this.props.formSchema).map((k, i) => (
-                                <option key={k} value={k}>{this.props.formSchema[k].name}</option>
+                            {Object.keys(formSchema).map((k, i) => (
+                                <option key={k} value={k}>{formSchema[k].name}</option>
                             ))}
                         </select>
                     </div>
@@ -49,5 +55,5 @@ export default class StorageForm extends Component {
 }
 
 if (document.getElementById('storageForm')) {
-    ReactDOM.render(<StorageForm formSchema={window.StorageFormSchema} />, document.getElementById('storageForm'));
+    ReactDOM.render(<StorageForm {...window.Props} />, document.getElementById('storageForm'));
 }

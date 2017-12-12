@@ -18,7 +18,8 @@ class TableStorageBuilder implements Builder
             'type' => 'object',
             'required' => [
                 'name',
-                'key'
+                'key',
+                'schema'
             ],
             'properties' => [
                 'name' => [

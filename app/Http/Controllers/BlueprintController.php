@@ -34,13 +34,6 @@ class BlueprintController extends Controller
         return view('blueprints.edit', compact('blueprint'));
     }
 
-    public function update($id, Request $request)
-    {
-        $blueprint = Blueprint::findOrFail($id);
-
-        return view('blueprints.edit', compact('blueprint'));
-    }
-
     public function editable(Request $request)
     {
         $blueprint = Blueprint::findOrFail($request->input('pk'));
@@ -56,5 +49,28 @@ class BlueprintController extends Controller
         $blueprint->saveOrFail();
 
         return response('ok');
+    }
+
+    public function addStorage($id, Request $request)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+        $payload = $blueprint->payload;
+
+        if (!isset($payload['storages'])) {
+            $payload['storages'] = [];
+        }
+
+        $storageKey = $request->input('key');
+
+        if (isset($payload['storages'][$storageKey])) {
+            return response('資料源代號 "' . $storageKey . '" 已經用過了', 422);
+        }
+
+        $payload['storages'][$storageKey] = $request->all();
+        $blueprint->payload = $payload;
+
+        $blueprint->save();
+
+        return response()->json($blueprint);
     }
 }

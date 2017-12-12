@@ -236,6 +236,9 @@
 </div>
 
 <script>
-    window.StorageFormSchema = @json(App\RuntimeStorage::getAllFormSchema());
+    window.Props = {
+        blueprint: @json($blueprint),
+        storageFormSchema: @json(App\RuntimeStorage::getAllFormSchema()),
+    };
 </script>
 @endsection
