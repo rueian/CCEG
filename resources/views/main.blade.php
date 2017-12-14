@@ -21,6 +21,8 @@
       @yield('container')
     </div>
 
+    @yield('beforeScript')
     <script src="{{ mix('js/app.js') }}"></script>
+    @yield('afterScript')
   </body>
 </html>

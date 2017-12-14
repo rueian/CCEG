@@ -13,6 +13,7 @@
         "axios": "^0.17",
         "babel-preset-react": "^6.23.0",
         "cross-env": "^5.1",
+        "jointjs": "^2.0.1",
         "jquery": "^3.2",
         "laravel-mix": "^1.0",
         "lodash": "^4.17.4",
