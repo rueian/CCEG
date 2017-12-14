@@ -97,6 +97,7 @@ class BlueprintController extends Controller
         $stepRunner = Step::$runnerMap[$stepPayload['type']];
         $outputPayload = $stepRunner::getBlueprintStepStorage($payload['storages'], $stepPayload);
         $outputPayload['generated'] = true;
+        $outputPayload['name'] = $stepPayload['name'] . '的結果';
 
         $payload['storages'][$stepOutputKey] = $outputPayload;
         $payload['steps'][$stepKey] = $stepPayload;

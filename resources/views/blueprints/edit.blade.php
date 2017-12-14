@@ -16,70 +16,74 @@
 @section('container')
 
 <div class="row">
-  <div class="col-md-2 col-sm-4 col-xs-6">
-    <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
-      <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
-        <div class="card-body text-center">
-          <p class="card-text text-secondary" style="font-size: 2rem;">
-            <i class="fas fa-plus-circle"></i>
-            新增資料
-          </p>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <div class="col-md-2 col-sm-4 col-xs-6">
-    <a href="#" data-toggle="modal" data-target="#stepModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
-      <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
-        <div class="card-body text-center">
-          <p class="card-text text-secondary" style="font-size: 2rem;">
-            <i class="fas fa-plus-circle"></i>
-            新增運算
-          </p>
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div id="layout-controls" class="controls joint-theme-default">
-            <label for="ranker">Ranker:</label>
-            <select id="ranker">
-                <option value="network-simplex" selected="">network-simplex</option>
-                <option value="tight-tree">tight-tree</option>
-                <option value="longest-path">longer-path</option>
-            </select>
-            <label for="rankdir">RankDir:</label>
-            <select id="rankdir">
-                <option value="TB" selected="">TB</option>
-                <option value="BT">BT</option>
-                <option value="RL">RL</option>
-                <option value="LR">LR</option>
-            </select>
-            <label for="align">Align:</label>
-            <select id="align">
-                <option value="UL" selected="">UL</option>
-                <option value="UR">UR</option>
-                <option value="DL">DL</option>
-                <option value="DR">DR</option>
-            </select>
-            <label for="ranksep">RankSep:</label>
-            <input id="ranksep" type="range" min="1" max="100" value="50">
-            <label for="edgesep">EdgeSep:</label>
-            <input id="edgesep" type="range" min="1" max="100" value="50">
-            <label for="nodesep">NodeSep:</label>
-            <input id="nodesep" type="range" min="1" max="100" value="50">
+    <div class="col-md-2">
+        <div class="row">
+            <div class="col-md-12">
+                <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
+                    <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
+                        <div class="card-body text-center">
+                            <p class="card-text text-secondary" style="font-size: 2rem;">
+                                <i class="fas fa-plus-circle"></i>
+                                新增資料
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-12">
+                <a href="#" {{  $blueprint->payload['storages'] ? '' : 'disabled'  }} data-toggle="modal" data-target="#stepModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
+                    <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
+                        <div class="card-body text-center">
+                            <p class="card-text text-secondary" style="font-size: 2rem;">
+                                <i class="fas fa-plus-circle"></i>
+                                新增運算
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
-</div>
+    <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-12" style="display:none;">
+                <div id="layout-controls" class="controls joint-theme-default">
+                    <label for="ranker">Ranker:</label>
+                    <select id="ranker">
+                        <option value="network-simplex" selected="">network-simplex</option>
+                        <option value="tight-tree">tight-tree</option>
+                        <option value="longest-path">longer-path</option>
+                    </select>
+                    <label for="rankdir">RankDir:</label>
+                    <select id="rankdir">
+                        <option value="TB" selected="">TB</option>
+                        <option value="BT">BT</option>
+                        <option value="RL">RL</option>
+                        <option value="LR">LR</option>
+                    </select>
+                    <label for="align">Align:</label>
+                    <select id="align">
+                        <option value="UL" selected="">UL</option>
+                        <option value="UR">UR</option>
+                        <option value="DL">DL</option>
+                        <option value="DR">DR</option>
+                    </select>
+                    <label for="ranksep">RankSep:</label>
+                    <input id="ranksep" type="range" min="1" max="100" value="50">
+                    <label for="edgesep">EdgeSep:</label>
+                    <input id="edgesep" type="range" min="1" max="100" value="50">
+                    <label for="nodesep">NodeSep:</label>
+                    <input id="nodesep" type="range" min="1" max="100" value="50">
+                </div>
+            </div>
+        </div>
 
-<div class="row">
-  <div class="col-md-12">
-    <div id="paper"></div>
-  </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="paper"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Storage Modal -->
@@ -108,23 +112,18 @@
       <div class="modal-body">
         <div id="stepForm"></div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
     </div>
   </div>
 </div>
 
 <style>
     #paper {
-        border: 1px solid lightgray;
         position: absolute;
         margin-left: auto;
         margin-right: auto;
         left: 0;
         right: 0;
-        top: 100px;
+        top: 10px;
     }
     .controls {
         margin: auto;
@@ -171,8 +170,8 @@
 <script>
     var Shape = joint.dia.Element.define('demo.Shape', {
         size: {
-            width: 100,
-            height: 50
+            width: 200,
+            height: 100
         },
         attrs: {
             rect: {
@@ -189,7 +188,69 @@
                 refY: '50%',
                 yAlignment: 'middle',
                 xAlignment: 'middle',
-                fontSize: 30
+                fontSize: 15
+            }
+        }
+    }, {
+        markup: '<rect/><text/>',
+
+        setText: function(text) {
+            return this.attr('text/text', text || '');
+        }
+    });
+
+    var GeneratedShape = joint.dia.Element.define('demo.GeneratedShape', {
+        size: {
+            width: 200,
+            height: 100
+        },
+        attrs: {
+            rect: {
+                refWidth: '100%',
+                refHeight: '100%',
+                fill: '#B0E0E6',
+                stroke: 'gray',
+                strokeWidth: 2,
+                rx: 10,
+                ry: 10
+            },
+            text: {
+                refX: '50%',
+                refY: '50%',
+                yAlignment: 'middle',
+                xAlignment: 'middle',
+                fontSize: 15
+            }
+        }
+    }, {
+        markup: '<rect/><text/>',
+
+        setText: function(text) {
+            return this.attr('text/text', text || '');
+        }
+    });
+
+    var StepShape = joint.dia.Element.define('demo.StepShape', {
+        size: {
+            width: 200,
+            height: 100
+        },
+        attrs: {
+            rect: {
+                refWidth: '100%',
+                refHeight: '100%',
+                fill: '#F0FFFF',
+                stroke: 'gray',
+                strokeWidth: 2,
+                rx: 10,
+                ry: 10
+            },
+            text: {
+                refX: '50%',
+                refY: '50%',
+                yAlignment: 'middle',
+                xAlignment: 'middle',
+                fontSize: 15
             }
         }
     }, {
@@ -226,9 +287,38 @@
             width: 50,
             height: 30
         },
+        labels: [{
+            markup: '<rect/><text/>',
+            attrs: {
+                text: {
+                    fill: 'gray',
+                    refY: '50%',
+                    textAnchor: 'middle',
+                    refY2: '-50%',
+                    fontSize: 10,
+                    yAlignment: 'middle',
+                    xAlignment: 'middle',
+                    cursor: 'pointer'
+                },
+                rect: {
+                    fill: 'lightgray',
+                    stroke: 'gray',
+                    strokeWidth: 2,
+                    refWidth: '100%',
+                    refHeight: '100%',
+                    refX: '-50%',
+                    refY: '-50%',
+                    rx: 5,
+                    ry: 5
+                }
+            },
+            size: {
+                width: 50, height: 30
+            }
+        }]
 
     }, {
-        markup: '<path class="connection"/>',
+        markup: '<path class="connection"/><g class="labels"/>',
 
         connect: function(sourceId, targetId) {
             return this.set({
@@ -250,14 +340,14 @@
         },
 
         options: {
-            padding: 100
+            padding: 10
         },
 
         init: function() {
 
             var options = this.options;
-            if (options.adjacencyList) {
-                options.cells = this.buildGraphFromAdjacencyList(options.adjacencyList);
+            if (window.Props.blueprint) {
+                options.cells = this.buildGraphFromBlueprint(window.Props.blueprint);
             }
 
             this.listenTo(options.paper.model, 'change', function(cell, opt) {
@@ -302,24 +392,45 @@
             };
         },
 
-        buildGraphFromAdjacencyList: function(adjacencyList) {
+        buildGraphFromBlueprint: function(blueprint) {
 
             var elements = [];
             var links = [];
 
-            Object.keys(adjacencyList).forEach(function(parentLabel) {
-                // Add element
-                elements.push(
-                    new Shape({ id: parentLabel }).setText(parentLabel)
-                );
-                // Add links
-                adjacencyList[parentLabel].forEach(function(childLabel) {
+            if (blueprint.payload && blueprint.payload.storages) {
+                Object.keys(blueprint.payload.storages).forEach(function(key) {
+                    var storage = blueprint.payload.storages[key];
+
+                    if (storage.generated) {
+                        elements.push(new GeneratedShape({ id: 'storage_' + key }).setText(storage.name));
+                    } else {
+                        elements.push(new Shape({ id: 'storage_' + key }).setText('資料源 ' + storage.name));
+                    }
+                });
+            }
+
+            if (blueprint.payload && blueprint.payload.steps) {
+                Object.keys(blueprint.payload.steps).forEach(function(key) {
+                    var step = blueprint.payload.steps[key];
+                    elements.push(
+                        new StepShape({ id: 'step_' + key }).setText('步驟 ' + step.name)
+                    );
+
+                    Object.keys(step.inputs).forEach(function(input) {
+                        links.push(
+                            new Link()
+                                .connect('storage_' + step.inputs[input], 'step_' + key)
+                                .setLabelText(input)
+                        );
+                    });
+
                     links.push(
                         new Link()
-                            .connect(parentLabel, childLabel)
+                            .connect('step_' + key, 'storage_' + step.output)
+                            .setLabelText('輸出')
                     );
                 });
-            });
+            }
 
             // Links must be added after all the elements. This is because when the links
             // are added to the graph, link source/target
@@ -428,17 +539,6 @@
             'link:pointerdown': LinkControls.create,
             'blank:pointerdown element:pointerdown': LinkControls.remove
         }, LinkControls),
-        adjacencyList: {
-            a: ['b','c','d'],
-            b: ['d', 'e'],
-            c: [],
-            d: [],
-            e: ['e'],
-            f: [],
-            g: ['b','i'],
-            h: ['f'],
-            i: ['f','h']
-        }
     }).on({
         'layout': LinkControls.refresh
     }, LinkControls);
