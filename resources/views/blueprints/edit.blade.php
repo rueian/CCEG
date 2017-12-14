@@ -17,27 +17,27 @@
 
 <div class="row">
     <div class="col-md-2">
-        <div class="row">
+        <div class="row" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
             <div class="col-md-12">
                 <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
-                    <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
-                        <div class="card-body text-center">
-                            <p class="card-text text-secondary" style="font-size: 2rem;">
+                    <div class="panel text-center panel-default" style="max-width: 180px;">
+                        <div class="panel-body text-center">
+                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
                                 <i class="fas fa-plus-circle"></i>
                                 新增資料
-                            </p>
+                            </span>
                         </div>
                     </div>
                 </a>
             </div>
             <div class="col-md-12">
                 <a href="#" {{  $blueprint->payload['storages'] ? '' : 'disabled'  }} data-toggle="modal" data-target="#stepModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
-                    <div class="card text-center bg-transparent border-0" style="display: table-cell; vertical-align: middle;">
-                        <div class="card-body text-center">
-                            <p class="card-text text-secondary" style="font-size: 2rem;">
+                    <div class="panel text-center panel-default" style="max-width: 180px;">
+                        <div class="panel-body text-center">
+                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
                                 <i class="fas fa-plus-circle"></i>
-                                新增運算
-                            </p>
+                                新增步驟
+                            </span>
                         </div>
                     </div>
                 </a>
