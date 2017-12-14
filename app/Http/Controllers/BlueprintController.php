@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Blueprint;
+use App\Step;
 
 class BlueprintController extends Controller
 {
@@ -69,6 +70,38 @@ class BlueprintController extends Controller
         $payload['storages'][$storageKey] = $request->all();
         $blueprint->payload = $payload;
 
+        $blueprint->save();
+
+        return response()->json($blueprint);
+    }
+
+    public function addStep($id, Request $request)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+        $payload = $blueprint->payload;
+
+        if (!isset($payload['steps'])) {
+            $payload['steps'] = [];
+        }
+
+        $stepKey = $request->input('key');
+        $stepOutputKey = $stepKey . '_result';
+
+        if (isset($payload['steps'][$stepKey])) {
+            return response('步驟代號 "' . $stepKey . '" 已經用過了', 422);
+        }
+
+        $stepPayload = $request->all();
+        $stepPayload['output'] = $stepOutputKey;
+
+        $stepRunner = Step::$runnerMap[$stepPayload['type']];
+        $outputPayload = $stepRunner::getBlueprintStepStorage($payload['storages'], $stepPayload);
+        $outputPayload['generated'] = true;
+
+        $payload['storages'][$stepOutputKey] = $outputPayload;
+        $payload['steps'][$stepKey] = $stepPayload;
+
+        $blueprint->payload = $payload;
         $blueprint->save();
 
         return response()->json($blueprint);
