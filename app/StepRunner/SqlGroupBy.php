@@ -126,20 +126,25 @@ class SqlGroupBy implements Runner
     {
         $inputStorage = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']];
 
-        $targetSchema = [];
+        $targetSchema = collect();
         foreach($bluePrintStepPayload['param']['select'] as $selectedColumn) {
-            $targetSchema[] = [
+            $targetSchema->push([
                 'name' => $selectedColumn['as'],
                 'type' => $selectedColumn['type'],
-            ];
+            ]);
         }
         foreach($bluePrintStepPayload['param']['group'] as $groupedColumn) {
             foreach($inputStorage['schema'] as $inputColumn) {
                 if ($inputColumn['name'] == $groupedColumn) {
-                    $targetSchema[] = [
+                    if ($targetSchema->contains(function($column) use ($groupedColumn) {
+                        return $column['name'] == $groupedColumn;
+                    })) {
+                        continue;
+                    }
+                    $targetSchema->push([
                         'name' => $inputColumn['name'],
                         'type' => $inputColumn['type'],
-                    ];
+                    ]);
                 }
             }
         }
@@ -186,6 +191,9 @@ class SqlGroupBy implements Runner
         }
 
         foreach ($step->param['group'] as $columnName) {
+            if ($outputColumns->contains($columnName)) {
+                continue;
+            }
             $outputColumns->push($columnName);
             $selectColumns->push($columnName);
         }

@@ -153,11 +153,11 @@ class RuntimeTest extends TestCase
             'order' => [
                 [
                     'column' => 'a',
-                    'asc' => true
+                    'direct' => 'asc'
                 ],
                 [
                     'column' => 'b',
-                    'asc' => false
+                    'direct' => 'desc'
                 ]
             ],
         ], [
@@ -357,11 +357,9 @@ class RuntimeTest extends TestCase
         ]);
 
         Step::createStep($r, 'key', 'sql_filter_by_semi_join', 'name', 'note', [
-            'semi' => [
-                'column' => 'b',
-                'in' => true,
-                'select' => 'c'
-            ],
+            'column' => 'b',
+            'operation' => 'in',
+            'target' => 'c'
         ], [
             'input' => $s1,
             'semi' => $s2,
@@ -464,6 +462,14 @@ class RuntimeTest extends TestCase
         ]);
 
         $s2 = RuntimeStorage::createTableStorage($r, 'key2', 'key3', [
+            [
+                'name' => 'a',
+                'type' => 'integer'
+            ],
+            [
+                'name' => 'b',
+                'type' => 'integer'
+            ],
             [
                 'name' => 'd',
                 'type' => 'integer'

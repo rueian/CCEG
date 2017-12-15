@@ -120,18 +120,23 @@ class SqlSelectMap implements Runner
     {
         $inputStorage = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']];
 
-        $targetSchema = [];
+        $targetSchema = collect();
         foreach($bluePrintStepPayload['param']['select'] as $selectedColumn) {
-            $targetSchema[] = [
+            $targetSchema->push([
                 'name' => $selectedColumn['as'],
                 'type' => $selectedColumn['type'],
-            ];
+            ]);
         }
         foreach($inputStorage['schema'] as $inputColumn) {
-            $targetSchema[] = [
+            if ($targetSchema->contains(function($column) use ($inputColumn) {
+                return $column['name'] == $inputColumn['name'];
+            })) {
+                continue;
+            }
+            $targetSchema->push([
                 'name' => $inputColumn['name'],
                 'type' => $inputColumn['type'],
-            ];
+            ]);
         }
         return [
             'type' => 'table',
@@ -170,9 +175,12 @@ class SqlSelectMap implements Runner
             $selectColumns->push($column['expr']);
         }
 
-        foreach ($input->storage->payload['schema'] as $columnName) {
-            $outputColumns->push($columnName);
-            $selectColumns->push($columnName);
+        foreach ($input->storage->payload['schema'] as $column) {
+            if ($outputColumns->contains($column['name'])) {
+                continue;
+            }
+            $outputColumns->push($column['name']);
+            $selectColumns->push($column['name']);
         }
 
         $outputColumns = $outputColumns->implode(',');

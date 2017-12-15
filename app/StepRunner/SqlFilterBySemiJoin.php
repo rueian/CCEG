@@ -76,8 +76,8 @@ class SqlFilterBySemiJoin implements Runner
                     'title' => '步驟參數',
                     'required' => [
                         'column',
-                        'in',
-                        'select'
+                        'operation',
+                        'target'
                     ],
                     'properties' => [
                         'column' => [
@@ -96,7 +96,7 @@ class SqlFilterBySemiJoin implements Runner
                                 '要不包含於 (NOT IN)'
                             ]
                         ],
-                        'select' => [
+                        'target' => [
                             'title' => '篩選資料源的欄位',
                             'type' => 'string'
                         ]
@@ -136,17 +136,15 @@ class SqlFilterBySemiJoin implements Runner
 //        [
 //            'column' => 'xxx',
 //            'in' => true,
-//            'select' => 'yyy',
+//            'target' => 'yyy',
 //        ]
 
         $query = "INSERT INTO $outputTable SELECT * FROM $inputTable";
-        if (isset($step->param['semi'])) {
-            $column = $step->param['semi']['column'];
-            $select = $step->param['semi']['select'];
-            $operation = $step->param['semi']['operation'] == 'in' ? 'in' : 'not in';
+        $column = $step->param['column'];
+        $target = $step->param['target'];
+        $operation = $step->param['operation'] == 'in' ? 'in' : 'not in';
 
-            $query = $query . " WHERE $column $operation (SELECT $select FROM $semiTable)";
-        }
+        $query = $query . " WHERE $column $operation (SELECT $target FROM $semiTable)";
 
         DB::statement($query);
     }

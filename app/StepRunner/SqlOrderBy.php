@@ -78,7 +78,7 @@ class SqlOrderBy implements Runner
                                 'type' => 'object',
                                 'required' => [
                                     'column',
-                                    'asc'
+                                    'direct'
                                 ],
                                 'properties' => [
                                     'column' => [
