@@ -20,9 +20,11 @@ class SqlFilterBySemiJoin implements Runner
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
+        $inputNames = [];
         foreach ($bluePrintStorages as $key => $storage) {
             if ($storage['type'] == static::supportedInputStorageType()) {
                 $inputKeys[] = $key;
+                $inputNames[] = $storage['name'] . ' (' . $key . ')';
             }
         }
 
@@ -56,12 +58,16 @@ class SqlFilterBySemiJoin implements Runner
                     ],
                     'properties' => [
                         'input' => [
+                            'title' => '原始資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ],
                         'semi' => [
+                            'title' => '篩選資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ]
                     ]
                 ],
@@ -75,12 +81,23 @@ class SqlFilterBySemiJoin implements Runner
                     ],
                     'properties' => [
                         'column' => [
+                            'title' => '原始資料源的欄位',
                             'type' => 'string',
                         ],
-                        'in' => [
-                            'type' => 'boolean'
+                        'operation' => [
+                            'title' => '篩選條件',
+                            'type' => 'string',
+                            'enum' => [
+                                'in',
+                                'not in'
+                            ],
+                            'enumNames' => [
+                                '要包含於 (IN)',
+                                '要不包含於 (NOT IN)'
+                            ]
                         ],
                         'select' => [
+                            'title' => '篩選資料源的欄位',
                             'type' => 'string'
                         ]
                     ]
@@ -126,7 +143,7 @@ class SqlFilterBySemiJoin implements Runner
         if (isset($step->param['semi'])) {
             $column = $step->param['semi']['column'];
             $select = $step->param['semi']['select'];
-            $operation = $step->param['semi']['in'] ? 'IN' : 'NOT IN';
+            $operation = $step->param['semi']['operation'] == 'in' ? 'in' : 'not in';
 
             $query = $query . " WHERE $column $operation (SELECT $select FROM $semiTable)";
         }

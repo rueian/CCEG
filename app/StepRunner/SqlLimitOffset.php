@@ -14,15 +14,17 @@ class SqlLimitOffset implements Runner
 
     static function getName()
     {
-        return 'SQL Limit Offset';
+        return 'SQL 取前 N 個 (Limit Offset)';
     }
 
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
+        $inputNames = [];
         foreach ($bluePrintStorages as $key => $storage) {
             if ($storage['type'] == static::supportedInputStorageType()) {
                 $inputKeys[] = $key;
+                $inputNames[] = $storage['name'] . ' (' . $key . ')';
             }
         }
 
@@ -55,8 +57,10 @@ class SqlLimitOffset implements Runner
                     ],
                     'properties' => [
                         'input' => [
+                            'title' => '輸入資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ]
                     ]
                 ],
@@ -69,9 +73,11 @@ class SqlLimitOffset implements Runner
                     ],
                     'properties' => [
                         'limit' => [
+                            'title' => '取 N 個 (LIMIT)',
                             'type' => 'integer',
                         ],
                         'offset' => [
+                            'title' => '從第 N 個開始取 (OFFSET)',
                             'type' => 'integer',
                         ]
                     ]

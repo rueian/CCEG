@@ -14,15 +14,17 @@ class SqlGroupBy implements Runner
 
     static function getName()
     {
-        return 'SQL Group By 聚合';
+        return 'SQL 聚合運算 (Group By)';
     }
 
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
+        $inputNames = [];
         foreach ($bluePrintStorages as $key => $storage) {
             if ($storage['type'] == static::supportedInputStorageType()) {
                 $inputKeys[] = $key;
+                $inputNames[] = $storage['name'] . ' (' . $key . ')';
             }
         }
 
@@ -55,8 +57,10 @@ class SqlGroupBy implements Runner
                     ],
                     'properties' => [
                         'input' => [
+                            'title' => '輸入資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ]
                     ]
                 ],
@@ -69,12 +73,14 @@ class SqlGroupBy implements Runner
                     ],
                     'properties' => [
                         'group' => [
+                            'title' => 'GROUP BY 欄位',
                             'type' => 'array',
                             'items' => [
                                 'type' => 'string'
                             ]
                         ],
                         'select' => [
+                            'title' => 'SELECT 欄位',
                             'type' => 'array',
                             'items' => [
                                 'type' => 'object',
@@ -85,18 +91,27 @@ class SqlGroupBy implements Runner
                                 ],
                                 'properties' => [
                                     'expr' => [
+                                        'title' => '來源欄位名稱或 SQL 表達式',
                                         'type' => 'string'
                                     ],
                                     'as' => [
+                                        'title' => '輸出欄位名稱',
                                         'type' => 'string'
                                     ],
                                     'type' => [
+                                        'title' => '欄位型別',
                                         'type' => 'string',
                                         'enum' => [
                                             'integer',
                                             'float',
                                             'double',
                                             'varchar',
+                                        ],
+                                        'enumNames' => [
+                                            '整數 (integer)',
+                                            '浮點數 (float)',
+                                            '雙精度 (double)',
+                                            '字串 (varchar)',
                                         ]
                                     ]
                                 ]

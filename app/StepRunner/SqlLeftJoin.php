@@ -14,15 +14,17 @@ class SqlLeftJoin implements Runner
 
     static function getName()
     {
-        return 'SQL Join 連接另一張表';
+        return 'SQL 連接另一張表 (Left Join)';
     }
 
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
+        $inputNames = [];
         foreach ($bluePrintStorages as $key => $storage) {
             if ($storage['type'] == static::supportedInputStorageType()) {
                 $inputKeys[] = $key;
+                $inputNames[] = $storage['name'] . ' (' . $key . ')';
             }
         }
 
@@ -56,27 +58,34 @@ class SqlLeftJoin implements Runner
                     ],
                     'properties' => [
                         'left' => [
+                            'title' => '左方資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ],
                         'right' => [
+                            'title' => '右方資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ]
                     ]
                 ],
                 'param' => [
                     'type' => 'object',
                     'title' => '步驟參數',
+                    "description" => "選擇需要使用的左右方關聯欄位",
                     'required' => [
                         'left',
                         'right',
                     ],
                     'properties' => [
                         'left' => [
+                            'title' => '左方資料源的欄位',
                             'type' => 'string',
                         ],
                         'right' => [
+                            'title' => '右方資料源的欄位',
                             'type' => 'string'
                         ],
                     ]

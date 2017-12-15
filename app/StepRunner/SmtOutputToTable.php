@@ -26,9 +26,11 @@ class SmtOutputToTable implements Runner
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
+        $inputNames = [];
         foreach ($bluePrintStorages as $key => $storage) {
             if ($storage['type'] == static::supportedInputStorageType()) {
                 $inputKeys[] = $key;
+                $inputNames[] = $storage['name'] . ' (' . $key . ')';
             }
         }
 
@@ -60,8 +62,10 @@ class SmtOutputToTable implements Runner
                     ],
                     'properties' => [
                         'input' => [
+                            'title' => '輸入資料源',
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ]
                     ]
                 ],

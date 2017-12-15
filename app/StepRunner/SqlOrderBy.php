@@ -14,15 +14,17 @@ class SqlOrderBy implements Runner
 
     static function getName()
     {
-        return 'SQL 排序';
+        return 'SQL 排序 (Order By)';
     }
 
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
+        $inputNames = [];
         foreach ($bluePrintStorages as $key => $storage) {
             if ($storage['type'] == static::supportedInputStorageType()) {
                 $inputKeys[] = $key;
+                $inputNames[] = $storage['name'] . ' (' . $key . ')';
             }
         }
 
@@ -56,7 +58,9 @@ class SqlOrderBy implements Runner
                     'properties' => [
                         'input' => [
                             'type' => 'string',
-                            'enum' => $inputKeys
+                            'title' => '輸入資料源',
+                            'enum' => $inputKeys,
+                            'enumNames' => $inputNames
                         ]
                     ]
                 ],
@@ -68,6 +72,7 @@ class SqlOrderBy implements Runner
                     ],
                     'properties' => [
                         'order' => [
+                            'title' => '選擇排序欄位',
                             'type' => 'array',
                             'items' => [
                                 'type' => 'object',
@@ -77,10 +82,20 @@ class SqlOrderBy implements Runner
                                 ],
                                 'properties' => [
                                     'column' => [
+                                        'title' => '欄位',
                                         'type' => 'string',
                                     ],
-                                    'asc' => [
-                                        'type' => 'boolean'
+                                    'direct' => [
+                                        'title' => '升冪或降冪',
+                                        'type' => 'string',
+                                        'enum' => [
+                                            'asc',
+                                            'desc'
+                                        ],
+                                        'enumNames' => [
+                                            '升冪 (ASC)',
+                                            '降冪 (DESC)'
+                                        ]
                                     ]
                                 ]
                             ]
@@ -131,7 +146,7 @@ class SqlOrderBy implements Runner
             $orderBy = collect();
             foreach($step->param['order'] as $s) {
                 $column = $s['column'];
-                $direct = $s['asc'] ? 'ASC' : 'DESC';
+                $direct = $s['direct'] == 'asc' ? 'asc' : 'desc';
                 $orderBy->push("$column $direct");
             }
             $orderBy = $orderBy->implode(',');
