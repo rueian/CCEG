@@ -73,7 +73,7 @@ class SqlSelectMap implements Runner
                     ],
                     'properties' => [
                         'select' => [
-                            'title' => 'SELECT 欄位',
+                            'title' => '額外 SELECT 欄位',
                             'type' => 'array',
                             'items' => [
                                 'type' => 'object',
@@ -118,12 +118,21 @@ class SqlSelectMap implements Runner
 
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
-        $targetSchema = collect($bluePrintStepPayload['param']['select'])->map(function($select) {
-           return [
-               'name' => $select['as'],
-               'type' => $select['type']
-           ];
-        });
+        $inputStorage = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']];
+
+        $targetSchema = [];
+        foreach($bluePrintStepPayload['param']['select'] as $selectedColumn) {
+            $targetSchema[] = [
+                'name' => $selectedColumn['as'],
+                'type' => $selectedColumn['type'],
+            ];
+        }
+        foreach($inputStorage['schema'] as $inputColumn) {
+            $targetSchema[] = [
+                'name' => $inputColumn['name'],
+                'type' => $inputColumn['type'],
+            ];
+        }
         return [
             'type' => 'table',
             'schema' => $targetSchema
@@ -156,9 +165,14 @@ class SqlSelectMap implements Runner
         $outputColumns = collect();
         $selectColumns = collect();
 
-        foreach($step->param['select'] as $column) {
+        foreach ($step->param['select'] as $column) {
             $outputColumns->push($column['as']);
             $selectColumns->push($column['expr']);
+        }
+
+        foreach ($input->storage->payload['schema'] as $columnName) {
+            $outputColumns->push($columnName);
+            $selectColumns->push($columnName);
         }
 
         $outputColumns = $outputColumns->implode(',');

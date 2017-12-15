@@ -69,7 +69,6 @@ class SqlGroupBy implements Runner
                     'title' => '步驟參數',
                     'required' => [
                         'group',
-                        'select',
                     ],
                     'properties' => [
                         'group' => [
@@ -80,7 +79,7 @@ class SqlGroupBy implements Runner
                             ]
                         ],
                         'select' => [
-                            'title' => 'SELECT 欄位',
+                            'title' => '額外 SELECT 欄位',
                             'type' => 'array',
                             'items' => [
                                 'type' => 'object',
@@ -125,12 +124,26 @@ class SqlGroupBy implements Runner
 
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
-        $targetSchema = collect($bluePrintStepPayload['param']['select'])->map(function($select) {
-           return [
-               'name' => $select['as'],
-               'type' => $select['type']
-           ];
-        });
+        $inputStorage = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']];
+
+        $targetSchema = [];
+        foreach($bluePrintStepPayload['param']['select'] as $selectedColumn) {
+            $targetSchema[] = [
+                'name' => $selectedColumn['as'],
+                'type' => $selectedColumn['type'],
+            ];
+        }
+        foreach($bluePrintStepPayload['param']['group'] as $groupedColumn) {
+            foreach($inputStorage['schema'] as $inputColumn) {
+                if ($inputColumn['name'] == $groupedColumn) {
+                    $targetSchema[] = [
+                        'name' => $inputColumn['name'],
+                        'type' => $inputColumn['type'],
+                    ];
+                }
+            }
+        }
+
         return [
             'type' => 'table',
             'schema' => $targetSchema
@@ -170,6 +183,11 @@ class SqlGroupBy implements Runner
         foreach($step->param['select'] as $column) {
             $outputColumns->push($column['as']);
             $selectColumns->push($column['expr']);
+        }
+
+        foreach ($step->param['group'] as $columnName) {
+            $outputColumns->push($columnName);
+            $selectColumns->push($columnName);
         }
 
         $outputColumns = $outputColumns->implode(',');
