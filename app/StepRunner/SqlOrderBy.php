@@ -32,7 +32,6 @@ class SqlOrderBy implements Runner
             'type' => 'object',
             'required' => [
                 'name',
-                'key',
                 'inputs',
                 'param'
             ],
@@ -40,10 +39,6 @@ class SqlOrderBy implements Runner
                 'name' => [
                     'type' => 'string',
                     'title' => '步驟名稱'
-                ],
-                'key' => [
-                    'type' => 'string',
-                    'title' => '步驟代號'
                 ],
                 'note' => [
                     'type' => 'string',

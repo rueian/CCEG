@@ -18,17 +18,12 @@ class TableStorageBuilder implements Builder
             'type' => 'object',
             'required' => [
                 'name',
-                'key',
                 'schema'
             ],
             'properties' => [
                 'name' => [
                     'type' => 'string',
                     'title' => '資料源名稱'
-                ],
-                'key' => [
-                    'type' => 'string',
-                    'title' => '資料源代號'
                 ],
                 'schema' => [
                     'type' => 'array',

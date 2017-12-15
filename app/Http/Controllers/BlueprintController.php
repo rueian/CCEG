@@ -61,7 +61,7 @@ class BlueprintController extends Controller
             $payload['storages'] = [];
         }
 
-        $storageKey = $request->input('key');
+        $storageKey = str_random(8);
 
         if (isset($payload['storages'][$storageKey])) {
             return response('資料源代號 "' . $storageKey . '" 已經用過了', 422);
@@ -84,7 +84,7 @@ class BlueprintController extends Controller
             $payload['steps'] = [];
         }
 
-        $stepKey = $request->input('key');
+        $stepKey = str_random(8);
         $stepOutputKey = $stepKey . '_result';
 
         if (isset($payload['steps'][$stepKey])) {

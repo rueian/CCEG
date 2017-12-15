@@ -23,17 +23,12 @@ class SmtInputStorageBuilder implements Builder
             'type' => 'object',
             'required' => [
                 'name',
-                'key',
                 'content'
             ],
             'properties' => [
                 'name' => [
                     'type' => 'string',
                     'title' => '資料源名稱'
-                ],
-                'key' => [
-                    'type' => 'string',
-                    'title' => '資料源代號'
                 ],
                 'content' => [
                     'type' => 'string',

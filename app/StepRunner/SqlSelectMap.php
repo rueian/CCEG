@@ -32,7 +32,6 @@ class SqlSelectMap implements Runner
             'type' => 'object',
             'required' => [
                 'name',
-                'key',
                 'inputs',
                 'param'
             ],
@@ -41,11 +40,6 @@ class SqlSelectMap implements Runner
                     'type' => 'string',
                     'title' => '步驟名稱'
                 ],
-                'key' => [
-                    'type' => 'string',
-                    'title' => '步驟代號'
-                ],
-
                 'note' => [
                     'type' => 'string',
                     'title' => '步驟備註'
