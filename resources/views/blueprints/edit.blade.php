@@ -17,9 +17,9 @@
 
 <div class="row">
     <div class="col-md-2">
-        <div class="row" data-spy="affix" data-offset-top="60" data-offset-bottom="200">
+        <div class="row" data-spy="affix" data-offset-top="0" data-offset-bottom="200">
             <div class="col-md-12">
-                <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
+                <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-lg btn-light" style="min-height: 10rem; display: table;">
                     <div class="panel text-center panel-default" style="max-width: 180px;">
                         <div class="panel-body text-center">
                             <span class="panel-text text-secondary" style="font-size: 2.5rem;">
@@ -31,7 +31,7 @@
                 </a>
             </div>
             <div class="col-md-12">
-                <a href="#" {{  $blueprint->payload['storages'] ? '' : 'disabled'  }} data-toggle="modal" data-target="#stepModal" class="btn btn-lg btn-light btn-block border-secondary mb-3" style="min-height: 10rem; display: table;">
+                <a href="#" data-toggle="modal" data-target="#stepModal" class="btn btn-lg btn-light {{  $blueprint->payload['storages'] ? '' : 'disabled'  }}" style="min-height: 10rem; display: table;">
                     <div class="panel text-center panel-default" style="max-width: 180px;">
                         <div class="panel-body text-center">
                             <span class="panel-text text-secondary" style="font-size: 2.5rem;">
