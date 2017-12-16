@@ -11,7 +11,7 @@ window.axios = require('axios');
 
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.JsonSchemaForm = require("react-jsonschema-form").default;
+window.PreviewForm = require("./components/PreviewForm").default;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

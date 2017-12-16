@@ -2,37 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Form from "react-jsonschema-form";
 import {refreshPage, handleAxiosError} from "../axios-handler";
-
-const ColumnSelector = (props) => {
-    let options = props.options;
-    let formData = props.formContext;
-
-    let schema = [];
-    if (options && options.inputKey) {
-        if (formData.inputs && formData.inputs[options.inputKey]) {
-            let storage = window.Props.blueprint.payload.storages[formData.inputs[options.inputKey]];
-            schema = storage.schema;
-        }
-    }
-
-    return (
-        <select className="form-control"
-                value={props.value}
-                required={props.required}
-                onChange={(event) => props.onChange(event.target.value)}
-                disabled={props.readonly || props.disabled}
-        >
-            <option key={'empty'} value={''} />
-            { schema.map(column => (
-                <option key={Math.random().toString(36).substring(2, 10)} value={column.name}>{column.name}</option>
-            )) }
-        </select>
-    );
-};
-
-window.FormWidgets = {
-    columnSelector: ColumnSelector
-};
+import FormWidgets from "./FormWidgets";
 
 export default class StepForm extends Component {
     constructor(props) {
@@ -73,7 +43,9 @@ export default class StepForm extends Component {
         let formSchema = this.props.stepFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={window.FormWidgets} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)} />
+            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={FormWidgets} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)}>
+                <button className="btn btn-info" type="submit">送出</button>
+            </Form>
         }
 
         return (

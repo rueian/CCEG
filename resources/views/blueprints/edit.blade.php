@@ -570,14 +570,11 @@
                     let target = cellView.model.attributes.payload;
 
                     let titlePrefix = '';
-                    let schema = {};
                     if (window.Props.stepFormSchema[target.type]) {
                         titlePrefix = '步驟 ';
-                        schema = window.Props.stepFormSchema[target.type];
                     }
                     if (window.Props.storageFormSchema[target.type]) {
                         titlePrefix = '資料源 ';
-                        schema = window.Props.storageFormSchema[target.type];
                     }
 
                     let $previewModel = $('#previewModal');
@@ -585,21 +582,14 @@
                     $previewModel.find('#previewModalLabel').text(titlePrefix + target.name);
                     $previewModel.find('#previewModalForm').empty();
 
-                    let formSchema = JSON.parse(JSON.stringify(schema.schema));
-                    let formUISchema = JSON.parse(JSON.stringify(schema.uiSchema));
-                    formUISchema['ui:readonly'] = true;
-
                     window.ReactDOM.render(
                         window.React.createElement(
-                            window.JsonSchemaForm,
+                            window.PreviewForm,
                             {
-                                formData: target,
-                                formContext: target,
-                                schema: formSchema,
-                                uiSchema: formUISchema,
-                                widgets: window.FormWidgets
+                                target: target,
+                                stepFormSchema: window.Props.stepFormSchema,
+                                storageFormSchema: window.Props.storageFormSchema
                             },
-                            window.React.createElement('div') // disable submit btn in JsonSchemaForm
                         ),
                         document.getElementById('previewModalForm'),
                     );

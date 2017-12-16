@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Form from "react-jsonschema-form";
 import {refreshPage, handleAxiosError} from "../axios-handler";
+import FormWidgets from "./FormWidgets";
 
 export default class StorageForm extends Component {
     constructor(props) {
@@ -33,7 +34,9 @@ export default class StorageForm extends Component {
         let formSchema = this.props.storageFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form {...formSchema[this.state.type]} onSubmit={this.handleOnSubmit.bind(this)} />
+            form = <Form {...formSchema[this.state.type]} widgets={FormWidgets} onSubmit={this.handleOnSubmit.bind(this)}>
+                <button className="btn btn-info" type="submit">送出</button>
+            </Form>
         }
 
         return (
