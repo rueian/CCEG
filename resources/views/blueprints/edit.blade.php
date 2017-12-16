@@ -185,8 +185,8 @@
 <script>
     var Shape = joint.dia.Element.define('demo.Shape', {
         size: {
-            width: 200,
-            height: 100
+            width: 150,
+            height: 80
         },
         attrs: {
             rect: {
@@ -216,8 +216,8 @@
 
     var GeneratedShape = joint.dia.Element.define('demo.GeneratedShape', {
         size: {
-            width: 200,
-            height: 100
+            width: 150,
+            height: 80
         },
         attrs: {
             rect: {
