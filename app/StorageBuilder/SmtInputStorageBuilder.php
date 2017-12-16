@@ -17,6 +17,15 @@ class SmtInputStorageBuilder implements Builder
         return 'SMT 輸入資料';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'content' => [
+                'ui:widget' => 'textarea'
+            ]
+        ];
+    }
+
     static function getFormSchema()
     {
         return [

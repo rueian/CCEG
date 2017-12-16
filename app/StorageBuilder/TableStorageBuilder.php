@@ -12,6 +12,13 @@ class TableStorageBuilder implements Builder
         return 'SQL 表格';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'type' => []
+        ];
+    }
+
     static function getFormSchema()
     {
         return [

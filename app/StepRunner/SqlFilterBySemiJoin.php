@@ -17,6 +17,26 @@ class SqlFilterBySemiJoin implements Runner
         return 'SQL 用另一張格表篩選';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'column' => [
+                    'ui:widget' => 'columnSelector',
+                    'ui:options' => [
+                        'inputKey' => 'input'
+                    ]
+                ],
+                'target' => [
+                    'ui:widget' => 'columnSelector',
+                    'ui:options' => [
+                        'inputKey' => 'semi'
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

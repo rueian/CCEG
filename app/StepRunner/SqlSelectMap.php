@@ -17,6 +17,22 @@ class SqlSelectMap implements Runner
         return 'SQL 映射運算 (Select)';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'group' => [
+                    'items' => [
+                        'ui:widget' => 'columnSelector',
+                        'ui:options' => [
+                            'inputKey' => 'input'
+                        ]
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

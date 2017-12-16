@@ -17,6 +17,24 @@ class SqlOrderBy implements Runner
         return 'SQL 排序 (Order By)';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'group' => [
+                    'items' => [
+                        'column' => [
+                            'ui:widget' => 'columnSelector',
+                            'ui:options' => [
+                                'inputKey' => 'input'
+                            ]
+                        ]
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

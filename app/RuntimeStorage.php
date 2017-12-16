@@ -60,6 +60,7 @@ class RuntimeStorage extends Model
             $builder = static::$builderMap[$type];
             $formSchemaMap[$type] = [
                 'schema' => $builder::getFormSchema(),
+                'uiSchema' => $builder::getFormUISchema(),
                 'name' => $builder::getName()
             ];
         }

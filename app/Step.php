@@ -129,7 +129,8 @@ class Step extends Model
                 if ($storage['type'] == $runner::supportedInputStorageType()) {
                     $formSchemaMap[$type] = [
                         'name' => $runner::getName(),
-                        'schema' => $runner::getFormSchema($blueprintStroages)
+                        'schema' => $runner::getFormSchema($blueprintStroages),
+                        'uiSchema' => $runner::getFormUISchema(),
                     ];
                     break;
                 }

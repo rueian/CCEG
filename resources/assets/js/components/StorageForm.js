@@ -33,7 +33,7 @@ export default class StorageForm extends Component {
         let formSchema = this.props.storageFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form schema={formSchema[this.state.type].schema} onSubmit={this.handleOnSubmit.bind(this)} />
+            form = <Form {...formSchema[this.state.type]} onSubmit={this.handleOnSubmit.bind(this)} />
         }
 
         return (

@@ -14,6 +14,13 @@ class Smt implements Runner
         return 'SMT';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => []
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

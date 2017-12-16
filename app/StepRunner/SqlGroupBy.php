@@ -17,6 +17,22 @@ class SqlGroupBy implements Runner
         return 'SQL 聚合運算 (Group By)';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'group' => [
+                    'items' => [
+                        'ui:widget' => 'columnSelector',
+                        'ui:options' => [
+                            'inputKey' => 'input'
+                        ]
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

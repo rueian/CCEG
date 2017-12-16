@@ -17,6 +17,20 @@ class SqlLimitOffset implements Runner
         return 'SQL 取前 N 個 (Limit Offset)';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'limit' => [
+                    'ui:widget' => 'updown'
+                ],
+                'offset' => [
+                    'ui:widget' => 'updown'
+                ],
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];
@@ -67,14 +81,14 @@ class SqlLimitOffset implements Runner
                         'offset',
                     ],
                     'properties' => [
+                        'offset' => [
+                            'title' => '從第 N 個開始 (OFFSET)',
+                            'type' => 'integer',
+                        ],
                         'limit' => [
                             'title' => '取 N 個 (LIMIT)',
                             'type' => 'integer',
                         ],
-                        'offset' => [
-                            'title' => '從第 N 個開始取 (OFFSET)',
-                            'type' => 'integer',
-                        ]
                     ]
                 ],
             ]

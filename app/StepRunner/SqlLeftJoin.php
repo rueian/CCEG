@@ -17,6 +17,26 @@ class SqlLeftJoin implements Runner
         return 'SQL 連接另一張表 (Left Join)';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'left' => [
+                    'ui:widget' => 'columnSelector',
+                    'ui:options' => [
+                        'inputKey' => 'left'
+                    ]
+                ],
+                'right' => [
+                    'ui:widget' => 'columnSelector',
+                    'ui:options' => [
+                        'inputKey' => 'right'
+                    ]
+                ],
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

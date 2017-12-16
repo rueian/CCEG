@@ -18,8 +18,13 @@ class SmtOutputToTable implements Runner
 
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
+        return [];
+    }
+
+    static function getFormUISchema()
+    {
         return [
-            'type' => 'smt_result',
+            'param' => []
         ];
     }
 

@@ -17,6 +17,17 @@ class SqlFilterByCondition implements Runner
         return 'SQL 用條件篩選';
     }
 
+    static function getFormUISchema()
+    {
+        return [
+            'param' => [
+                'where' => [
+                    'ui:widget' => 'textarea'
+                ]
+            ]
+        ];
+    }
+
     static function getFormSchema($bluePrintStorages)
     {
         $inputKeys = [];

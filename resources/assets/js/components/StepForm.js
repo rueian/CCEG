@@ -32,53 +32,6 @@ const widgets = {
     columnSelector: ColumnSelector
 };
 
-const uiSchema = {
-    param: {
-        target: {
-            "ui:widget": "columnSelector",
-            "ui:options": {
-                inputKey: "semi"
-            }
-        },
-        column: {
-            "ui:widget": "columnSelector",
-            "ui:options": {
-                inputKey: "input"
-            }
-        },
-        left: {
-            "ui:widget": "columnSelector",
-            "ui:options": {
-                inputKey: "left"
-            }
-        },
-        right: {
-            "ui:widget": "columnSelector",
-            "ui:options": {
-                inputKey: "right"
-            }
-        },
-        order: {
-            items: {
-                column: {
-                    "ui:widget": "columnSelector",
-                    "ui:options": {
-                        inputKey: "input"
-                    }
-                }
-            }
-        },
-        group: {
-            items: {
-                "ui:widget": "columnSelector",
-                "ui:options": {
-                    inputKey: "input"
-                }
-            }
-        },
-    }
-};
-
 export default class StepForm extends Component {
     constructor(props) {
         super(props);
@@ -118,7 +71,7 @@ export default class StepForm extends Component {
         let formSchema = this.props.stepFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form schema={formSchema[this.state.type].schema} formContext={this.state.formData} formData={this.state.formData} uiSchema={uiSchema} widgets={widgets} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)} />
+            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={widgets} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)} />
         }
 
         return (

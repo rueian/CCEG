@@ -17,6 +17,11 @@ class SmtOutputStorageBuilder implements Builder
         return 'SMT 輸出資料';
     }
 
+    static function getFormUISchema()
+    {
+        return [];
+    }
+
     static function getFormSchema()
     {
         return [];

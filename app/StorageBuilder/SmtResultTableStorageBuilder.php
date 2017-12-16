@@ -16,6 +16,11 @@ class SmtResultTableStorageBuilder implements Builder
         return 'SMT 輸出表格';
     }
 
+    static function getFormUISchema()
+    {
+        return [];
+    }
+
     static function getFormSchema()
     {
         return [];

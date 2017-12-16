@@ -9,4 +9,5 @@ interface Runner
     static function supportedInputStorageType();
     static function getName();
     static function getFormSchema($bluePrintStorages);
+    static function getFormUISchema();
 }
