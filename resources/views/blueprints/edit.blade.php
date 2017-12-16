@@ -417,10 +417,21 @@
                     );
 
                     Object.keys(step.inputs).forEach(function(input) {
+                        let labelMap = {
+                            'input': '輸入',
+                            'semi': '篩選',
+                            'left': '左方',
+                            'right': '右方'
+                        };
+                        let label = input;
+                        if (labelMap[input]) {
+                            label = labelMap[input];
+                        }
+
                         links.push(
                             new Link()
                                 .connect('storage_' + step.inputs[input], 'step_' + key)
-                                .setLabelText(input)
+                                .setLabelText(label)
                         );
                     });
 
