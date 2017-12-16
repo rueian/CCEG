@@ -21,7 +21,7 @@ class SqlOrderBy implements Runner
     {
         return [
             'param' => [
-                'group' => [
+                'order' => [
                     'items' => [
                         'column' => [
                             'ui:widget' => 'columnSelector',
