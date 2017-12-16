@@ -17,9 +17,11 @@ const ColumnSelector = (props) => {
 
     return (
         <select className="form-control"
-               value={props.value}
-               required={props.required}
-               onChange={(event) => props.onChange(event.target.value)}>
+                value={props.value}
+                required={props.required}
+                onChange={(event) => props.onChange(event.target.value)}
+                disabled={props.readonly || props.disabled}
+        >
             <option key={'empty'} value={''} />
             { schema.map(column => (
                 <option key={Math.random().toString(36).substring(2, 10)} value={column.name}>{column.name}</option>
@@ -28,7 +30,7 @@ const ColumnSelector = (props) => {
     );
 };
 
-const widgets = {
+window.FormWidgets = {
     columnSelector: ColumnSelector
 };
 
@@ -71,7 +73,7 @@ export default class StepForm extends Component {
         let formSchema = this.props.stepFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={widgets} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)} />
+            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={window.FormWidgets} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)} />
         }
 
         return (

@@ -116,6 +116,21 @@
   </div>
 </div>
 
+<!-- Preview Modal -->
+<div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="stepModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="previewModalLabel"></h4>
+            </div>
+            <div class="modal-body">
+                <div id="previewModalForm"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     #paper {
         position: absolute;
@@ -402,9 +417,9 @@
                     var storage = blueprint.payload.storages[key];
 
                     if (storage.generated) {
-                        elements.push(new GeneratedShape({ id: 'storage_' + key }).setText(storage.name));
+                        elements.push(new GeneratedShape({ id: 'storage_' + key, payload: storage }).setText(storage.name));
                     } else {
-                        elements.push(new Shape({ id: 'storage_' + key }).setText('資料源 ' + storage.name));
+                        elements.push(new Shape({ id: 'storage_' + key, payload: storage }).setText('資料源 ' + storage.name));
                     }
                 });
             }
@@ -413,7 +428,7 @@
                 Object.keys(blueprint.payload.steps).forEach(function(key) {
                     var step = blueprint.payload.steps[key];
                     elements.push(
-                        new StepShape({ id: 'step_' + key }).setText('步驟 ' + step.name)
+                        new StepShape({ id: 'step_' + key, payload: step }).setText('步驟 ' + step.name)
                     );
 
                     Object.keys(step.inputs).forEach(function(input) {
@@ -548,7 +563,50 @@
             }
         }).on({
             'link:pointerdown': LinkControls.create,
-            'blank:pointerdown element:pointerdown': LinkControls.remove
+            'blank:pointerdown element:pointerdown': LinkControls.remove,
+            'cell:pointerclick': function(cellView, evt, x, y) {
+
+                if (cellView.model.attributes.payload) {
+                    let target = cellView.model.attributes.payload;
+
+                    let titlePrefix = '';
+                    let schema = {};
+                    if (window.Props.stepFormSchema[target.type]) {
+                        titlePrefix = '步驟 ';
+                        schema = window.Props.stepFormSchema[target.type];
+                    }
+                    if (window.Props.storageFormSchema[target.type]) {
+                        titlePrefix = '資料源 ';
+                        schema = window.Props.storageFormSchema[target.type];
+                    }
+
+                    let $previewModel = $('#previewModal');
+
+                    $previewModel.find('#previewModalLabel').text(titlePrefix + target.name);
+                    $previewModel.find('#previewModalForm').empty();
+
+                    let formSchema = JSON.parse(JSON.stringify(schema.schema));
+                    let formUISchema = JSON.parse(JSON.stringify(schema.uiSchema));
+                    formUISchema['ui:readonly'] = true;
+
+                    window.ReactDOM.render(
+                        window.React.createElement(
+                            window.JsonSchemaForm,
+                            {
+                                formData: target,
+                                formContext: target,
+                                schema: formSchema,
+                                uiSchema: formUISchema,
+                                widgets: window.FormWidgets
+                            },
+                            window.React.createElement('div') // disable submit btn in JsonSchemaForm
+                        ),
+                        document.getElementById('previewModalForm'),
+                    );
+
+                    $previewModel.modal('show');
+                }
+            }
         }, LinkControls),
     }).on({
         'layout': LinkControls.refresh

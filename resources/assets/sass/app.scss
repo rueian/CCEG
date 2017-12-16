@@ -6,3 +6,7 @@
 @import "./lib/bootstrap-editable-1.5.1.css";
 @import "./lib/joint-2.0.1-layout.css";
 @import "./lib/joint-2.0.1-default-theme.css";
+
+.joint-element {
+  cursor: pointer;
+}
