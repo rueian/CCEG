@@ -107,4 +107,63 @@ class BlueprintController extends Controller
 
         return response()->json($blueprint);
     }
+
+    public function removeStorage($id, $key)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+        $payload = $blueprint->payload;
+
+        if (!isset($payload['storages'][$key])) {
+            return response('該資料源不存在', 404);
+        }
+
+        if (isset($payload['storages'][$key]['generated'])) {
+            return response('該資料源為上層步驟的輸出結果，若想刪除請直接刪除上層步驟', 422);
+        }
+
+        if (isset($payload['steps'])) {
+            foreach ($payload['steps'] as $step) {
+                foreach ($step['inputs'] as $inputKey => $inputStorageKey) {
+                    if ($inputStorageKey == $key) {
+                        return response('該資料源為下層步驟的輸入資料源，若想刪除請先刪除所有相關的下層步驟', 422);
+                    }
+                }
+            }
+        }
+
+        unset($payload['storages'][$key]);
+
+        $blueprint->payload = $payload;
+        $blueprint->save();
+
+        return response()->json($blueprint);
+    }
+
+    public function removeStep($id, $key)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+        $payload = $blueprint->payload;
+
+        if (!isset($payload['steps'][$key])) {
+            return response('該步驟不存在', 404);
+        }
+
+        $outputSotrageKey = $payload['steps'][$key]['output'];
+
+        foreach ($payload['steps'] as $step) {
+            foreach ($step['inputs'] as $inputKey => $inputStorageKey) {
+                if ($inputStorageKey == $outputSotrageKey) {
+                    return response('該步驟的輸出結果為下層步驟的輸入，若想刪除請先刪除所有相關的下層步驟', 422);
+                }
+            }
+        }
+
+        unset($payload['steps'][$key]);
+        unset($payload['storages'][$outputSotrageKey]);
+
+        $blueprint->payload = $payload;
+        $blueprint->save();
+
+        return response()->json($blueprint);
+    }
 }

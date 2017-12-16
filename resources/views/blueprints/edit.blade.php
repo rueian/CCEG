@@ -417,9 +417,9 @@
                     var storage = blueprint.payload.storages[key];
 
                     if (storage.generated) {
-                        elements.push(new GeneratedShape({ id: 'storage_' + key, payload: storage }).setText(storage.name));
+                        elements.push(new GeneratedShape({ id: key, payload: storage }).setText(storage.name));
                     } else {
-                        elements.push(new Shape({ id: 'storage_' + key, payload: storage }).setText('資料源 ' + storage.name));
+                        elements.push(new Shape({ id: key, payload: storage }).setText('資料源 ' + storage.name));
                     }
                 });
             }
@@ -428,7 +428,7 @@
                 Object.keys(blueprint.payload.steps).forEach(function(key) {
                     var step = blueprint.payload.steps[key];
                     elements.push(
-                        new StepShape({ id: 'step_' + key, payload: step }).setText('步驟 ' + step.name)
+                        new StepShape({ id: key, payload: step }).setText('步驟 ' + step.name)
                     );
 
                     Object.keys(step.inputs).forEach(function(input) {
@@ -445,14 +445,14 @@
 
                         links.push(
                             new Link()
-                                .connect('storage_' + step.inputs[input], 'step_' + key)
+                                .connect(step.inputs[input], key)
                                 .setLabelText(label)
                         );
                     });
 
                     links.push(
                         new Link()
-                            .connect('step_' + key, 'storage_' + step.output)
+                            .connect(key, step.output)
                             .setLabelText('輸出')
                     );
                 });
@@ -587,6 +587,8 @@
                             window.PreviewForm,
                             {
                                 target: target,
+                                targetKey: cellView.model.id,
+                                blueprint: window.Props.blueprint,
                                 stepFormSchema: window.Props.stepFormSchema,
                                 storageFormSchema: window.Props.storageFormSchema
                             },

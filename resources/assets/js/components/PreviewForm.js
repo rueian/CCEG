@@ -6,12 +6,16 @@ import FormWidgets from "./FormWidgets";
 export default class PreviewForm extends Component {
     handleOnDelete(e) {
         let id = this.props.blueprint.id;
+        let target = this.props.target;
 
-        e.formData.type = this.state.type;
+        let url = '';
+        if (this.props.stepFormSchema[target.type]) {
+            url = `/blueprints/${id}/step/${this.props.targetKey}`;
+        } else {
+            url = `/blueprints/${id}/storage/${this.props.targetKey}`;
+        }
 
-        axios.post(`/blueprints/${id}/step`, e.formData)
-            .then(refreshPage)
-            .catch(handleAxiosError);
+        axios.delete(url).then(refreshPage).catch(handleAxiosError);
     };
 
     render() {
@@ -37,7 +41,7 @@ export default class PreviewForm extends Component {
                 uiSchema={formUISchema}
                 widgets={FormWidgets}
             >
-                <div />
+                <button className="btn btn-danger" onClick={this.handleOnDelete.bind(this)}>刪除</button>
             </Form>
         );
     }

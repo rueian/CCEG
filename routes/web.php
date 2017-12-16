@@ -17,4 +17,6 @@ Route::post('/blueprints', 'BlueprintController@store');
 Route::put('/blueprints/editable', 'BlueprintController@editable');
 Route::get('/blueprints/{id}/edit', 'BlueprintController@edit');
 Route::post('/blueprints/{id}/storage', 'BlueprintController@addStorage');
+Route::delete('/blueprints/{id}/storage/{key}', 'BlueprintController@removeStorage');
 Route::post('/blueprints/{id}/step', 'BlueprintController@addStep');
+Route::delete('/blueprints/{id}/step/{key}', 'BlueprintController@removeStep');
