@@ -166,4 +166,40 @@ class BlueprintController extends Controller
 
         return response()->json($blueprint);
     }
+
+    public function createRuntime($id)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+        $payload = $blueprint->payload;
+
+        if (!isset($payload['steps'])) {
+            return response('該藍圖沒有任何步驟，請至少新增一個步驟', 422);
+        }
+
+        $r = $blueprint->buildRuntime();
+
+        return response()->json([
+            'redirect' => url('/blueprints/' . $blueprint->id . '/runtimes'),
+            'runtime' => $r
+        ]);
+    }
+
+    public function listRuntime($id, Request $request)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+
+        $runtimes = $blueprint->runtimes()->orderBy('id', 'desc')->get();
+
+        $runtime = null;
+        if ($runtimes->count() > 0) {
+            $runtime = $runtimes[0];
+            if ($request->has('runtime_id')) {
+                $runtime = $runtimes->first(function ($r) use (&$request) {
+                    return $r->id == $request->input('runtime_id');
+                });
+            }
+        }
+
+        return view('blueprints.runtimes', compact('blueprint', 'runtimes', 'runtime'));
+    }
 }

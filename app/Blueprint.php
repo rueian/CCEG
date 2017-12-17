@@ -43,6 +43,7 @@ class Blueprint extends Model
         try {
             $r->blueprint_id = $this->id;
             $r->state = 'init';
+            $r->payload = $this->payload;
             $r->save();
 
             $r->createRuntimeDatabase();
@@ -62,6 +63,14 @@ class Blueprint extends Model
                 }
 
                 $output = $storageMap[$s['output']];
+
+                if (!isset($s['note'])) {
+                    $s['note'] = '';
+                }
+
+                if (!isset($s['param'])) {
+                    $s['param'] = [];
+                }
 
                 Step::createStep($r, $key, $s['type'], $s['name'], $s['note'], $s['param'], $inputs, $output);
             }

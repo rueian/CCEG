@@ -20,3 +20,5 @@ Route::post('/blueprints/{id}/storage', 'BlueprintController@addStorage');
 Route::delete('/blueprints/{id}/storage/{key}', 'BlueprintController@removeStorage');
 Route::post('/blueprints/{id}/step', 'BlueprintController@addStep');
 Route::delete('/blueprints/{id}/step/{key}', 'BlueprintController@removeStep');
+Route::post('/blueprints/{id}/runtimes', 'BlueprintController@createRuntime');
+Route::get('/blueprints/{id}/runtimes', 'BlueprintController@listRuntime');

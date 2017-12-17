@@ -25,6 +25,7 @@ class InitTables extends Migration
             $table->increments('id');
             $table->unsignedInteger('blueprint_id')->index();
             $table->string('state');
+            $table->json('payload')->nullable();
             $table->json('error')->nullable();
             $table->timestamps();
 
