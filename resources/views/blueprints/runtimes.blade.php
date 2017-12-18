@@ -22,11 +22,16 @@
                     返回藍圖
                 </a>
                 @foreach($runtimes as $r)
-                    <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" class="list-group-item {{ $runtime && $r->id == $runtime->id ? 'active' : '' }}">
-                        編號:{{ $r->id }}
-                        <br>
-                        {{ $r->created_at }}
-                    </a>
+                    <li class="list-group-item {{ $runtime && $r->id == $runtime->id ? 'active' : '' }}">
+                        <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" data-confirm="確定要刪除嗎？將會清空該次執行的所有資料" data-remote="true" data-method="delete" class="badge">
+                            <span class="fa fa-times"></span>
+                        </a>
+                        <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" style="{{ $runtime && $r->id == $runtime->id ? 'color: white;' : '' }}">
+                            編號:{{ $r->id }} / {{ $r->created_at }}
+                        </a>
+
+                    </li>
+
                 @endforeach
             </ul>
         </div>

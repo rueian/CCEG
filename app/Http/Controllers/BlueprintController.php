@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Blueprint;
+use App\Runtime;
 use App\Step;
 
 class BlueprintController extends Controller
@@ -201,5 +202,19 @@ class BlueprintController extends Controller
         }
 
         return view('blueprints.runtimes', compact('blueprint', 'runtimes', 'runtime'));
+    }
+
+    public function deleteRuntime($id, Request $request)
+    {
+        $r = Runtime::where('blueprint_id', $id)->where('id', $request->input('runtime_id'))->firstOrFail();
+
+        $r->dropRuntimeDatabase();
+
+        $r->delete();
+
+        return response()->json([
+            'redirect' => url('/blueprints/' . $r->blueprint_id . '/runtimes'),
+            'runtime' => $r
+        ]);
     }
 }

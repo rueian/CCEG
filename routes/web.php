@@ -22,3 +22,4 @@ Route::post('/blueprints/{id}/step', 'BlueprintController@addStep');
 Route::delete('/blueprints/{id}/step/{key}', 'BlueprintController@removeStep');
 Route::post('/blueprints/{id}/runtimes', 'BlueprintController@createRuntime');
 Route::get('/blueprints/{id}/runtimes', 'BlueprintController@listRuntime');
+Route::delete('/blueprints/{id}/runtimes', 'BlueprintController@deleteRuntime');
