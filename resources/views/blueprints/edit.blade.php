@@ -48,7 +48,7 @@
                         <div class="panel-body text-center">
                             <span class="panel-text text-secondary" style="font-size: 2.5rem;">
                                 <i class="fas fa-rocket"></i>
-                                執行
+                                執行藍圖
                             </span>
                         </div>
                     </div>

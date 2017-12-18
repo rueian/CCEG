@@ -72,6 +72,21 @@
         </div>
     </div>
 
+    <!-- Preview Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="stepModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="previewModalLabel"></h4>
+                </div>
+                <div class="modal-body">
+                    <div id="previewModalForm"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         #paper {
             position: absolute;
@@ -116,6 +131,9 @@
     <script>
         window.Props = {
             runtime: @json($runtime),
+            blueprint: @json($runtime),
+            storageFormSchema: @json(App\RuntimeStorage::getAllFormSchema()),
+            stepFormSchema: @json(App\Step::getAllFormSchema($blueprint->payload)),
         };
     </script>
 @endsection
@@ -529,7 +547,8 @@
                                     targetKey: cellView.model.id,
                                     blueprint: window.Props.blueprint,
                                     stepFormSchema: window.Props.stepFormSchema,
-                                    storageFormSchema: window.Props.storageFormSchema
+                                    storageFormSchema: window.Props.storageFormSchema,
+                                    noDelete: true,
                                 },
                             ),
                             document.getElementById('previewModalForm'),

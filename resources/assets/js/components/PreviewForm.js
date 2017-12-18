@@ -33,6 +33,8 @@ export default class PreviewForm extends Component {
         let formUISchema = JSON.parse(JSON.stringify(schema.uiSchema));
         formUISchema['ui:readonly'] = true;
 
+        let deleteBtn = <button className="btn btn-danger" onClick={this.handleOnDelete.bind(this)}>刪除</button>;
+
         return (
             <Form
                 formData={target}
@@ -41,7 +43,7 @@ export default class PreviewForm extends Component {
                 uiSchema={formUISchema}
                 widgets={FormWidgets}
             >
-                <button className="btn btn-danger" onClick={this.handleOnDelete.bind(this)}>刪除</button>
+                { this.props.noDelete ? <div/> : deleteBtn }
             </Form>
         );
     }
