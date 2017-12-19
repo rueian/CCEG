@@ -177,8 +177,8 @@ class SqlLeftJoin implements Runner
 //            'right' => 'yyy'
 //        ]
 
-        $leftColumn = $step->param['join']['left'];
-        $rightColumn = $step->param['join']['right'];
+        $leftColumn = $step->param['left'];
+        $rightColumn = $step->param['right'];
 
         $query = "INSERT INTO $outputTable ($outputColumns) SELECT $selectColumns FROM $leftTable LEFT JOIN $rightTable ON $leftTable.$leftColumn = $rightTable.$rightColumn";
         

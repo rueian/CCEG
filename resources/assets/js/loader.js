@@ -39,7 +39,24 @@ $(document).on('ajax:success', function (event, data) {
     }, 500);
 });
 $(document).on('ajax:error', function (event, data) {
-    alert(data);
+    if (data.responseJSON) {
+        let response = data.responseJSON;
+        if (response.error) {
+            alert(response.error);
+        } else if (response.message) {
+            alert(response.message);
+        } else if (response.msg) {
+            alert(response.msg);
+        } else if (response.result) {
+            alert(response.result);
+        }
+
+        if (response.refresh) {
+            window.location.reload();
+        }
+    } else {
+        alert(data.responseText);
+    }
 });
 
 

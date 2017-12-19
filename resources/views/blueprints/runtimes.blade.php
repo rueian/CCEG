@@ -16,6 +16,29 @@
 @section('container')
     <div class="row">
         <div class="col-md-2">
+            @if ($runtime)
+                <a href="{{ url('/runtimes/'.$runtime->id.'/one-step') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light style="min-height: 10rem; ">
+                    <div class="panel text-center panel-default" style="max-width: 180px;">
+                        <div class="panel-body text-center">
+                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
+                                <i class="fas fa-play"></i>
+                                執行一步
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ url('/runtimes/'.$runtime->id.'/run-all') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light style="min-height: 10rem;">
+                    <div class="panel text-center panel-default" style="max-width: 180px;">
+                        <div class="panel-body text-center">
+                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
+                                <i class="fas fa-forward"></i>
+                                執行到底
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            @endif
+
             <ul class="list-group">
                 <a href="{{ url('/blueprints/' . $blueprint->id . '/edit') }}" class="list-group-item">
                     <span class="fa fa-arrow-left"></span>

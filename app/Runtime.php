@@ -153,7 +153,7 @@ class Runtime extends Model
 
                     $this->save();
 
-                    throw $e;
+                    throw new \Exception('步驟 ' . $s->name . ' 失敗了： ' .$e->getMessage());
                 }
 
                 return $s;
