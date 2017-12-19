@@ -139,8 +139,8 @@
             blueprint: @json($runtime),
             storageFormSchema: @json(App\RuntimeStorage::getAllFormSchema()),
             stepFormSchema: @json(App\Step::getAllFormSchema($blueprint->payload)),
-            steps: @json($runtime->steps->keyBy('key')),
-            storages: @json($runtime->storages->keyBy('key')),
+            steps: @json($runtime ? $runtime->steps->keyBy('key') : []),
+            storages: @json($runtime ? $runtime->storages->keyBy('key') : []),
         };
     </script>
 @endsection
@@ -267,7 +267,7 @@
 
                 var options = this.options;
                 if (window.Props.runtime) {
-                    options.cells = this.buildGraphFromBlueprint(window.Props.runtime);
+                    options.cells = this.buildGraphFromBlueprint(window.Props.runtime, window.Props.steps, window.Props.storages);
                 }
 
                 this.listenTo(options.paper.model, 'change', function(cell, opt) {
@@ -312,7 +312,7 @@
                 };
             },
 
-            buildGraphFromBlueprint: function(blueprint) {
+            buildGraphFromBlueprint: function(blueprint, steps, storages) {
 
                 var elements = [];
                 var links = [];
@@ -321,10 +321,17 @@
                     Object.keys(blueprint.payload.storages).forEach(function(key) {
                         var storage = blueprint.payload.storages[key];
 
-                        if (storage.generated) {
-                            elements.push(getStorageShape('white', key, storage).setText(storage.name));
-                        } else {
-                            elements.push(getStorageShape('white', key, storage).setText('資料源 ' + storage.name));
+                        let name = storage.generated ? storage.name : '資料源 ' + storage.name;
+                        let color = storage.generated ? '#B0E0E6' : 'ivory';
+
+                        if (storages[key].state === 'init') {
+                            elements.push(getStorageShape('white', key, storage).setText(name));
+                        }
+                        if (storages[key].state === 'error') {
+                            elements.push(getStorageShape('red', key, storage).setText(name));
+                        }
+                        if (storages[key].state === 'done') {
+                            elements.push(getStorageShape(color, key, storage).setText(name));
                         }
                     });
                 }
@@ -332,7 +339,18 @@
                 if (blueprint.payload && blueprint.payload.steps) {
                     Object.keys(blueprint.payload.steps).forEach(function(key) {
                         var step = blueprint.payload.steps[key];
-                        elements.push(getStepShape('white', key, step).setText('步驟 ' + step.name));
+
+                        let name = '步驟 ' + step.name;
+
+                        if (steps[key].state === 'init') {
+                            elements.push(getStepShape('white', key, step).setText(name));
+                        }
+                        if (steps[key].state === 'error') {
+                            elements.push(getStepShape('red', key, step).setText(name));
+                        }
+                        if (steps[key].state === 'done') {
+                            elements.push(getStepShape('#F0FFFF', key, step).setText(name));
+                        }
 
                         Object.keys(step.inputs).forEach(function(input) {
                             let labelMap = {
