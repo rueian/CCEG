@@ -123,9 +123,16 @@ class Runtime extends Model
             if ($s->state == 'init' || $s->state == 'error') {
                 DB::beginTransaction();
                 try {
+                    $output = $s->getOutputStorage();
+                    $output->cleanStorage();
+
                     $s->run();
                     $s->state = 'done';
                     $s->save();
+
+                    $output->state = 'done';
+                    $output->save();
+
                     DB::commit();
                 } catch (\Exception $e) {
                     Log::error('runOneStep failed: ' . $e->getMessage(), [

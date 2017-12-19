@@ -53,6 +53,19 @@ class Step extends Model
         return $this->hasMany('App\StepConnection');
     }
 
+    public function getOutputStorage()
+    {
+        $conn = $this->connections->first(function($c) {
+            return $c->type == 'output';
+        });
+
+        if (!$conn || !$conn->storage) {
+            return null;
+        }
+
+        return $conn->storage;
+    }
+
     /**
      * @throws \Exception
      */

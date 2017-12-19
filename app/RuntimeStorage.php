@@ -7,6 +7,7 @@ use App\StorageBuilder\SmtOutputStorageBuilder;
 use App\StorageBuilder\SmtResultTableStorageBuilder;
 use App\StorageBuilder\TableStorageBuilder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * App\RuntimeStorage
@@ -50,6 +51,13 @@ class RuntimeStorage extends Model
     public function connections()
     {
         return $this->hasMany('App\StepConnection');
+    }
+
+    public function cleanStorage()
+    {
+        if ($this->type == 'table') {
+            DB::statement('DELETE FROM ' . $this->payload['table']);
+        }
     }
 
     static public function getAllFormSchema()
