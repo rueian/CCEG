@@ -139,6 +139,8 @@
             blueprint: @json($runtime),
             storageFormSchema: @json(App\RuntimeStorage::getAllFormSchema()),
             stepFormSchema: @json(App\Step::getAllFormSchema($blueprint->payload)),
+            steps: @json($runtime->steps->keyBy('key')),
+            storages: @json($runtime->storages->keyBy('key')),
         };
     </script>
 @endsection
