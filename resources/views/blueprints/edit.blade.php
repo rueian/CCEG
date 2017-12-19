@@ -196,77 +196,10 @@
 @section('afterScript')
 <script>
     var Shape = joint.dia.Element.define('demo.Shape', {
-        size: {
-            width: 150,
-            height: 80
-        },
         attrs: {
             rect: {
                 refWidth: '100%',
                 refHeight: '100%',
-                fill: 'ivory',
-                stroke: 'gray',
-                strokeWidth: 2,
-                rx: 10,
-                ry: 10
-            },
-            text: {
-                refX: '50%',
-                refY: '50%',
-                yAlignment: 'middle',
-                xAlignment: 'middle',
-                fontSize: 15
-            }
-        }
-    }, {
-        markup: '<rect/><text/>',
-
-        setText: function(text) {
-            return this.attr('text/text', text || '');
-        }
-    });
-
-    var GeneratedShape = joint.dia.Element.define('demo.GeneratedShape', {
-        size: {
-            width: 150,
-            height: 80
-        },
-        attrs: {
-            rect: {
-                refWidth: '100%',
-                refHeight: '100%',
-                fill: '#B0E0E6',
-                stroke: 'gray',
-                strokeWidth: 2,
-                rx: 10,
-                ry: 10
-            },
-            text: {
-                refX: '50%',
-                refY: '50%',
-                yAlignment: 'middle',
-                xAlignment: 'middle',
-                fontSize: 15
-            }
-        }
-    }, {
-        markup: '<rect/><text/>',
-
-        setText: function(text) {
-            return this.attr('text/text', text || '');
-        }
-    });
-
-    var StepShape = joint.dia.Element.define('demo.StepShape', {
-        size: {
-            width: 200,
-            height: 100
-        },
-        attrs: {
-            rect: {
-                refWidth: '100%',
-                refHeight: '100%',
-                fill: '#F0FFFF',
                 stroke: 'gray',
                 strokeWidth: 2,
                 rx: 10,
@@ -359,6 +292,14 @@
         }
     });
 
+    function getStorageShape(color, id, payload) {
+        return new Shape({ id: id, payload: payload, size: { width: 150, height: 80 }, attrs: { rect: { fill: color } } });
+    }
+
+    function getStepShape(color, id, payload) {
+        return new Shape({ id: id, payload: payload, size: { width: 200, height: 100 }, attrs: { rect: { fill: color } } });
+    }
+
     var LayoutControls = joint.mvc.View.extend({
 
         events: {
@@ -429,9 +370,9 @@
                     var storage = blueprint.payload.storages[key];
 
                     if (storage.generated) {
-                        elements.push(new GeneratedShape({ id: key, payload: storage }).setText(storage.name));
+                        elements.push(getStorageShape('#B0E0E6', key, storage).setText(storage.name));
                     } else {
-                        elements.push(new Shape({ id: key, payload: storage }).setText('資料源 ' + storage.name));
+                        elements.push(getStorageShape('ivory', key, storage).setText('資料源 ' + storage.name));
                     }
                 });
             }
@@ -439,9 +380,7 @@
             if (blueprint.payload && blueprint.payload.steps) {
                 Object.keys(blueprint.payload.steps).forEach(function(key) {
                     var step = blueprint.payload.steps[key];
-                    elements.push(
-                        new StepShape({ id: key, payload: step }).setText('步驟 ' + step.name)
-                    );
+                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟 ' + step.name));
 
                     Object.keys(step.inputs).forEach(function(input) {
                         let labelMap = {
