@@ -120,7 +120,7 @@ class Runtime extends Model
         $steps = $this->getStepSequence();
 
         foreach($steps as $s) {
-            if ($s->state == 'ready' || $s->state == 'error') {
+            if ($s->state == 'init' || $s->state == 'error') {
                 DB::beginTransaction();
                 try {
                     $s->run();

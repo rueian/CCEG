@@ -593,7 +593,7 @@ class RuntimeTest extends TestCase
         $s->runtime_id = $r->id;
         $s->key = rand() . "key";
         $s->type = 'sql';
-        $s->state = 'ready';
+        $s->state = 'init';
         $s->save();
 
         return $s;
@@ -605,7 +605,7 @@ class RuntimeTest extends TestCase
         $g->runtime_id = $r->id;
         $g->key = str_random(40);
         $g->type = 'table';
-        $g->state = 'ready';
+        $g->state = 'init';
         $g->save();
 
         return $g;

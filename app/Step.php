@@ -97,7 +97,7 @@ class Step extends Model
         $step->note = $note;
         $step->type = $type;
         $step->param = $param;
-        $step->state = 'ready';
+        $step->state = 'init';
         $step->save();
 
         foreach($inputs as $type => $input) {
