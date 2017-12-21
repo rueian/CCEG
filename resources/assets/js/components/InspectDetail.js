@@ -80,14 +80,17 @@ export default class InspectDetail extends Component {
     render() {
 
         let target = this.props.target;
+        let targetKey = this.props.targetKey;
 
         let body = null;
         let stateAlert = null;
         if (this.props.stepFormSchema[target.type]) {
             body = <PreviewForm {...this.props}/>;
-            if (target.state === 'error') {
-                stateAlert = <div className="alert alert-danger">執行錯誤：{target.error.message}</div>
-            } else if (target.state === 'done') {
+
+            let step = window.Props.steps[targetKey];
+            if (step.state === 'error') {
+                stateAlert = <div className="alert alert-danger">執行錯誤：{step.error.message}</div>
+            } else if (step.state === 'done') {
                 stateAlert = <div className="alert alert-success">執行正常結束</div>
             } else {
                 stateAlert = <div className="alert alert-warning">尚未執行</div>
@@ -150,9 +153,10 @@ export default class InspectDetail extends Component {
                     </form>
                 </div>
             );
-            if (target.state === 'error') {
-                stateAlert = <div className="alert alert-danger">上傳錯誤：{target.error.message}</div>
-            } else if (target.state === 'done') {
+            let storage = window.Props.storages[targetKey];
+            if (storage.state === 'error') {
+                stateAlert = <div className="alert alert-danger">上傳錯誤：{storage.error.message}</div>
+            } else if (storage.state === 'done') {
                 stateAlert = <div className="alert alert-success">資料已上傳</div>
             } else {
                 stateAlert = <div className="alert alert-warning">資料尚未上傳</div>
