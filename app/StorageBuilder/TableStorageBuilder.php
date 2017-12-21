@@ -56,13 +56,11 @@ class TableStorageBuilder implements Builder
                                 'enum' => [
                                     'integer',
                                     'float',
-                                    'double',
                                     'varchar',
                                 ],
                                 'enumNames' => [
                                     '整數 (integer)',
                                     '浮點數 (float)',
-                                    '雙精度 (double)',
                                     '字串 (varchar)',
                                 ]
                             ],
