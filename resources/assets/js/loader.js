@@ -11,7 +11,7 @@ window.axios = require('axios');
 
 window.React = require('react');
 window.ReactDOM = require('react-dom');
-window.PreviewForm = require("./components/PreviewForm").default;
+window.InspectDetail = require("./components/InspectDetail").default;
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 

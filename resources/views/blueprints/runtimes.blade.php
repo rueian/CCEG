@@ -102,7 +102,7 @@
 
     <!-- Preview Modal -->
     <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="stepModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -528,7 +528,7 @@
 
                         window.ReactDOM.render(
                             window.React.createElement(
-                                window.PreviewForm,
+                                window.InspectDetail,
                                 {
                                     target: target,
                                     targetKey: cellView.model.id,
