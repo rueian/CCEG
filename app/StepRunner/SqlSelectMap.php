@@ -29,6 +29,11 @@ class SqlSelectMap implements Runner
                         ]
                     ]
                 ],
+                'select' => [
+                    'items' => [
+                        'ui:field' => 'columnCreator'
+                    ]
+                ]
             ]
         ];
     }

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Form from "react-jsonschema-form";
 import {refreshPage, handleAxiosError} from "../axios-handler";
 import FormWidgets from "./FormWidgets";
+import FormFields from "./FormFields";
 
 export default class PreviewForm extends Component {
     handleOnDelete(e) {
@@ -42,6 +43,7 @@ export default class PreviewForm extends Component {
                 schema={formSchema}
                 uiSchema={formUISchema}
                 widgets={FormWidgets}
+                fields={FormFields}
             >
                 { this.props.noDelete ? <div/> : deleteBtn }
             </Form>

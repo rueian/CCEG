@@ -15,7 +15,11 @@ class TableStorageBuilder implements Builder
     static function getFormUISchema()
     {
         return [
-            'type' => []
+            'schema' => [
+                'items' => [
+                    'ui:field' => 'columnCreator'
+                ]
+            ]
         ];
     }
 

@@ -29,7 +29,12 @@ class SqlGroupBy implements Runner
                         ]
                     ]
                 ],
-            ]
+                'select' => [
+                    'items' => [
+                        'ui:field' => 'columnCreator'
+                    ]
+                ]
+            ],
         ];
     }
 
