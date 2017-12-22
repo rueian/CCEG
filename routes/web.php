@@ -26,3 +26,5 @@ Route::delete('/blueprints/{id}/runtimes', 'BlueprintController@deleteRuntime');
 
 Route::post('/runtimes/{id}/one-step', 'RuntimeController@runOneStep');
 Route::post('/runtimes/{id}/run-all', 'RuntimeController@runToDone');
+
+Route::post('/storages/{id}/import', 'RuntimeStorageController@import');

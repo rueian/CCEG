@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import XLSX from 'xlsx';
 import PreviewForm from './PreviewForm';
 import HotTable from 'react-handsontable';
+import {handleAxiosError, refreshPage} from "../axios-handler";
 
 export default class InspectDetail extends Component {
     constructor(props) {
@@ -77,6 +78,48 @@ export default class InspectDetail extends Component {
         });
     }
 
+    handleSubmit(e) {
+        e.preventDefault();
+
+        let headerRow = this.state.data[0];
+        let targetFields = this.props.target.schema.map((s) => s.name);
+
+        let fieldMap = {};
+
+        for(let field of targetFields) {
+            let i = headerRow.indexOf(field);
+            if (i !== -1) {
+                fieldMap[field] = i;
+            }
+        }
+
+        let selectedField = Object.keys(fieldMap);
+        if (selectedField.length === 0) {
+            alert('預覽表格中的第一列不包含任何資料源定義的欄位名稱 (' + targetFields.join(', ') + ')');
+            return;
+        }
+
+        let submitData = [];
+
+        for (let row of this.state.data) {
+            let submitRow = [];
+            for (let field of selectedField) {
+                submitRow.push(row[fieldMap[field]]);
+            }
+            submitData.push(submitRow);
+        }
+
+        console.log(submitData);
+
+        let storage = window.Props.storages[this.props.targetKey];
+
+        let url = `/storages/${storage.id}/import`;
+
+        axios.post(url, {
+            data: submitData
+        }).then(refreshPage).catch(handleAxiosError);
+    }
+
     render() {
 
         let target = this.props.target;
@@ -101,7 +144,7 @@ export default class InspectDetail extends Component {
                     <PreviewForm {...this.props}/>
                     <hr/>
                     <h3>資料上傳</h3>
-                    <form>
+                    <form onSubmit={this.handleSubmit.bind(this)}>
                         <div className="form-group">
                             <input type="file" ref="fileInput" onChange={this.handleFileSelected.bind(this)} />
                             {

@@ -11,8 +11,14 @@ export function handleAxiosError(error) {
         // console.log(error.response.headers);
         if (error.response.data.message) {
             alert('發送失敗: ' + error.response.data.message);
+        } else if (error.response.data.error) {
+            alert('發送失敗: ' + error.response.data.error);
         } else {
-            alert('發送失敗: ' + error.response.data);
+            alert('發送失敗: ' + JSON.stringify(error.response.data));
+        }
+
+        if (error.response.data.refresh) {
+            window.location.reload();
         }
 
         return;

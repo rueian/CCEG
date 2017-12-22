@@ -40,7 +40,8 @@ class RuntimeStorage extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'payload' => 'array'
+        'payload' => 'array',
+        'error' => 'array'
     ];
 
     public function runtime()
@@ -57,6 +58,30 @@ class RuntimeStorage extends Model
     {
         if ($this->type == 'table') {
             DB::statement('DELETE FROM ' . $this->payload['table']);
+        }
+    }
+
+    public function import($data)
+    {
+        if ($this->type == 'table') {
+            $header = $data[0];
+
+            $rows = [];
+            for ($i = 1; $i < count($data); $i++) {
+                $rows[] = implode($data[$i], ',');
+            }
+
+            DB::statement('INSERT INTO ' . $this->payload['table'] . '(' . implode($header, ',') . ') VALUES (' . implode($rows, '),(') . ')');
+
+            return;
+        }
+
+        if ($this->type == 'smt_input') {
+            $payload = $this->payload;
+            $payload['content'] = $data;
+            $this->payload = $payload;
+            $this->save();
+            return;
         }
     }
 
