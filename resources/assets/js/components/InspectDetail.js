@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import XLSX from 'xlsx';
 import PreviewForm from './PreviewForm';
 import HotTable from 'react-handsontable';
+import FileSaver from 'file-saver';
 import {handleAxiosError, refreshPage} from "../axios-handler";
 
 export default class InspectDetail extends Component {
@@ -12,7 +13,9 @@ export default class InspectDetail extends Component {
             selectSheet: '',
             parsing: false,
             parseErrMsg: '',
-            data: []
+            data: [],
+            downloading: true,
+            export: []
         };
     }
 
@@ -43,7 +46,6 @@ export default class InspectDetail extends Component {
                     parseErrMsg: '',
                 });
             } catch(err) {
-                console.log(err);
                 this.setState({
                     ...this.state,
                     parsing: false,
@@ -109,15 +111,54 @@ export default class InspectDetail extends Component {
             submitData.push(submitRow);
         }
 
-        console.log(submitData);
-
         let storage = window.Props.storages[this.props.targetKey];
 
-        let url = `/storages/${storage.id}/import`;
-
-        axios.post(url, {
+        axios.post(`/storages/${storage.id}/import`, {
             data: submitData
         }).then(refreshPage).catch(handleAxiosError);
+    }
+
+    componentDidMount() {
+        let storage = window.Props.storages[this.props.targetKey];
+        if (storage && storage.state === 'done') {
+            this.setState({
+                ...this.state,
+                downloading: true,
+            });
+            axios.get(`/storages/${storage.id}/export`).then((res) => {
+                this.setState({
+                    ...this.state,
+                    downloading: false,
+                    export: res.data.data,
+                })
+            }).catch(handleAxiosError);
+        }
+    }
+
+    handleDownload() {
+        try {
+            let sheet = XLSX.utils.aoa_to_sheet(this.state.export);
+
+            let workbook = {
+                SheetNames: [this.props.targetKey],
+                Sheets: {}
+            };
+            workbook.Sheets[this.props.targetKey] = sheet;
+
+            let wopts = { bookType: 'xlsx', type:'binary' };
+            let wbout = XLSX.write(workbook, wopts);
+
+            FileSaver.saveAs(new Blob([this.s2ab(wbout)], {type: 'application/octet-stream'}), this.props.targetKey + '.xlsx');
+        } catch (err) {
+            alert('下載失敗： ' + err.message);
+        }
+    }
+
+    s2ab(s) {
+        let buf = new ArrayBuffer(s.length);
+        let view = new Uint8Array(buf);
+        for (let i=0; i !== s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
     }
 
     render() {
@@ -127,6 +168,7 @@ export default class InspectDetail extends Component {
 
         let body = null;
         let stateAlert = null;
+        let table = null;
         if (this.props.stepFormSchema[target.type]) {
             body = <PreviewForm {...this.props}/>;
 
@@ -204,12 +246,44 @@ export default class InspectDetail extends Component {
             } else {
                 stateAlert = <div className="alert alert-warning">資料尚未上傳</div>
             }
+
+            if (storage.state === 'done') {
+                table = (
+                    <div>
+                        <hr/>
+                        <h3>資料瀏覽</h3>
+                        {
+                            (this.state.downloading) ? <div className="alert alert-warning">資料下載中...</div> : <div/>
+                        }
+                        {
+                            (!this.state.downloading && storage.type === 'table' && this.state.export.length > 0) ? (
+                                <div style={{ overflow: 'hidden'}}>
+                                    <HotTable root="hot-export" settings={{
+                                        data: this.state.export,
+                                        colHeaders: false,
+                                        rowHeaders: true,
+                                        height: 400,
+                                        renderAllRowsBoolean: false,
+                                        cells: function(row, col, prop) {
+                                            return {
+                                                readOnly: true
+                                            };
+                                        }
+                                    }}/>
+                                    <button className="btn btn-default" onClick={this.handleDownload.bind(this)} style={{marginTop: '15px'}}>下載 Excel</button>
+                                </div>
+                            ) : <textarea className="form-control" disabled={true} value={this.state.export} />
+                        }
+                    </div>
+                );
+            }
         }
 
         return (
             <div>
-                { stateAlert }
                 { body }
+                { stateAlert }
+                { table }
             </div>
         )
     }

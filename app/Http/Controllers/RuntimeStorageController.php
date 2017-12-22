@@ -46,4 +46,14 @@ class RuntimeStorageController extends Controller
             'result' => 'done'
         ]);
     }
+
+    public function export($id)
+    {
+        $s = RuntimeStorage::findOrFail($id);
+
+        return response()->json([
+            'type' => $s->type,
+            'data' => $s->export()
+        ]);
+    }
 }

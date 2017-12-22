@@ -85,6 +85,37 @@ class RuntimeStorage extends Model
         }
     }
 
+    public function export()
+    {
+        if ($this->type == 'table') {
+            $rows = DB::table($this->payload['table'])->select('*')->get();
+
+            $headers = [];
+            foreach ($this->payload['schema'] as $column) {
+                $headers[] = $column['name'];
+            }
+
+            $data = [];
+            $data[] = $headers;
+
+            foreach ($rows as $row) {
+                $r = [];
+                foreach ($headers as $h) {
+                    $r[] = $row->$h;
+                }
+                $data[] = $r;
+            }
+
+            return $data;
+        }
+
+        if ($this->type == 'smt_input' || $this->type == 'smt_output') {
+            return $this->payload['content'];
+        }
+
+        return [];
+    }
+
     static public function getAllFormSchema()
     {
         $formSchemaMap = [];
@@ -100,7 +131,6 @@ class RuntimeStorage extends Model
 
         return $formSchemaMap;
     }
-
 
     /**
      * @param $runtime
