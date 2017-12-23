@@ -2,10 +2,14 @@
 // Fonts
 @import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
-@import "./lib/bootstrap-3.3.7.css";
+@import "./lib/bootstrap-4.0.0-beta.2.css";
 @import "./lib/bootstrap-editable-1.5.1.css";
 @import "./lib/joint-2.0.1-layout.css";
 @import "./lib/joint-2.0.1-default-theme.css";
+
+html, body {
+  height: 100%;
+}
 
 .joint-element {
   cursor: pointer;

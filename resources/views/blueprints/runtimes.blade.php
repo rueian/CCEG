@@ -14,61 +14,44 @@
 @endsection
 
 @section('container')
-    <div class="row">
-        <div class="col-md-2">
-            @if ($runtime)
-                <a href="{{ url('/runtimes/'.$runtime->id.'/one-step') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light style="min-height: 10rem; ">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                <i class="fas fa-play"></i>
-                                執行一步
-                            </span>
-                        </div>
-                    </div>
+    <div class="row h-100">
+        <div class="col-2">
+            <div class="sticky-top" style="top: 1rem">
+                <a href="{{ url('/blueprints/' . $blueprint->id . '/edit') }}" class="btn btn-secondary btn-lg btn-block mb-3" style="font-size: 2rem;">
+                    <i class="fas fa-arrow-left"></i>
+                    返回編輯
                 </a>
-                <a href="{{ url('/runtimes/'.$runtime->id.'/run-all') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light style="min-height: 10rem;">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                <i class="fas fa-forward"></i>
-                                執行到底
-                            </span>
-                        </div>
-                    </div>
-                </a>
-                <a href="{{ url('/runtimes/'.$runtime->id.'/reset') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light style="min-height: 10rem;">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                                <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                    <i class="fas fa-undo"></i>
-                                    步驟重置
-                                </span>
-                        </div>
-                    </div>
-                </a>
-            @endif
-
+                @if ($runtime && $runtime->state != 'error')
+                    <a href="{{ url('/runtimes/'.$runtime->id.'/one-step') }}" data-remote="true" data-method="post" class="btn btn-primary btn-lg btn-block" style="font-size: 2rem;">
+                        <i class="fas fa-play"></i>
+                        執行一步
+                    </a>
+                    <a href="{{ url('/runtimes/'.$runtime->id.'/run-all') }}" data-remote="true" data-method="post" class="btn btn-primary btn-lg btn-block" style="font-size: 2rem;">
+                        <i class="fas fa-forward"></i>
+                        執行到底
+                    </a>
+                    <a href="{{ url('/runtimes/'.$runtime->id.'/reset') }}" data-remote="true" data-method="post" class="btn btn-warning btn-lg btn-block mb-3" style="font-size: 2rem;">
+                        <i class="fas fa-undo"></i>
+                        步驟重置
+                    </a>
+                @endif
+            </div>
             <ul class="list-group">
-                <a href="{{ url('/blueprints/' . $blueprint->id . '/edit') }}" class="list-group-item">
-                    <span class="fa fa-arrow-left"></span>
-                    返回藍圖
-                </a>
+
                 @foreach($runtimes as $r)
-                    <li class="list-group-item {{ $runtime && $r->id == $runtime->id ? 'active' : '' }}">
-                        <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" data-confirm="確定要刪除嗎？將會清空該次執行的所有資料" data-remote="true" data-method="delete" class="badge">
-                            <span class="fa fa-times"></span>
-                        </a>
+                    <li class="list-group-item d-flex justify-content-between align-items-center {{ $runtime && $r->id == $runtime->id ? 'active' : '' }}">
                         <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" style="{{ $runtime && $r->id == $runtime->id ? 'color: white;' : '' }}">
-                            編號:{{ $r->id }} / {{ $r->created_at }}
+                            <h5 class="mb-0">編號:{{ $r->id }}</h5>
+                            <small>{{ $r->created_at }}</small>
                         </a>
-
+                        <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" data-confirm="確定要刪除嗎？將會清空該次執行的所有資料" data-remote="true" data-method="delete" class="badge badge-danger badge-pill">
+                            <i class="fas fa-times"></i>
+                        </a>
                     </li>
-
                 @endforeach
             </ul>
         </div>
-        <div class="col-md-10">
+        <div class="col-10">
             <div class="row">
                 <div class="col-md-12" style="display:none;">
                     <div id="layout-controls" class="controls joint-theme-default">
@@ -122,8 +105,10 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="previewModalLabel"></h4>
+                    <h5 class="modal-title" id="previewModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <div id="previewModalForm"></div>

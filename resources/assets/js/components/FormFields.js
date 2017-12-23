@@ -12,6 +12,17 @@ class ColumnCreator extends React.Component {
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.formData) {
+            if (nextProps.formData.name !== this.state.name || nextProps.formData.type !== this.state.type) {
+                this.setState({
+                    name: nextProps.formData.name,
+                    type: nextProps.formData.type
+                });
+            }
+        }
+    }
+
     onChange(name) {
         return (event) => {
             this.setState({
@@ -30,7 +41,7 @@ class ColumnCreator extends React.Component {
         const onChange = this.onChange.bind(this);
 
         let size = 12 / (Object.keys(fields).length || 1);
-        let className = 'col-xs-' + size;
+        let className = 'col-' + size;
 
         return (
             <div className="row">

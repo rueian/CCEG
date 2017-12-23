@@ -1,76 +1,43 @@
 @extends('main')
 
 @section('jumbotron')
-<div class="jumbotron">
+<div class="jumbotron jumbotron-fluid">
   <div class="container">
     <h1 class="display-3">
       <a href="#" data-pk="{{ $blueprint->id }}" data-name="name" data-type="text" data-url="{{ url('/blueprints/editable') }}" data-title="流程名稱" data-editable="">{{ $blueprint->name }}</a>
     </h1>
     <p class="lead">
-      <a href="#" data-pk="{{ $blueprint->id }}" data-name="note" data-type="textarea" data-url="{{ url('/blueprints/editable') }}" data-title="說明備註" data-emptytext="說明備註" data-editable="">{{ $blueprint->note }}</a>  
+      <a href="#" data-pk="{{ $blueprint->id }}" data-name="note" data-type="text" data-url="{{ url('/blueprints/editable') }}" data-title="說明備註" data-emptytext="說明備註" data-editable="">{{ $blueprint->note }}</a>
     </p>
   </div>
 </div>
 @endsection
 
 @section('container')
-
-<div class="row">
-    <div class="col-md-2">
-        <div class="row" data-spy="affix" data-offset-top="0" data-offset-bottom="200">
-            <div class="col-md-12">
-                <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-lg btn-light" style="min-height: 10rem; display: table;">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                <i class="fas fa-plus-circle"></i>
-                                新增資料
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-12">
-                <a href="#" data-toggle="modal" data-target="#stepModal" class="btn btn-lg btn-light {{  $blueprint->payload['storages'] ? '' : 'disabled'  }}" style="min-height: 10rem; display: table;">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                <i class="fas fa-plus-circle"></i>
-                                新增步驟
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-12">
-                <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="min-height: 10rem; display: table;">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                <i class="fas fa-rocket"></i>
-                                執行藍圖
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            <div class="col-md-12">
-                <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" class="btn btn-lg btn-light {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="min-height: 10rem; display: table;">
-                    <div class="panel text-center panel-default" style="max-width: 180px;">
-                        <div class="panel-body text-center">
-                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
-                                <i class="fa fa-list-ul"></i>
-                                執行紀錄
-                            </span>
-                        </div>
-                    </div>
-                </a>
-            </div>
+<div class="row h-100">
+    <div class="col-2">
+        <div class="sticky-top" style="top: 1rem">
+            <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-primary btn-lg btn-block" style="font-size: 2rem;">
+                <i class="fas fa-plus-circle"></i>
+                新增資料
+            </a>
+            <a href="#" data-toggle="modal" data-target="#stepModal" class="btn btn-primary btn-lg btn-block {{  isset($blueprint->payload['storages']) ? '' : 'disabled'  }}" style="font-size: 2rem;">
+                <i class="fas fa-plus-circle"></i>
+                新增步驟
+            </a>
+            <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" data-remote="true" data-method="post" class="btn btn-primary btn-lg btn-block {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="font-size: 2rem;">
+                <i class="fas fa-rocket"></i>
+                執行藍圖
+            </a>
+            <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" class="btn btn-primary btn-lg btn-block {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="font-size: 2rem;">
+                <i class="fas fa-list-ul"></i>
+                執行紀錄
+            </a>
         </div>
     </div>
-    <div class="col-md-10">
+    <div class="col-10">
         <div class="row">
-            <div class="col-md-12" style="display:none;">
+            <div class="col-md-12 d-none">
                 <div id="layout-controls" class="controls joint-theme-default">
                     <label for="ranker">Ranker:</label>
                     <select id="ranker">
@@ -115,8 +82,10 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="storageModalLabel">新增資料源</h4>
+        <h5 class="modal-title" id="storageModalLabel">新增資料源</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
           <div id="storageForm"></div>
@@ -130,8 +99,10 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="storageModalLabel">新增步驟</h4>
+        <h5 class="modal-title">新增步驟</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
       <div class="modal-body">
         <div id="stepForm"></div>
@@ -145,8 +116,10 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="previewModalLabel"></h4>
+                <h5 class="modal-title" id="previewModalLabel"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div id="previewModalForm"></div>

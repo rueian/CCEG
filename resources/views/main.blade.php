@@ -17,7 +17,7 @@
 
     @yield('jumbotron')
 
-    <div class="container-fluid">
+    <div class="container-fluid h-100">
       @yield('container')
     </div>
 

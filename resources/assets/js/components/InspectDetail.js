@@ -181,14 +181,14 @@ export default class InspectDetail extends Component {
                 stateAlert = <div className="alert alert-warning">尚未執行</div>
             }
         } else if (this.props.storageFormSchema[target.type]) {
-            body = (
+            body = (window.Props.runtime.payload.storages[targetKey].generated) ? <PreviewForm {...this.props}/> : (
                 <div>
                     <PreviewForm {...this.props}/>
                     <hr/>
                     <h3>資料上傳</h3>
                     <form onSubmit={this.handleSubmit.bind(this)}>
                         <div className="form-group">
-                            <input type="file" ref="fileInput" onChange={this.handleFileSelected.bind(this)} />
+                            <input type="file" className="form-control-file" ref="fileInput" onChange={this.handleFileSelected.bind(this)} />
                             {
                                 (this.state.parsing) ? <p className="help-block">解析中...</p> : <div/>
                             }
@@ -232,7 +232,9 @@ export default class InspectDetail extends Component {
                         }
                         {
                             (this.state.data.length > 0) ? (
-                                <button className="btn btn-default" type="submit">上傳</button>
+                                <div className="form-group">
+                                    <button className="btn btn-success" type="submit">上傳</button>
+                                </div>
                             ) : <div />
                         }
                     </form>
@@ -242,9 +244,9 @@ export default class InspectDetail extends Component {
             if (storage.state === 'error') {
                 stateAlert = <div className="alert alert-danger">上傳錯誤：{storage.error.message}</div>
             } else if (storage.state === 'done') {
-                stateAlert = <div className="alert alert-success">資料已上傳</div>
+                stateAlert = <div className="alert alert-success">資料已{window.Props.runtime.payload.storages[targetKey].generated ? '產出' : '上傳'}</div>
             } else {
-                stateAlert = <div className="alert alert-warning">資料尚未上傳</div>
+                stateAlert = <div className="alert alert-warning">資料尚未{window.Props.runtime.payload.storages[targetKey].generated ? '產出' : '上傳'}</div>
             }
 
             if (storage.state === 'done') {
@@ -270,7 +272,9 @@ export default class InspectDetail extends Component {
                                             };
                                         }
                                     }}/>
-                                    <button className="btn btn-default" onClick={this.handleDownload.bind(this)} style={{marginTop: '15px'}}>下載 Excel</button>
+                                    <div className="form-group">
+                                        <button className="btn btn-info" onClick={this.handleDownload.bind(this)} style={{marginTop: '15px'}}>下載 Excel</button>
+                                    </div>
                                 </div>
                             ) : <textarea className="form-control" disabled={true} value={this.state.export} />
                         }

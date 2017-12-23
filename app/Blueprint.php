@@ -81,8 +81,6 @@ class Blueprint extends Model
                 'message' => $e->getMessage()
             ];
             $r->save();
-
-            throw $e;
         }
 
         return $r;

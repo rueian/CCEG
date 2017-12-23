@@ -3,6 +3,7 @@ import Form from "react-jsonschema-form";
 import {refreshPage, handleAxiosError} from "../axios-handler";
 import FormWidgets from "./FormWidgets";
 import FormFields from "./FormFields";
+import Bootstrap4ArrayFieldTemplate from "./BS4ArrayFieldTemplate";
 
 export default class PreviewForm extends Component {
     handleOnDelete(e) {
@@ -44,6 +45,7 @@ export default class PreviewForm extends Component {
                 uiSchema={formUISchema}
                 widgets={FormWidgets}
                 fields={FormFields}
+                ArrayFieldTemplate={Bootstrap4ArrayFieldTemplate}
             >
                 { this.props.noDelete ? <div/> : deleteBtn }
             </Form>

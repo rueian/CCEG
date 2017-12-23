@@ -99,7 +99,7 @@ class SqlSelectMap implements Runner
                                 ],
                                 'properties' => [
                                     'expr' => [
-                                        'title' => '來源欄位名稱或 SQL 表達式',
+                                        'title' => '來源欄位或 SQL 運算式',
                                         'type' => 'string'
                                     ],
                                     'as' => [

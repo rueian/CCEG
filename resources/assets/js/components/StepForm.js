@@ -4,6 +4,7 @@ import Form from "react-jsonschema-form";
 import {refreshPage, handleAxiosError} from "../axios-handler";
 import FormWidgets from "./FormWidgets";
 import FormFields from "./FormFields";
+import Bootstrap4ArrayFieldTemplate from "./BS4ArrayFieldTemplate";
 
 export default class StepForm extends Component {
     constructor(props) {
@@ -44,7 +45,7 @@ export default class StepForm extends Component {
         let formSchema = this.props.stepFormSchema;
 
         if (this.state.type !== '') {
-            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={FormWidgets} fields={FormFields} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)}>
+            form = <Form {...formSchema[this.state.type]} formContext={this.state.formData} formData={this.state.formData} widgets={FormWidgets} fields={FormFields} ArrayFieldTemplate={Bootstrap4ArrayFieldTemplate} onChange={this.handleFormDataChange.bind(this)} onSubmit={this.handleOnSubmit.bind(this)}>
                 <button className="btn btn-info" type="submit">送出</button>
             </Form>
         }
