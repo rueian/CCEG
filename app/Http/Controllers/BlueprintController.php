@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Blueprint;
 use App\Runtime;
@@ -215,6 +216,36 @@ class BlueprintController extends Controller
         return response()->json([
             'redirect' => url('/blueprints/' . $r->blueprint_id . '/runtimes'),
             'runtime' => $r
+        ]);
+    }
+
+    public function delete($id)
+    {
+        $blueprint = Blueprint::findOrFail($id);
+
+        $runtimes = $blueprint->runtimes;
+
+        DB::beginTransaction();
+        try {
+            foreach ($runtimes as $r) {
+                $r->dropRuntimeDatabase();
+                $r->delete();
+            }
+            $blueprint->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return response()->json([
+                'result' => 'error',
+                'message' => $e->getMessage()
+            ]);
+        }
+
+        return response()->json([
+            'result' => 'success',
+            'refresh' => true
         ]);
     }
 }

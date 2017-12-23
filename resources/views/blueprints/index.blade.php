@@ -30,6 +30,7 @@
     <div class="panel panel-default" style="min-height: 15rem;">
       <div class="panel-heading">
         {{ $blueprint->name }}
+        <a href="{{ url('/blueprints/'.$blueprint->id) }}" data-remote="true" data-method="delete" data-confirm="確定要刪除嗎？所有資料包含執行紀錄均會移除" class="btn btn-sm btn-danger pull-right" style="bottom: 5px; position: relative;">刪除</a>
         <a href="{{ url('/blueprints/'.$blueprint->id.'/edit') }}" class="btn btn-sm btn-primary pull-right" style="bottom: 5px; position: relative;">進入</a>
       </div>
       <div class="panel-body">
