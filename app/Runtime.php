@@ -145,14 +145,6 @@ class Runtime extends Model
                     $s->error = ['message' => $e->getMessage()];
                     $s->save();
 
-                    $this->state = 'error';
-                    $this->error = [
-                        'step_id' => $s->id,
-                        'message' => $e->getMessage()
-                    ];
-
-                    $this->save();
-
                     throw new \Exception('步驟 ' . $s->name . ' 失敗了： ' .$e->getMessage());
                 }
 
@@ -161,6 +153,40 @@ class Runtime extends Model
         }
 
         return null;
+    }
+
+    public function resetSteps()
+    {
+        DB::beginTransaction();
+        try {
+            foreach ($this->steps as $step) {
+                $step->state = 'init';
+                $step->save();
+            }
+
+            foreach ($this->storages as $storage) {
+                if (isset($this->payload['storages'][$storage->key]['generated'])) {
+                    $storage->state = 'init';
+                    $storage->save();
+                }
+            }
+
+            $this->state = 'init';
+            $this->save();
+
+            DB::commit();
+        } catch(\Exception $e) {
+            DB::rollback();
+
+            $this->state = 'error';
+            $this->error = [
+                'message' => $e->getMessage()
+            ];
+
+            $this->save();
+
+            throw $e;
+        }
     }
 
     public function createRuntimeDatabase()

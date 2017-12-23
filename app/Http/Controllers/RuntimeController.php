@@ -54,4 +54,23 @@ class RuntimeController extends Controller
             ], 500);
         }
     }
+
+    public function resetSteps($id)
+    {
+        $r = Runtime::findOrFail($id);
+
+        try {
+            $r->resetSteps();
+
+            return response()->json([
+                'result' => 'done'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'result' => 'error',
+                'error' => $e->getMessage(),
+                'refresh' => true
+            ], 500);
+        }
+    }
 }

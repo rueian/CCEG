@@ -54,6 +54,18 @@
                     </div>
                 </a>
             </div>
+            <div class="col-md-12">
+                <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" class="btn btn-lg btn-light {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="min-height: 10rem; display: table;">
+                    <div class="panel text-center panel-default" style="max-width: 180px;">
+                        <div class="panel-body text-center">
+                            <span class="panel-text text-secondary" style="font-size: 2.5rem;">
+                                <i class="fa fa-list-ul"></i>
+                                執行紀錄
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            </div>
         </div>
     </div>
     <div class="col-md-10">

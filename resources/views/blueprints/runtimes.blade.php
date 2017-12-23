@@ -37,6 +37,16 @@
                         </div>
                     </div>
                 </a>
+                <a href="{{ url('/runtimes/'.$runtime->id.'/reset') }}" data-remote="true" data-method="post" class="btn btn-lg btn-light style="min-height: 10rem;">
+                    <div class="panel text-center panel-default" style="max-width: 180px;">
+                        <div class="panel-body text-center">
+                                <span class="panel-text text-secondary" style="font-size: 2.5rem;">
+                                    <i class="fas fa-undo"></i>
+                                    步驟重置
+                                </span>
+                        </div>
+                    </div>
+                </a>
             @endif
 
             <ul class="list-group">
@@ -91,6 +101,13 @@
                     </div>
                 </div>
             </div>
+
+            @if ($runtime && $runtime->state == 'error')
+                <div class="alert alert-danger" role="alert">
+                    <string>執行環境錯誤: </string> {{ $runtime->error['message']  }}
+                </div>
+            @endif
+
 
             <div class="row">
                 <div class="col-md-12">

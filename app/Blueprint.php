@@ -38,14 +38,13 @@ class Blueprint extends Model
     public function buildRuntime()
     {
         $r = new Runtime;
+        $r->blueprint_id = $this->id;
+        $r->state = 'init';
+        $r->payload = $this->payload;
+        $r->save();
 
         DB::beginTransaction();
         try {
-            $r->blueprint_id = $this->id;
-            $r->state = 'init';
-            $r->payload = $this->payload;
-            $r->save();
-
             $r->createRuntimeDatabase();
 
             $blueprintStorages = $this->payload['storages'];
@@ -76,6 +75,13 @@ class Blueprint extends Model
             }
         } catch (\Exception $e) {
             DB::rollback();
+
+            $r->state = 'error';
+            $r->error = [
+                'message' => $e->getMessage()
+            ];
+            $r->save();
+
             throw $e;
         }
 
