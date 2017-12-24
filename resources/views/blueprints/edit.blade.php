@@ -37,6 +37,25 @@
     </div>
     <div class="col-10">
         <div class="row">
+            <div class="col">
+                @if(!isset($blueprint->payload['storages']))
+                    <div class="alert alert-warning" role="alert">
+                        <h4>
+                            <i class="fas fa-arrow-left"></i>
+                            目前沒有任何 <strong>"資料源"</strong>，請從左方選單新增一個
+                        </h4>
+                    </div>
+                @endif
+                @if(!isset($blueprint->payload['steps']))
+                    <div class="alert alert-warning" role="alert">
+                        <h4>
+                            <i class="fas fa-arrow-left"></i>
+                            新增完資料源之後，請從左方選單新增一個 <strong>"步驟"</strong>
+                        </h4>
+                    </div>
+                @endif
+            </div>
+
             <div class="col-md-12 d-none">
                 <div id="layout-controls" class="controls joint-theme-default">
                     <label for="ranker">Ranker:</label>

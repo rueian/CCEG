@@ -22,7 +22,7 @@
                     返回編輯
                 </a>
                 @if ($runtime && $runtime->state != 'error')
-                    <a href="{{ url('/runtimes/'.$runtime->id.'/one-step') }}" data-remote="true" data-method="post" class="btn btn-primary btn-lg btn-block" style="font-size: 2rem;">
+                    <a href="{{ url('/runtimes/'.$runtime->id.'/one-step') }}" data-remote="true" data-method="post" class="btn btn-primary btn-lg btn-block mt-3" style="font-size: 2rem;">
                         <i class="fas fa-play"></i>
                         執行一步
                     </a>
@@ -37,7 +37,10 @@
                 @endif
             </div>
             <ul class="list-group">
-
+                <li class="list-group-item">
+                    <i class="fas fa-list-ul"></i>
+                    執行紀錄列表
+                </li>
                 @foreach($runtimes as $r)
                     <li class="list-group-item d-flex justify-content-between align-items-center {{ $runtime && $r->id == $runtime->id ? 'active' : '' }}">
                         <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" style="{{ $runtime && $r->id == $runtime->id ? 'color: white;' : '' }}">
