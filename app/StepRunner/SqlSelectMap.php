@@ -112,12 +112,12 @@ class SqlSelectMap implements Runner
                                         'enum' => [
                                             'integer',
                                             'float',
-                                            'varchar',
+                                            'varchar(255)',
                                         ],
                                         'enumNames' => [
                                             '整數 (integer)',
                                             '浮點數 (float)',
-                                            '字串 (varchar)',
+                                            '字串 (varchar(255))',
                                         ]
                                     ]
                                 ]

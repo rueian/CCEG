@@ -68,7 +68,15 @@ class RuntimeStorage extends Model
 
             $rows = [];
             for ($i = 1; $i < count($data); $i++) {
-                $rows[] = implode($data[$i], ',');
+                $d = [];
+                for ($j = 0; $j < count($data[$i]); $j++) {
+                    if ($this->payload['schema'][$j]['type'] == 'varchar(255)') {
+                        $d[] = '"' . $data[$i][$j] . '"';
+                    } else {
+                        $d[] = strlen($data[$i][$j]) > 0 ? $data[$i][$j] : 'NULL';
+                    }
+                }
+                $rows[] = implode($d, ',');
             }
 
             DB::statement('INSERT INTO ' . $this->payload['table'] . '(' . implode($header, ',') . ') VALUES (' . implode($rows, '),(') . ')');
