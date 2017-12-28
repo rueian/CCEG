@@ -54,7 +54,7 @@ export default class StepForm extends Component {
             <div>
                 <form>
                     <div className="form-group">
-                        <label>選擇步驟累別</label>
+                        <label>選擇步驟類別</label>
                         <select className="form-control form-control-lg" onChange={this.handleTypeChange.bind(this)}>
                             <option key="empty" value="" />
                             {Object.keys(formSchema).map((k, i) => (

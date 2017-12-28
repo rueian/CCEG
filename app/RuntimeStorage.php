@@ -5,6 +5,7 @@ namespace App;
 use App\StorageBuilder\SmtInputStorageBuilder;
 use App\StorageBuilder\SmtOutputStorageBuilder;
 use App\StorageBuilder\SmtResultTableStorageBuilder;
+use App\StorageBuilder\SmtVariableTableStorageBuilder;
 use App\StorageBuilder\TableStorageBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -32,10 +33,11 @@ class RuntimeStorage extends Model
         'table' => TableStorageBuilder::class,
         'smt_input' => SmtInputStorageBuilder::class,
         'smt_output' => SmtOutputStorageBuilder::class,
-        'smt_result' => SmtResultTableStorageBuilder::class
+        'smt_result' => SmtResultTableStorageBuilder::class,
+        'smt_variable_table' => SmtVariableTableStorageBuilder::class,
     ];
 
-    public static $userCreatable = ['table', 'smt_input'];
+    public static $userCreatable = ['table', 'smt_input', 'smt_variable_table'];
 
     protected $guarded = [];
 
@@ -128,12 +130,12 @@ class RuntimeStorage extends Model
     {
         $formSchemaMap = [];
 
-        foreach (static::$userCreatable as $type) {
-            $builder = static::$builderMap[$type];
+        foreach (static::$builderMap as $type => $builder) {
             $formSchemaMap[$type] = [
                 'schema' => $builder::getFormSchema(),
                 'uiSchema' => $builder::getFormUISchema(),
-                'name' => $builder::getName()
+                'name' => $builder::getName(),
+                'userCreatable' => in_array($type, static::$userCreatable)
             ];
         }
 

@@ -48,7 +48,9 @@ export default class StorageForm extends Component {
                         <label>選擇資料源類別</label>
                         <select className="form-control form-control-lg" onChange={this.handleTypeChange.bind(this)}>
                             <option key="empty" value="" />
-                            {Object.keys(formSchema).map((k, i) => (
+                            {Object.keys(formSchema).filter((k) => {
+                                return formSchema[k].userCreatable
+                            }).map((k, i) => (
                                 <option key={k} value={k}>{formSchema[k].name}</option>
                             ))}
                         </select>

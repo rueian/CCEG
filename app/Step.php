@@ -33,7 +33,8 @@ class Step extends Model
         'sql_group_by'            => StepRunner\SqlGroupBy::class,
         'sql_select_map'          => StepRunner\SqlSelectMap::class,
         'smt'                     => StepRunner\Smt::class,
-        'smt_output_to_table'     => StepRunner\SmtOutputToTable::class
+        'smt_output_to_table'     => StepRunner\SmtOutputToTable::class,
+        'smt_variable_table_to_input' => StepRunner\SmtVariableTableToInput::class,
     ];
 
     protected $guarded = [];

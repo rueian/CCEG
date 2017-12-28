@@ -2,6 +2,8 @@
 
 namespace App\StepRunner;
 
+use Illuminate\Support\Facades\Log;
+
 class Smt implements Runner
 {
     static function supportedInputStorageType()
@@ -17,7 +19,11 @@ class Smt implements Runner
     static function getFormUISchema()
     {
         return [
-            'param' => []
+            'param' => [
+                'content' => [
+                    'ui:widget' => 'textarea'
+                ]
+            ]
         ];
     }
 
@@ -46,6 +52,16 @@ class Smt implements Runner
                 'note' => [
                     'type' => 'string',
                     'title' => '步驟備註'
+                ],
+                'param' => [
+                    'type' => 'object',
+                    'title' => '步驟參數',
+                    'properties' => [
+                        'content' => [
+                            'type' => 'string',
+                            'title' => 'SMT 內容'
+                        ],
+                    ]
                 ],
                 'inputs' => [
                     'type' => 'object',
@@ -85,6 +101,16 @@ class Smt implements Runner
         });
 
         $inputContent = $input->storage->payload['content'];
+
+        $inputContent .= "\n" . $step->param['content'];
+
+        $inputContent .= "\n (check-sat)";
+
+        foreach($input->storage->payload['varList'] as $v) {
+            $inputContent .= "\n (get-value ($v))";
+        }
+
+        Log::info($inputContent);
 
         $descriptorspec = [
             ['pipe', 'r'],  // stdin is a pipe that the child will read from

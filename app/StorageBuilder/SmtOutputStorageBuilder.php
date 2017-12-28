@@ -19,12 +19,32 @@ class SmtOutputStorageBuilder implements Builder
 
     static function getFormUISchema()
     {
-        return [];
+        return [
+            'content' => [
+                'ui:widget' => 'textarea'
+            ]
+        ];
     }
 
     static function getFormSchema()
     {
-        return [];
+        return [
+            'type' => 'object',
+            'required' => [
+                'name',
+                'content'
+            ],
+            'properties' => [
+                'name' => [
+                    'type' => 'string',
+                    'title' => '資料源名稱'
+                ],
+                'content' => [
+                    'type' => 'string',
+                    'title' => 'SMT 輸出'
+                ],
+            ]
+        ];
     }
 
     static function build($runtime, $key, $name, $payload)
