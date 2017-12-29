@@ -37,7 +37,7 @@ class RuntimeStorage extends Model
         'smt_variable_table' => SmtVariableTableStorageBuilder::class,
     ];
 
-    public static $userCreatable = ['table', 'smt_input', 'smt_variable_table'];
+    public static $userCreatable = ['table', 'smt_variable_table'];
 
     protected $guarded = [];
 

@@ -180,6 +180,29 @@ export default class InspectDetail extends Component {
             } else {
                 stateAlert = <div className="alert alert-warning">尚未執行</div>
             }
+
+            if (step.type === 'smt') {
+                table = (
+                    <div>
+                        {
+                            (step.param['input']) ? (
+                                <div className="form-group">
+                                    <label className="control-label">SMT 原始輸入</label>
+                                    <textarea className="form-control" value={step.param['input']} readOnly={true}/>
+                                </div>
+                            ) : <div/>
+                        }
+                        {
+                            (step.param['output']) ? (
+                                <div className="form-group">
+                                    <label className="control-label">SMT 原始輸出</label>
+                                    <textarea className="form-control" value={step.param['output']} readOnly={true}/>
+                                </div>
+                            ) : <div/>
+                        }
+                    </div>
+                )
+            }
         } else if (this.props.storageFormSchema[target.type]) {
             body = (window.Props.runtime.payload.storages[targetKey].generated) ? <PreviewForm {...this.props}/> : (
                 <div>
