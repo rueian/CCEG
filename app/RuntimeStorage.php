@@ -2,9 +2,6 @@
 
 namespace App;
 
-use App\StorageBuilder\SmtInputStorageBuilder;
-use App\StorageBuilder\SmtOutputStorageBuilder;
-use App\StorageBuilder\SmtResultTableStorageBuilder;
 use App\StorageBuilder\SmtVariableTableStorageBuilder;
 use App\StorageBuilder\TableStorageBuilder;
 use Illuminate\Database\Eloquent\Model;
@@ -31,9 +28,6 @@ class RuntimeStorage extends Model
 {
     public static $builderMap = [
         'table' => TableStorageBuilder::class,
-        'smt_input' => SmtInputStorageBuilder::class,
-        'smt_output' => SmtOutputStorageBuilder::class,
-        'smt_result' => SmtResultTableStorageBuilder::class,
         'smt_variable_table' => SmtVariableTableStorageBuilder::class,
     ];
 
@@ -160,20 +154,6 @@ class RuntimeStorage extends Model
         return $builder::build($runtime, $key, $name, $payload);
     }
 
-    static public function createSmtInputStorage($runtime, $key, $name, $content)
-    {
-        return SmtInputStorageBuilder::build($runtime, $key, $name, [
-            'content' => $content
-        ]);
-    }
-
-    static public function createSmtOutputStorage($runtime, $key, $name, $content)
-    {
-        return SmtOutputStorageBuilder::build($runtime, $key, $name, [
-            'content' => $content
-        ]);
-    }
-
     static public function createTableStorage($runtime, $key, $name, $schema)
     {
         return TableStorageBuilder::build($runtime, $key, $name, [
@@ -181,8 +161,8 @@ class RuntimeStorage extends Model
         ]);
     }
 
-    static public function createSmtResultTableStorage($runtime, $key, $name)
+    static public function createSmtVariableTableStorage($runtime, $key, $name)
     {
-        return SmtResultTableStorageBuilder::build($runtime, $key, $name, []);
+        return SmtVariableTableStorageBuilder::build($runtime, $key, $name, []);
     }
 }

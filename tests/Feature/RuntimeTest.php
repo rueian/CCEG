@@ -523,65 +523,47 @@ class RuntimeTest extends TestCase
         $r->save();
         $r->createRuntimeDatabase();
 
-        $smtInput = "
-            (declare-const x Int)
-            (declare-const y Int)
-            (assert (= x 5))
-            (assert (= (+ x y) 10))
-            (check-sat)
-            (get-value (x))
-            (get-value (y))
-        ";
+//        $smtInput = "
+//            (declare-const x Int)
+//            (declare-const y Int)
+//            (assert (= x 5))
+//            (assert (= (+ x y) 10))
+//            (check-sat)
+//            (get-value (x))
+//            (get-value (y))
+//        ";
 
-        $s1 = RuntimeStorage::createSmtInputStorage($r, 'key1', 'key3', $smtInput);
-        $s2 = RuntimeStorage::createSmtOutputStorage($r, 'key2', 'key3', '');
-        Step::createStep($r, 'key', 'smt', 'name', 'note', [], [
-            'input' => $s1
-        ], $s2);
-        $r->runOneStep();
-        $s2->refresh();
+        $s1 = RuntimeStorage::createSmtVariableTableStorage($r, 'key1', 'key3');
+        $s2 = RuntimeStorage::createSmtVariableTableStorage($r, 'key2', 'key4');
 
-        $this->assertEquals(
-"sat
-((x 5))
-((y 5))
-", $s2->payload['content']);
+        $inputTable = $s1->payload['table'];
+        DB::statement("INSERT INTO $inputTable VALUES (\"x\", 5)");
 
-        $r->dropRuntimeDatabase();
-
-        $b->delete();
-    }
-
-    public function testOneStepRunSmtToTable()
-    {
-        $b = new Blueprint;
-        $b->name = 'blueprint1';
-        $b->save();
-
-        $r = new Runtime;
-        $r->blueprint_id = $b->id;
-        $r->state = 'init';
-        $r->save();
-        $r->createRuntimeDatabase();
-
-        $smtOutput = "sat
-((x 5))
-((y 6))
-";
-
-        $s1 = RuntimeStorage::createSmtOutputStorage($r, 'key1', 'key3', $smtOutput);
-        $s2 = RuntimeStorage::createSmtResultTableStorage($r, 'key3', 'table3');
-        Step::createStep($r, 'key', 'smt_output_to_table', 'name', 'note', [], [
+        Step::createStep($r, 'key', 'smt', 'name', 'note', [
+            'varList' => [
+                [
+                    'name' => 'x',
+                    'type' => 'Int',
+                ],
+                [
+                    'name' => 'y',
+                    'type' => 'Int',
+                ],
+            ],
+            'content' => '(assert (= (+ x y) 10))'
+        ], [
             'input' => $s1
         ], $s2);
         $r->runOneStep();
 
-        $t3 = DB::table($s2->payload['table'])->select('variable', 'value')->orderBy('variable')->get();
+        $outputTable = $s2->payload['table'];
+        $results = DB::table($outputTable)->get();
 
-        $this->assertEquals((object)['variable' => 'x', 'value' => '5'], $t3[0]);
-        $this->assertEquals((object)['variable' => 'y', 'value' => '6'], $t3[1]);
+        $this->assertEquals((object)['variable' => 'x', 'value' => '5'], $results[0]);
+        $this->assertEquals((object)['variable' => 'y', 'value' => '5'], $results[1]);
 
         $r->dropRuntimeDatabase();
+
         $b->delete();
     }
 
