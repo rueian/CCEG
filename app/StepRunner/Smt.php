@@ -100,9 +100,11 @@ class Smt implements Runner
             return $c->type == 'output';
         });
 
+        $param = $step->param;
+
         $inputContent = $input->storage->payload['content'];
 
-        $inputContent .= "\n" . $step->param['content'];
+        $inputContent .= "\n" . $param['content'];
 
         $inputContent .= "\n (check-sat)";
 
@@ -110,7 +112,10 @@ class Smt implements Runner
             $inputContent .= "\n (get-value ($v))";
         }
 
-        Log::info($inputContent);
+        $param['input'] = $inputContent;
+
+        $step->param = $param;
+        $step->save();
 
         $descriptorspec = [
             ['pipe', 'r'],  // stdin is a pipe that the child will read from
@@ -129,6 +134,10 @@ class Smt implements Runner
             fclose($pipes[2]);
 
             $returnValue = proc_close($process);
+
+            $param['output'] = $out;
+            $step->param = $param;
+            $step->save();
 
             if ($returnValue != 0) {
                 throw new \Exception($out);
