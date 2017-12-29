@@ -16,7 +16,7 @@
 @section('container')
     <div class="row h-100">
         <div class="col-2">
-            <div class="sticky-top" style="top: 1rem">
+            <div class="sticky-top" style="top: 1rem; background: white;">
                 <a href="{{ url('/blueprints/' . $blueprint->id . '/edit') }}" class="btn btn-secondary btn-lg btn-block mb-3" style="font-size: 2rem;">
                     <i class="fas fa-arrow-left"></i>
                     返回編輯

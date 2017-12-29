@@ -16,7 +16,7 @@
 @section('container')
 <div class="row h-100">
     <div class="col-2">
-        <div class="sticky-top" style="top: 1rem">
+        <div class="sticky-top" style="top: 1rem; background: white;">
             <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-primary btn-lg btn-block" style="font-size: 2rem;">
                 <i class="fas fa-plus-circle"></i>
                 新增資料
