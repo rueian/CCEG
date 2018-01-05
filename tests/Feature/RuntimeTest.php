@@ -286,9 +286,15 @@ class RuntimeTest extends TestCase
             ],
         ]);
 
-        Step::createStep($r, 'key', 'sql_left_join', 'name', 'note', [
-            'left' => 'b',
-            'right' => 'c',
+        Step::createStep($r, 'key', 'sql_join', 'name', 'note', [
+            'conditions' => [
+                [
+                    'left' => 'b',
+                    'right' => 'c',
+                    'operator' => '='
+                ]
+            ],
+            'method' => 'LEFT JOIN'
         ], [
             'left' => $s1,
             'right' => $s2,

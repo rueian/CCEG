@@ -27,7 +27,7 @@ class Step extends Model
     public static $runnerMap = [
         'sql_filter_by_condition' => StepRunner\SqlFilterByCondition::class,
         'sql_filter_by_semi_join' => StepRunner\SqlFilterBySemiJoin::class,
-        'sql_left_join'           => StepRunner\SqlLeftJoin::class,
+        'sql_join'                => StepRunner\SqlJoin::class,
         'sql_order_by'            => StepRunner\SqlOrderBy::class,
         'sql_limit_offset'        => StepRunner\SqlLimitOffset::class,
         'sql_group_by'            => StepRunner\SqlGroupBy::class,

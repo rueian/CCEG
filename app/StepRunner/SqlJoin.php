@@ -5,7 +5,7 @@ namespace App\StepRunner;
 use Illuminate\Support\Facades\DB;
 
 // 此 Runner 的 output table 的 schema 為兩張 join table 組合，欄位前面都加上原 table_
-class SqlLeftJoin implements Runner
+class SqlJoin implements Runner
 {
     static function supportedInputStorageType()
     {
@@ -14,25 +14,29 @@ class SqlLeftJoin implements Runner
 
     static function getName()
     {
-        return 'SQL 連接另一張表 (Left Join)';
+        return 'SQL 連接另一張表 (Join)';
     }
 
     static function getFormUISchema()
     {
         return [
             'param' => [
-                'left' => [
-                    'ui:widget' => 'columnSelector',
-                    'ui:options' => [
-                        'inputKey' => 'left'
+                'conditions' => [
+                    'items' => [
+                        'left' => [
+                            'ui:widget' => 'columnSelector',
+                            'ui:options' => [
+                                'inputKey' => 'left'
+                            ]
+                        ],
+                        'right' => [
+                            'ui:widget' => 'columnSelector',
+                            'ui:options' => [
+                                'inputKey' => 'right'
+                            ]
+                        ],
                     ]
-                ],
-                'right' => [
-                    'ui:widget' => 'columnSelector',
-                    'ui:options' => [
-                        'inputKey' => 'right'
-                    ]
-                ],
+                ]
             ]
         ];
     }
@@ -89,20 +93,48 @@ class SqlLeftJoin implements Runner
                 'param' => [
                     'type' => 'object',
                     'title' => '步驟參數',
-                    "description" => "選擇需要使用的左右方關聯欄位",
                     'required' => [
-                        'left',
-                        'right',
+                        'method',
                     ],
                     'properties' => [
-                        'left' => [
-                            'title' => '左方資料源的欄位',
+                        'method' => [
+                            'title' => 'Join 方法',
                             'type' => 'string',
+                            'enum' => [
+                                'LEFT JOIN',
+                                'INNER JOIN'
+                            ],
+                            'default' => 'LEFT JOIN'
                         ],
-                        'right' => [
-                            'title' => '右方資料源的欄位',
-                            'type' => 'string'
-                        ],
+                        'conditions' => [
+                            'title' => 'Join 條件，多個用 AND 串接',
+                            'type' => 'array',
+                            'items' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'left' => [
+                                        'title' => '左方資料源的欄位',
+                                        'type' => 'string',
+                                    ],
+                                    'operator' => [
+                                        'title' => '運算子',
+                                        'type' => 'string',
+                                        'enum' => [
+                                            '=',
+                                            '>',
+                                            '>=',
+                                            '<',
+                                            '<='
+                                        ],
+                                        'default' => '='
+                                    ],
+                                    'right' => [
+                                        'title' => '右方資料源的欄位',
+                                        'type' => 'string'
+                                    ],
+                                ]
+                            ]
+                        ]
                     ]
                 ],
             ]
@@ -177,10 +209,22 @@ class SqlLeftJoin implements Runner
 //            'right' => 'yyy'
 //        ]
 
-        $leftColumn = $step->param['left'];
-        $rightColumn = $step->param['right'];
+        if (isset($step->param['conditions'])) {
+            $joinCondition = collect($step->param['conditions'])->map(function($condition) use ($leftTable, $rightTable) {
+                $leftColumn = $condition['left'];
+                $rightColumn = $condition['right'];
+                $operator = $condition['operator'];
+                return "$leftTable.$leftColumn $operator $rightTable.$rightColumn";
+            })->implode(' AND ');
 
-        $query = "INSERT INTO $outputTable ($outputColumns) SELECT $selectColumns FROM $leftTable LEFT JOIN $rightTable ON $leftTable.$leftColumn = $rightTable.$rightColumn";
+            $joinCondition = "ON ($joinCondition)";
+        } else {
+            $joinCondition = "";
+        }
+
+        $joinMethod = $step->param['method'];
+
+        $query = "INSERT INTO $outputTable ($outputColumns) SELECT $selectColumns FROM $leftTable $joinMethod $rightTable $joinCondition";
         
         DB::statement($query);
     }

@@ -88,7 +88,7 @@ class SqlSelectMap implements Runner
                     ],
                     'properties' => [
                         'select' => [
-                            'title' => '額外 SELECT 欄位',
+                            'title' => 'SELECT 欄位',
                             'type' => 'array',
                             'items' => [
                                 'type' => 'object',
@@ -131,8 +131,6 @@ class SqlSelectMap implements Runner
 
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
-        $inputStorage = $bluePrintStorages[$bluePrintStepPayload['inputs']['input']];
-
         $targetSchema = collect();
         foreach($bluePrintStepPayload['param']['select'] as $selectedColumn) {
             $targetSchema->push([
@@ -140,17 +138,7 @@ class SqlSelectMap implements Runner
                 'type' => $selectedColumn['type'],
             ]);
         }
-        foreach($inputStorage['schema'] as $inputColumn) {
-            if ($targetSchema->contains(function($column) use ($inputColumn) {
-                return $column['name'] == $inputColumn['name'];
-            })) {
-                continue;
-            }
-            $targetSchema->push([
-                'name' => $inputColumn['name'],
-                'type' => $inputColumn['type'],
-            ]);
-        }
+
         return [
             'type' => 'table',
             'schema' => $targetSchema
@@ -186,14 +174,6 @@ class SqlSelectMap implements Runner
         foreach ($step->param['select'] as $column) {
             $outputColumns->push($column['as']);
             $selectColumns->push($column['expr']);
-        }
-
-        foreach ($input->storage->payload['schema'] as $column) {
-            if ($outputColumns->contains($column['name'])) {
-                continue;
-            }
-            $outputColumns->push($column['name']);
-            $selectColumns->push($column['name']);
         }
 
         $outputColumns = $outputColumns->implode(',');

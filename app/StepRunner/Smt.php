@@ -80,12 +80,14 @@ class Smt implements Runner
                                         'title' => '變數型別',
                                         'type' => 'string',
                                         'enum' => [
+                                            'Int',
                                             'Real',
                                         ],
                                         'enumNames' => [
+                                            'Int',
                                             'Real'
                                         ],
-                                        'default' => 'Real'
+                                        'default' => 'Int'
                                     ]
                                 ]
                             ]
@@ -137,12 +139,15 @@ class Smt implements Runner
         $inputContent = '';
 
         $VarNameTypeMap = [];
-        foreach($stepParam['varList'] as $v) {
-            $VarNameTypeMap[$v['name']] = $v['type'];
+        if (isset($stepParam['varList'])) {
+            foreach($stepParam['varList'] as $v) {
+                $VarNameTypeMap[$v['name']] = $v['type'];
+            }
+            foreach($VarNameTypeMap as $name => $type) {
+                $inputContent .= "(declare-const $name $type)\n";
+            }
         }
-        foreach($VarNameTypeMap as $name => $type) {
-            $inputContent .= "(declare-const $name $type)\n";
-        }
+
 
         $variables = DB::table($varTableName)->get();
         $VarNameValueMap = [];
@@ -158,8 +163,8 @@ class Smt implements Runner
         $inputContent .= $stepParam['content'] . "\n";
         $inputContent .= "(check-sat)\n";
 
-        foreach(array_keys($VarNameTypeMap) as $v) {
-            $inputContent .= "(get-value ($v))\n";
+        foreach($VarNameTypeMap as $name => $type) {
+            $inputContent .= "(get-value ($name))\n";
         }
 
         return $inputContent;
@@ -221,10 +226,13 @@ class Smt implements Runner
 
                     $values = [];
                     for($i = 1; $i < count($lines); $i++) {
-                        preg_match('/\(\(([a-z]*) (.*)\)\)/', $lines[$i], $matches);
-                        $k = $matches[1];
-                        $v = $matches[2];
-                        $values[] = "('$k', $v)";
+                        preg_match('/\(\((.*) (.*)\)\)/', $lines[$i], $matches);
+                        if (count($matches) == 3) {
+                            $k = $matches[1];
+                            $v = $matches[2];
+
+                            $values[] = "('$k', $v)";
+                        }
                     }
                     $query .= implode(', ', $values);
                     DB::statement($query);
