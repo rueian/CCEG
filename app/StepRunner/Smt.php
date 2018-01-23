@@ -134,6 +134,139 @@ class Smt implements Runner
         ];
     }
 
+    static function getQuotedElemList($line)
+    {
+        preg_match('/\(([^<]*?)\)/', $line, $matches);
+        if (count($matches) > 1) {
+            return explode(' ', $matches[1]);
+        } else {
+            return [];
+        }
+    }
+
+    static function getBracketsList($line)
+    {
+        preg_match_all('/\[([^<]*?)\]/', $line, $matches);
+        $list = [];
+        if (count($matches) > 1) {
+            foreach ($matches[1] as $bracket) {
+                $list[] = explode(' ', $bracket);
+            }
+        }
+        return $list;
+    }
+
+    static function smtExpr($a, $op, $b)
+    {
+        if ($b == '') {
+            return $a;
+        }
+        return "($op $a $b)";
+    }
+
+    // example: macro_declare_int_var_set (a1 a2 a3)
+    static function parseMacroDeclareIntVarSet($line)
+    {
+        $content = '';
+        $varList = static::getQuotedElemList($line);
+        foreach($varList as $var) {
+            $content .= "(declare-const $var Int)\n";
+        }
+        return $content;
+    }
+
+    // example: macro_declare_real_var_set (a1 a2 a3)
+    static function parseMacroDeclareRealVarSet($line)
+    {
+        $content = '';
+        $varList = static::getQuotedElemList($line);
+        foreach($varList as $var) {
+            $content .= "(declare-const $var Real)\n";
+        }
+        return $content;
+    }
+
+    // example: macro_var_set_in_ranges (a1 a2 a3 b1 b2 b3 c1 c2 c3) [10 13] [20 25] [30 35]
+    static function parseMacroVarSetInRanges($line)
+    {
+        $content = '';
+        $varList = static::getQuotedElemList($line);
+        $rangeList = static::getBracketsList($line);
+        foreach($varList as $var) {
+            $expr = '';
+            foreach ($rangeList as $range) {
+                $left = static::smtExpr($var, '>=', $range[0]);
+                $right = static::smtExpr($var, '<=', $range[1]);
+                $temp = static::smtExpr($left, 'and', $right);
+                $expr = static::smtExpr($temp, 'or', $expr);
+            }
+            $content .= "(assert $expr)\n";
+        }
+        return $content;
+    }
+
+    // example: macro_var_set_mutually_exclusive (a1 a2 a3)
+    static function parseMacroVarSetMutuallyExclusive($line)
+    {
+        $content = '';
+        $varList = static::getQuotedElemList($line);
+        $length = count($varList);
+        for($i = 0; $i < $length; $i++) {
+            for ($j = $i + 1; $j < $length; $j++) {
+                $varA = $varList[$i];
+                $varB = $varList[$j];
+                $content .= "(assert (not (= $varA $varB)))\n";
+            }
+        }
+        return $content;
+    }
+
+    static function expandSMTMacro($original)
+    {
+        $content = '';
+        $lines = explode("\n", $original);
+        foreach($lines as $line) {
+            if (starts_with($line, 'macro_declare_int_var_set')) {
+                $content .= static::parseMacroDeclareIntVarSet($line) . "\n";
+                continue;
+            }
+
+            if (starts_with($line, 'macro_declare_real_var_set')) {
+                $content .= static::parseMacroDeclareRealVarSet($line) . "\n";
+                continue;
+            }
+
+            if (starts_with($line, 'macro_var_set_in_ranges')) {
+                $content .= static::parseMacroVarSetInRanges($line) . "\n";
+                continue;
+            }
+
+            if (starts_with($line, 'macro_var_set_mutually_exclusive')) {
+                $content .= static::parseMacroVarSetMutuallyExclusive($line) . "\n";
+                continue;
+            }
+
+            $content .= "$line\n";
+        }
+        return $content;
+    }
+
+    static function getDeclaredConstList($original)
+    {
+        $list = [];
+        $lines = explode("\n", $original);
+        foreach ($lines as $line) {
+            if (!starts_with($line, '(declare-const ')) {
+                continue;
+            }
+            preg_match('/\(declare-const (.*) (Int|Real)\)/', $line, $matches);
+            if (count($matches) > 1) {
+                $list[] = $matches[1];
+            }
+        }
+        return $list;
+    }
+
     static function generateSmtInput($varTableName, $stepParam)
     {
         $inputContent = '';
@@ -148,7 +281,6 @@ class Smt implements Runner
             }
         }
 
-
         $variables = DB::table($varTableName)->get();
         $VarNameValueMap = [];
         foreach($variables as $v) {
@@ -160,10 +292,10 @@ class Smt implements Runner
             }
         }
 
-        $inputContent .= $stepParam['content'] . "\n";
+        $inputContent .= static::expandSMTMacro($stepParam['content']);
         $inputContent .= "(check-sat)\n";
 
-        foreach($VarNameTypeMap as $name => $type) {
+        foreach(static::getDeclaredConstList($inputContent) as $name) {
             $inputContent .= "(get-value ($name))\n";
         }
 
