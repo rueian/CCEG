@@ -110,6 +110,26 @@ class BlueprintController extends Controller
         return response()->json($blueprint);
     }
 
+    public function editStep($id, $key, Request $request) {
+        // return response()->json($request->input('content'));
+        $blueprint = Blueprint::findOrFail($id);
+        $payload = $blueprint->payload;
+
+        if (!isset($payload['steps'][$key])) {
+            return response('該步驟不存在', 404);
+        }
+
+        if ($payload['steps'][$key]['type'] == 'smt') {
+            $payload['steps'][$key]['param']['content'] = $request->input('content');
+            $blueprint->payload = $payload;
+            $blueprint->save();
+        } else {
+            return response('該步驟不是 SMT 步驟', 403);
+        }
+
+        return response()->json($blueprint);
+    }
+
     public function removeStorage($id, $key)
     {
         $blueprint = Blueprint::findOrFail($id);

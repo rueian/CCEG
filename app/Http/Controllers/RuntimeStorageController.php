@@ -18,6 +18,32 @@ class RuntimeStorageController extends Controller
     {
         $s = RuntimeStorage::findOrFail($id);
 
+        return $this->doImport($s, $request);
+    }
+
+    public function export($id)
+    {
+        $s = RuntimeStorage::findOrFail($id);
+
+        return $this->doExport($s);
+    }
+
+    public function importWithRuntime($id, $key, Request $request)
+    {
+        $s = RuntimeStorage::where('runtime_id', $id)->where('key', $key)->firstOrFail();
+
+        return $this->doImport($s, $request);
+    }
+
+    public function exportWithRuntime($id, $key)
+    {
+        $s = RuntimeStorage::where('runtime_id', $id)->where('key', $key)->firstOrFail();
+
+        return $this->doExport($s);
+    }
+
+    public function doImport(RuntimeStorage $s, Request $request)
+    {
         DB::beginTransaction();
         try {
             $s->cleanStorage();
@@ -47,10 +73,8 @@ class RuntimeStorageController extends Controller
         ]);
     }
 
-    public function export($id)
+    public function doExport(RuntimeStorage $s)
     {
-        $s = RuntimeStorage::findOrFail($id);
-
         return response()->json([
             'type' => $s->type,
             'data' => $s->export()

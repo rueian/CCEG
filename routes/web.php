@@ -19,6 +19,7 @@ Route::get('/blueprints/{id}/edit', 'BlueprintController@edit');
 Route::post('/blueprints/{id}/storage', 'BlueprintController@addStorage');
 Route::delete('/blueprints/{id}/storage/{key}', 'BlueprintController@removeStorage');
 Route::post('/blueprints/{id}/step', 'BlueprintController@addStep');
+Route::put('/blueprints/{id}/step/{key}', 'BlueprintController@editStep');
 Route::delete('/blueprints/{id}/step/{key}', 'BlueprintController@removeStep');
 Route::post('/blueprints/{id}/runtimes', 'BlueprintController@createRuntime');
 Route::get('/blueprints/{id}/runtimes', 'BlueprintController@listRuntime');
@@ -31,3 +32,6 @@ Route::post('/runtimes/{id}/reset', 'RuntimeController@resetSteps');
 
 Route::post('/storages/{id}/import', 'RuntimeStorageController@import');
 Route::get('/storages/{id}/export', 'RuntimeStorageController@export');
+
+Route::post('/runtimes/{id}/storages/{key}/import', 'RuntimeStorageController@importWithRuntime');
+Route::get('/runtimes/{id}/storages/{key}/export', 'RuntimeStorageController@exportWithRuntime');
