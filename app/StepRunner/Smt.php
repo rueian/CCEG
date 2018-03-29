@@ -341,34 +341,38 @@ class Smt implements Runner
             $step->param = $param;
             $step->save();
 
-            if ($returnValue != 0) {
-                throw new \Exception($out);
-            } else {
-                // translate SMT (get-value into table row)
-                $lines = explode("\n", trim($out));
+            try {
+                if ($returnValue != 0) {
+                    throw new \Exception($out);
+                } else {
+                    // translate SMT (get-value into table row)
+                    $lines = explode("\n", trim($out));
 
-                if (count($lines) > 1) {
-                    if ($lines[0] != "sat") {
-                        throw \Exception("smt model is not available");
-                    }
-
-                    $outputTable = $output->storage->payload['table'];
-
-                    $query = "INSERT INTO $outputTable (variable, value) VALUES ";
-
-                    $values = [];
-                    for($i = 1; $i < count($lines); $i++) {
-                        preg_match('/\(\((.*) (.*)\)\)/', $lines[$i], $matches);
-                        if (count($matches) == 3) {
-                            $k = $matches[1];
-                            $v = $matches[2];
-
-                            $values[] = "('$k', $v)";
+                    if (count($lines) > 1) {
+                        if ($lines[0] != "sat") {
+                            throw new \Exception("smt model is not available");
                         }
+
+                        $outputTable = $output->storage->payload['table'];
+
+                        $query = "INSERT INTO $outputTable (variable, value) VALUES ";
+
+                        $values = [];
+                        for($i = 1; $i < count($lines); $i++) {
+                            preg_match('/\(\((.*) (.*)\)\)/', $lines[$i], $matches);
+                            if (count($matches) == 3) {
+                                $k = $matches[1];
+                                $v = $matches[2];
+
+                                $values[] = "('$k', $v)";
+                            }
+                        }
+                        $query .= implode(', ', $values);
+                        DB::statement($query);
                     }
-                    $query .= implode(', ', $values);
-                    DB::statement($query);
                 }
+            } catch (\Exception $err) {
+                throw new \Exception($err->getMessage() . "\nSMT input:\n" . $param['input']);
             }
         }
         return;
