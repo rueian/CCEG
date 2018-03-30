@@ -221,6 +221,22 @@ class Smt implements Runner
         return $content;
     }
 
+    // example: macro_var_set_not_equal_cross (a1 a2 a3) [1 2 3]
+    static function parseMacroVarSetNotEqualCross($line)
+    {
+        $content = '';
+        $varList = static::getQuotedElemList($line);
+        $crossList = static::getBracketsList($line);
+        foreach($varList as $var) {
+            foreach($crossList as $cross) {
+                foreach($cross as $c) {
+                    $content .= "(assert (not (= $var $c)))\n";
+                }
+            }
+        }
+        return $content;
+    }
+
     static function expandSMTMacro($original)
     {
         $content = '';
@@ -243,6 +259,11 @@ class Smt implements Runner
 
             if (starts_with($line, 'macro_var_set_mutually_exclusive')) {
                 $content .= static::parseMacroVarSetMutuallyExclusive($line) . "\n";
+                continue;
+            }
+
+            if (starts_with($line, 'macro_var_set_not_equal_cross')) {
+                $content .= static::parseMacroVarSetNotEqualCross($line) . "\n";
                 continue;
             }
 
