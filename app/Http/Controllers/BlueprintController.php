@@ -66,7 +66,7 @@ class BlueprintController extends Controller
         $storageKey = str_random(8);
 
         if (isset($payload['storages'][$storageKey])) {
-            return response('資料源代號 "' . $storageKey . '" 已經用過了', 422);
+            return response('儲存空間代號 "' . $storageKey . '" 已經用過了', 422);
         }
 
         $payload['storages'][$storageKey] = $request->all();
@@ -136,18 +136,18 @@ class BlueprintController extends Controller
         $payload = $blueprint->payload;
 
         if (!isset($payload['storages'][$key])) {
-            return response('該資料源不存在', 404);
+            return response('該儲存空間不存在', 404);
         }
 
         if (isset($payload['storages'][$key]['generated'])) {
-            return response('該資料源為上層步驟的輸出結果，若想刪除請直接刪除上層步驟', 422);
+            return response('該儲存空間為上層步驟的輸出結果，若想刪除請直接刪除上層步驟', 422);
         }
 
         if (isset($payload['steps'])) {
             foreach ($payload['steps'] as $step) {
                 foreach ($step['inputs'] as $inputKey => $inputStorageKey) {
                     if ($inputStorageKey == $key) {
-                        return response('該資料源為下層步驟的輸入資料源，若想刪除請先刪除所有相關的下層步驟', 422);
+                        return response('該儲存空間為下層步驟的輸入儲存空間，若想刪除請先刪除所有相關的下層步驟', 422);
                     }
                 }
             }

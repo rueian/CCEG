@@ -42,7 +42,7 @@ class SmtVariableTableStorageBuilder implements Builder
             'properties' => [
                 'name' => [
                     'type' => 'string',
-                    'title' => '資料源名稱'
+                    'title' => '儲存空間名稱'
                 ],
                 'schema' => [
                     'type' => 'array',

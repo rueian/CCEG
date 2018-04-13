@@ -57,13 +57,13 @@ class SqlFilterByCondition implements Runner
                 ],
                 'inputs' => [
                     'type' => 'object',
-                    'title' => '選擇輸入資料源',
+                    'title' => '選擇輸入儲存空間',
                     'required' => [
                         'input'
                     ],
                     'properties' => [
                         'input' => [
-                            'title' => '輸入資料源',
+                            'title' => '輸入儲存空間',
                             'type' => 'string',
                             'enum' => $inputKeys,
                             'enumNames' => $inputNames

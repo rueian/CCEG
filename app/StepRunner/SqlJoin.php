@@ -70,20 +70,20 @@ class SqlJoin implements Runner
                 ],
                 'inputs' => [
                     'type' => 'object',
-                    'title' => '選擇輸入資料源',
+                    'title' => '選擇輸入儲存空間',
                     'required' => [
                         'left',
                         'right'
                     ],
                     'properties' => [
                         'left' => [
-                            'title' => '左方資料源',
+                            'title' => '左方儲存空間',
                             'type' => 'string',
                             'enum' => $inputKeys,
                             'enumNames' => $inputNames
                         ],
                         'right' => [
-                            'title' => '右方資料源',
+                            'title' => '右方儲存空間',
                             'type' => 'string',
                             'enum' => $inputKeys,
                             'enumNames' => $inputNames
@@ -113,7 +113,7 @@ class SqlJoin implements Runner
                                 'type' => 'object',
                                 'properties' => [
                                     'left' => [
-                                        'title' => '左方資料源的欄位',
+                                        'title' => '左方儲存空間的欄位',
                                         'type' => 'string',
                                     ],
                                     'operator' => [
@@ -129,7 +129,7 @@ class SqlJoin implements Runner
                                         'default' => '='
                                     ],
                                     'right' => [
-                                        'title' => '右方資料源的欄位',
+                                        'title' => '右方儲存空間的欄位',
                                         'type' => 'string'
                                     ],
                                 ]

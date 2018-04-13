@@ -66,20 +66,20 @@ class SqlFilterBySemiJoin implements Runner
                 ],
                 'inputs' => [
                     'type' => 'object',
-                    'title' => '選擇輸入資料源',
+                    'title' => '選擇輸入儲存空間',
                     'required' => [
                         'input',
                         'semi'
                     ],
                     'properties' => [
                         'input' => [
-                            'title' => '原始資料源',
+                            'title' => '原始儲存空間',
                             'type' => 'string',
                             'enum' => $inputKeys,
                             'enumNames' => $inputNames
                         ],
                         'semi' => [
-                            'title' => '篩選資料源',
+                            'title' => '篩選儲存空間',
                             'type' => 'string',
                             'enum' => $inputKeys,
                             'enumNames' => $inputNames
@@ -96,7 +96,7 @@ class SqlFilterBySemiJoin implements Runner
                     ],
                     'properties' => [
                         'column' => [
-                            'title' => '原始資料源的欄位',
+                            'title' => '原始儲存空間的欄位',
                             'type' => 'string',
                         ],
                         'operation' => [
@@ -112,7 +112,7 @@ class SqlFilterBySemiJoin implements Runner
                             ]
                         ],
                         'target' => [
-                            'title' => '篩選資料源的欄位',
+                            'title' => '篩選儲存空間的欄位',
                             'type' => 'string'
                         ]
                     ]

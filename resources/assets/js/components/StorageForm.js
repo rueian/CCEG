@@ -45,7 +45,7 @@ export default class StorageForm extends Component {
             <div>
                 <form>
                     <div className="form-group">
-                        <label>選擇資料源類別</label>
+                        <label>選擇儲存空間類別</label>
                         <select className="form-control form-control-lg" onChange={this.handleTypeChange.bind(this)}>
                             <option key="empty" value="" />
                             {Object.keys(formSchema).filter((k) => {

@@ -35,7 +35,7 @@
                                 <a href="{{ url('/blueprints/'.$blueprint->id.'/edit') }}" class="btn btn-sm btn-primary">編輯藍圖</a>
                             </div>
                             <div class="btn-group">
-                                <a href="{{ url('/blueprints/'.$blueprint->id) }}" data-remote="true" data-method="delete" data-confirm="確定要刪除嗎？所有資料包含執行紀錄均會移除" class="btn btn-sm btn-danger">刪除</a>
+                                <a href="{{ url('/blueprints/'.$blueprint->id) }}" data-remote="true" data-method="delete" data-confirm="確定要刪除嗎？所有資料包含執行副本均會移除" class="btn btn-sm btn-danger">刪除</a>
                             </div>
                         </div>
                     </div>

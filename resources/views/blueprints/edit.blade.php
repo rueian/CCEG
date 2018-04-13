@@ -19,19 +19,19 @@
         <div class="sticky-top" style="top: 1rem; background: white;">
             <a href="#" data-toggle="modal" data-target="#storageModal" class="btn btn-primary btn-lg btn-block" style="font-size: 2rem;">
                 <i class="fas fa-plus-circle"></i>
-                新增資料
+                新增儲存規格
             </a>
             <a href="#" data-toggle="modal" data-target="#stepModal" class="btn btn-primary btn-lg btn-block {{  isset($blueprint->payload['storages']) ? '' : 'disabled'  }}" style="font-size: 2rem;">
                 <i class="fas fa-plus-circle"></i>
-                新增步驟
+                新增步驟規格
             </a>
             <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" data-remote="true" data-method="post" class="btn btn-primary btn-lg btn-block {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="font-size: 2rem;">
                 <i class="fas fa-rocket"></i>
-                執行藍圖
+                建立執行副本
             </a>
             <a href="{{ url('/blueprints/'.$blueprint->id.'/runtimes') }}" class="btn btn-primary btn-lg btn-block {{  isset($blueprint->payload['steps']) ? '' : 'disabled'  }}" style="font-size: 2rem;">
                 <i class="fas fa-list-ul"></i>
-                執行紀錄
+                執行副本列表
             </a>
         </div>
     </div>
@@ -42,7 +42,7 @@
                     <div class="alert alert-warning" role="alert">
                         <h4>
                             <i class="fas fa-arrow-left"></i>
-                            目前沒有任何 <strong>"資料源"</strong>，請從左方選單新增一個
+                            目前沒有任何 <strong>"儲存空間"</strong>，請從左方選單新增一個
                         </h4>
                     </div>
                 @endif
@@ -50,7 +50,7 @@
                     <div class="alert alert-warning" role="alert">
                         <h4>
                             <i class="fas fa-arrow-left"></i>
-                            新增完資料源之後，請從左方選單新增一個 <strong>"步驟"</strong>
+                            新增完儲存空間之後，請從左方選單新增一個 <strong>"步驟"</strong>
                         </h4>
                     </div>
                 @endif
@@ -101,7 +101,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="storageModalLabel">新增資料源</h5>
+        <h5 class="modal-title" id="storageModalLabel">新增儲存空間</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -376,7 +376,7 @@
                     if (storage.generated) {
                         elements.push(getStorageShape('#B0E0E6', key, storage).setText(storage.name));
                     } else {
-                        elements.push(getStorageShape('ivory', key, storage).setText('資料源 ' + storage.name));
+                        elements.push(getStorageShape('ivory', key, storage).setText('儲存空間 ' + storage.name));
                     }
                 });
             }
@@ -529,7 +529,7 @@
                         titlePrefix = '步驟 ';
                     }
                     if (window.Props.storageFormSchema[target.type]) {
-                        titlePrefix = '資料源 ';
+                        titlePrefix = '儲存空間 ';
                     }
 
                     let $previewModel = $('#previewModal');

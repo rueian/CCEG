@@ -39,7 +39,7 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <i class="fas fa-list-ul"></i>
-                    執行紀錄列表
+                    執行副本列表
                 </li>
                 @foreach($runtimes as $r)
                     <li class="list-group-item d-flex justify-content-between align-items-center {{ $runtime && $r->id == $runtime->id ? 'active' : '' }}">
@@ -349,7 +349,7 @@
                     Object.keys(blueprint.payload.storages).forEach(function(key) {
                         var storage = blueprint.payload.storages[key];
 
-                        let name = storage.generated ? storage.name : '資料源 ' + storage.name;
+                        let name = storage.generated ? storage.name : '儲存空間 ' + storage.name;
                         let color = storage.generated ? '#B0E0E6' : 'ivory';
 
                         if (storages[key].state === 'init') {
@@ -523,7 +523,7 @@
                             titlePrefix = '步驟 ';
                         }
                         if (window.Props.storageFormSchema[target.type]) {
-                            titlePrefix = '資料源 ';
+                            titlePrefix = '儲存空間 ';
                         }
 
                         let $previewModel = $('#previewModal');

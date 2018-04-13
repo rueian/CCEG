@@ -97,7 +97,7 @@ export default class InspectDetail extends Component {
 
         let selectedField = Object.keys(fieldMap);
         if (selectedField.length === 0) {
-            alert('預覽表格中的第一列不包含任何資料源定義的欄位名稱 (' + targetFields.join(', ') + ')');
+            alert('預覽表格中的第一列不包含任何儲存空間定義的欄位名稱 (' + targetFields.join(', ') + ')');
             return;
         }
 
@@ -236,7 +236,7 @@ export default class InspectDetail extends Component {
                             (this.state.data.length > 0) ? (
                                 <div className="form-group">
                                     <label>指定欄位名稱</label>
-                                    <p className="help-block">請將上方資料源定義的欄位名稱 ({target.schema.map((s) => s.name).join(', ')}) 填入下方表格預覽中的第一列，以標明對應的欄位位置</p>
+                                    <p className="help-block">請將上方儲存空間定義的欄位名稱 ({target.schema.map((s) => s.name).join(', ')}) 填入下方表格預覽中的第一列，以標明對應的欄位位置</p>
                                     <div style={{ overflow: 'hidden'}}>
                                         <HotTable root="hot" settings={{
                                             data: this.state.data.slice(0, 5),
