@@ -225,6 +225,31 @@
         }
     });
 
+    var Data = joint.dia.Element.define('demo.Data', {
+        attrs: {
+            polygon: {
+                points: '20,0 180,0 180,70 0,70 0,20 20,0 20,20 0,20',
+                refWidth: '100%',
+                refHeight: '100%',
+                stroke: 'gray',
+                strokeWidth: 2,
+            },
+            text: {
+                refX: '50%',
+                refY: '50%',
+                yAlignment: 'middle',
+                xAlignment: 'middle',
+                fontSize: 15
+            }
+        }
+    }, {
+        markup: '<polygon/><text/>',
+
+        setText: function(text) {
+            return this.attr('text/text', text || '');
+        }
+    });
+
     var Link = joint.dia.Link.define('demo.Link', {
         attrs: {
             '.connection': {
@@ -297,11 +322,11 @@
     });
 
     function getStorageShape(color, id, payload) {
-        return new Shape({ id: id, payload: payload, size: { width: 150, height: 80 }, attrs: { rect: { fill: color } } });
+        return new Data({ id: id, payload: payload, size: { width: 180, height: 70 }, attrs: { polygon: { fill: color } } });
     }
 
     function getStepShape(color, id, payload) {
-        return new Shape({ id: id, payload: payload, size: { width: 200, height: 100 }, attrs: { rect: { fill: color } } });
+        return new Shape({ id: id, payload: payload, size: { width: 280, height: 70 }, attrs: { rect: { fill: color } } });
     }
 
     var LayoutControls = joint.mvc.View.extend({
@@ -374,9 +399,9 @@
                     var storage = blueprint.payload.storages[key];
 
                     if (storage.generated) {
-                        elements.push(getStorageShape('#B0E0E6', key, storage).setText(storage.name));
+                        elements.push(getStorageShape('#B0E0E6', key, storage).setText('儲存空間\n' + storage.name));
                     } else {
-                        elements.push(getStorageShape('ivory', key, storage).setText('儲存空間 ' + storage.name));
+                        elements.push(getStorageShape('ivory', key, storage).setText('儲存空間\n' + storage.name));
                     }
                 });
             }
@@ -384,7 +409,7 @@
             if (blueprint.payload && blueprint.payload.steps) {
                 Object.keys(blueprint.payload.steps).forEach(function(key) {
                     var step = blueprint.payload.steps[key];
-                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟 ' + step.name));
+                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟\n' + step.name));
 
                     Object.keys(step.inputs).forEach(function(input) {
                         let labelMap = {
