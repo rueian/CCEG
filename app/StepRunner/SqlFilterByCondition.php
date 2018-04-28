@@ -14,7 +14,7 @@ class SqlFilterByCondition implements Runner
 
     static function getName()
     {
-        return 'SQL 用條件篩選';
+        return 'SQL Where';
     }
 
     static function getFormUISchema()

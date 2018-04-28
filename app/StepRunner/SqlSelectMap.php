@@ -14,7 +14,7 @@ class SqlSelectMap implements Runner
 
     static function getName()
     {
-        return 'SQL 映射運算 (Select)';
+        return 'SQL Select';
     }
 
     static function getFormUISchema()

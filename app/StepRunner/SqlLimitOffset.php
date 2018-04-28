@@ -14,7 +14,7 @@ class SqlLimitOffset implements Runner
 
     static function getName()
     {
-        return 'SQL 取前 N 個 (Limit Offset)';
+        return 'SQL Limit Offset';
     }
 
     static function getFormUISchema()

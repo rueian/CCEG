@@ -14,7 +14,7 @@ class SqlOrderBy implements Runner
 
     static function getName()
     {
-        return 'SQL 排序 (Order By)';
+        return 'SQL Order By';
     }
 
     static function getFormUISchema()

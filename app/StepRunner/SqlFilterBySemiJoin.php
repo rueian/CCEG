@@ -14,7 +14,7 @@ class SqlFilterBySemiJoin implements Runner
 
     static function getName()
     {
-        return 'SQL 用另一張格表篩選';
+        return 'SQL Where In';
     }
 
     static function getFormUISchema()

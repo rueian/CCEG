@@ -13,7 +13,7 @@ class Smt implements Runner
 
     static function getName()
     {
-        return 'SMT';
+        return 'SMT Solver';
     }
 
     static function getFormUISchema()

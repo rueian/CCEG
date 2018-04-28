@@ -14,7 +14,7 @@ class SqlGroupBy implements Runner
 
     static function getName()
     {
-        return 'SQL 聚合運算 (Group By)';
+        return 'SQL Group By';
     }
 
     static function getFormUISchema()

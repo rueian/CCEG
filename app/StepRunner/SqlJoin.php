@@ -14,7 +14,7 @@ class SqlJoin implements Runner
 
     static function getName()
     {
-        return 'SQL 連接另一張表 (Join)';
+        return 'SQL Join';
     }
 
     static function getFormUISchema()
