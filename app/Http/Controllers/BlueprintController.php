@@ -56,6 +56,11 @@ class BlueprintController extends Controller
 
     public function addStorage($id, Request $request)
     {
+        $request->validate([
+            'name' => 'regex:/^[\w-]*$/',
+            'schema.*.name' => 'regex:/^[\w-]*$/'
+        ]);
+
         $blueprint = Blueprint::findOrFail($id);
         $payload = $blueprint->payload;
 
@@ -63,10 +68,10 @@ class BlueprintController extends Controller
             $payload['storages'] = [];
         }
 
-        $storageKey = str_random(8);
+        $storageKey = $request->input('name');
 
         if (isset($payload['storages'][$storageKey])) {
-            return response('儲存空間代號 "' . $storageKey . '" 已經用過了', 422);
+            return response('儲存空間名稱 "' . $storageKey . '" 已經用過了', 422);
         }
 
         $payload['storages'][$storageKey] = $request->all();
@@ -86,7 +91,8 @@ class BlueprintController extends Controller
             $payload['steps'] = [];
         }
 
-        $stepKey = str_random(8);
+        $stepCount = count($payload['steps']);
+        $stepKey = 'step_' . strval($stepCount + 1);
         $stepOutputKey = $stepKey . '_result';
 
         if (isset($payload['steps'][$stepKey])) {
@@ -99,7 +105,7 @@ class BlueprintController extends Controller
         $stepRunner = Step::$runnerMap[$stepPayload['type']];
         $outputPayload = $stepRunner::getBlueprintStepStorage($payload['storages'], $stepPayload);
         $outputPayload['generated'] = true;
-        $outputPayload['name'] = $stepPayload['name'] . '的結果';
+        $outputPayload['name'] = $stepOutputKey;
 
         $payload['storages'][$stepOutputKey] = $outputPayload;
         $payload['steps'][$stepKey] = $stepPayload;

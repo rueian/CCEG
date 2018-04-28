@@ -42,7 +42,7 @@ class SmtVariableTableStorageBuilder implements Builder
             'properties' => [
                 'name' => [
                     'type' => 'string',
-                    'title' => '儲存空間名稱'
+                    'title' => '儲存空間名稱(限英數字與底線的組合)'
                 ],
                 'schema' => [
                     'type' => 'array',
@@ -53,7 +53,7 @@ class SmtVariableTableStorageBuilder implements Builder
                             'properties' => [
                                 'name' => [
                                     'type' => 'string',
-                                    'title' => '欄位名稱',
+                                    'title' => '欄位名稱(限英數字與底線的組合)',
                                     'default' => 'variable',
                                 ],
                                 'type' => [

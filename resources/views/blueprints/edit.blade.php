@@ -399,9 +399,9 @@
                     var storage = blueprint.payload.storages[key];
 
                     if (storage.generated) {
-                        elements.push(getStorageShape('#B0E0E6', key, storage).setText('儲存空間\n' + storage.name));
+                        elements.push(getStorageShape('#B0E0E6', key, storage).setText('儲存空間\n\n' + storage.name));
                     } else {
-                        elements.push(getStorageShape('ivory', key, storage).setText('儲存空間\n' + storage.name));
+                        elements.push(getStorageShape('ivory', key, storage).setText('儲存空間\n\n' + storage.name));
                     }
                 });
             }
@@ -409,7 +409,7 @@
             if (blueprint.payload && blueprint.payload.steps) {
                 Object.keys(blueprint.payload.steps).forEach(function(key) {
                     var step = blueprint.payload.steps[key];
-                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟\n' + step.name));
+                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟 ' + key + '\n\n' + step.name));
 
                     Object.keys(step.inputs).forEach(function(input) {
                         let labelMap = {

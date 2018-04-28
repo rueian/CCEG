@@ -10,7 +10,15 @@ export function handleAxiosError(error) {
         // console.log(error.response.status);
         // console.log(error.response.headers);
         if (error.response.data.message) {
-            alert('發送失敗: ' + error.response.data.message);
+            let msg = error.response.data.message;
+            if (error.response.data.errors) {
+                for(let key in error.response.data.errors) {
+                    for (let e of error.response.data.errors[key]) {
+                        msg += '\n' + e;
+                    }
+                }
+            }
+            alert('發送失敗: ' + msg);
         } else if (error.response.data.error) {
             alert('發送失敗: ' + error.response.data.error);
         } else {
