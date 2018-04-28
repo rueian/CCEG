@@ -23,11 +23,6 @@ class Smt implements Runner
                 'content' => [
                     'ui:widget' => 'textarea'
                 ],
-                'varList' => [
-                    'items' => [
-                        'ui:field' => 'columnCreator'
-                    ]
-                ],
             ]
         ];
     }
@@ -58,46 +53,6 @@ class Smt implements Runner
                     'type' => 'string',
                     'title' => '步驟備註'
                 ],
-                'param' => [
-                    'type' => 'object',
-                    'title' => '步驟參數',
-                    'properties' => [
-                        'varList' => [
-                            'title' => '定義變數',
-                            'type' => 'array',
-                            'items' => [
-                                'type' => 'object',
-                                'required' => [
-                                    'name',
-                                    'type'
-                                ],
-                                'properties' => [
-                                    'name' => [
-                                        'title' => '變數名稱',
-                                        'type' => 'string',
-                                    ],
-                                    'type' => [
-                                        'title' => '變數型別',
-                                        'type' => 'string',
-                                        'enum' => [
-                                            'Int',
-                                            'Real',
-                                        ],
-                                        'enumNames' => [
-                                            'Int',
-                                            'Real'
-                                        ],
-                                        'default' => 'Int'
-                                    ]
-                                ]
-                            ]
-                        ],
-                        'content' => [
-                            'type' => 'string',
-                            'title' => 'SMT 內容'
-                        ],
-                    ]
-                ],
                 'inputs' => [
                     'type' => 'object',
                     'title' => '選擇輸入儲存空間',
@@ -113,6 +68,16 @@ class Smt implements Runner
                         ]
                     ]
                 ],
+                'param' => [
+                    'type' => 'object',
+                    'title' => '步驟參數',
+                    'properties' => [
+                        'content' => [
+                            'type' => 'string',
+                            'title' => 'SMT 內容'
+                        ],
+                    ]
+                ],
             ]
         ];
     }
@@ -120,7 +85,7 @@ class Smt implements Runner
     static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload)
     {
         return [
-            'type' => 'smt_variable_table',
+            'type' => 'table',
             'schema' => [
                 [
                     'name' => 'variable',
@@ -292,25 +257,9 @@ class Smt implements Runner
     {
         $inputContent = '';
 
-        $VarNameTypeMap = [];
-        if (isset($stepParam['varList'])) {
-            foreach($stepParam['varList'] as $v) {
-                $VarNameTypeMap[$v['name']] = $v['type'];
-            }
-            foreach($VarNameTypeMap as $name => $type) {
-                $inputContent .= "(declare-const $name $type)\n";
-            }
-        }
-
         $variables = DB::table($varTableName)->get();
-        $VarNameValueMap = [];
         foreach($variables as $v) {
-            $VarNameValueMap[$v->variable] = $v->value;
-        }
-        foreach($VarNameValueMap as $name => $value) {
-            if (strlen($value) > 0 && array_key_exists($name, $VarNameTypeMap)) {
-                $inputContent .= "(assert (= $name $value))\n";
-            }
+            $stepParam['content'] = str_replace(trim($v->variable), trim($v->value), $stepParam['content']);
         }
 
         $inputContent .= static::expandSMTMacro($stepParam['content']);

@@ -32,6 +32,7 @@ class Step extends Model
         'sql_limit_offset'        => StepRunner\SqlLimitOffset::class,
         'sql_group_by'            => StepRunner\SqlGroupBy::class,
         'sql_select_map'          => StepRunner\SqlSelectMap::class,
+        'sql_table_to_smt_table'  => StepRunner\SqlTableToSmtTable::class,
         'smt'                     => StepRunner\Smt::class,
     ];
 
