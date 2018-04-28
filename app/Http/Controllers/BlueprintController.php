@@ -150,13 +150,51 @@ class BlueprintController extends Controller
             return response('該步驟不存在', 404);
         }
 
-        if ($payload['steps'][$key]['type'] == 'smt') {
-            $payload['steps'][$key]['param']['content'] = $request->input('content');
-            $blueprint->payload = $payload;
-            $blueprint->save();
-        } else {
-            return response('該步驟不是 SMT 步驟', 403);
+        if ($request->has('name')) {
+            $payload['steps'][$key]['name'] = $request->input('name');
         }
+        if ($request->has('note')) {
+            $payload['steps'][$key]['note'] = $request->input('note');
+        }
+        if ($request->has('param')) {
+            $payload['steps'][$key]['param'] = $request->input('param');
+        }
+
+        // regenerate output schema
+        $stepOutputKey = $payload['steps'][$key]['output'];
+        $stepRunner = Step::$runnerMap[$payload['steps'][$key]['type']];
+        $outputPayload = $stepRunner::getBlueprintStepStorage($payload['storages'], $payload['steps'][$key]);
+        $outputPayload['generated'] = true;
+        $outputPayload['name'] = $stepOutputKey;
+        // check duplication field name
+        $fields = array_pluck($outputPayload['schema'], 'name');
+        if (count($fields) != count(array_unique($fields))) {
+            return response('請移除重複的輸出欄位名稱', 422);
+        }
+        foreach ($fields as $field) {
+            if (!preg_match('/^[\w]*$/', $field)) {
+                return response('輸出欄位名稱僅可以是英數字與底線組合', 422);
+            }
+        }
+        // check missing field after update
+        $oldSchema = $payload['storages'][$stepOutputKey]['schema'];
+        foreach($oldSchema as $column) {
+            $found = false;
+            foreach($outputPayload['schema'] as $c) {
+                if ($column['name'] == $c['name'] && $column['type'] == $c['type']) {
+                    $found = true;
+                }
+            }
+            if (!$found) {
+                return response('更新失敗，因為在新的輸出儲存空間中找不到原有的欄位 ' . $column['name'] . '(' . $column['type'] . ')', 422);
+            }
+        }
+
+
+        $payload['storages'][$stepOutputKey]['schema'] = $outputPayload['schema'];
+
+        $blueprint->payload = $payload;
+        $blueprint->save();
 
         return response()->json($blueprint);
     }
