@@ -34,9 +34,35 @@ export default class StepForm extends Component {
     };
 
     handleFormDataChange(e) {
+        if (
+            this.state.type == 'sql_select_map'
+            && e.formData
+            && e.formData.inputs
+            && e.formData.inputs.input
+            && (
+                !this.state.formData.inputs
+                || !this.state.formData.inputs.input
+                || e.formData.inputs.input != this.state.formData.inputs.input
+            )
+            && window.Props.blueprint.payload.storages
+            && window.Props.blueprint.payload.storages[e.formData.inputs.input]
+        ) {
+            let storage = window.Props.blueprint.payload.storages[e.formData.inputs.input];
+            if (!e.formData.param) {
+                e.formData.param = {};
+            }
+            e.formData.param.select = storage.schema.map(c => {
+                return {
+                    expr: c.name,
+                    as: c.name,
+                    type: c.type
+                };
+            });
+        }
+
         this.setState({
             ...this.state,
-            formData: e.formData
+            formData: {...e.formData}
         });
     }
 

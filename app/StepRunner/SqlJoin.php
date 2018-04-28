@@ -152,16 +152,29 @@ class SqlJoin implements Runner
 
         foreach($leftSchema as $column) {
             $targetSchema[] = [
-                'name' => $leftTable.'_'.$column['name'],
+                'name' => $column['name'],
                 'type' => $column['type']
             ];
         }
 
         foreach($rightSchema as $column) {
-            $targetSchema[] = [
-                'name' => $rightTable.'_'.$column['name'],
-                'type' => $column['type']
-            ];
+            $contains = false;
+            foreach ($targetSchema as $field) {
+                if ($field['name'] == $column['name']) {
+                    $contains = true;
+                }
+            }
+            if ($contains) {
+                $targetSchema[] = [
+                    'name' => 'right_'.$column['name'],
+                    'type' => $column['type']
+                ];
+            } else {
+                $targetSchema[] = [
+                    'name' => $column['name'],
+                    'type' => $column['type']
+                ];
+            }
         }
 
         return [
@@ -192,12 +205,16 @@ class SqlJoin implements Runner
         $selectColumns = collect();
 
         foreach($left->storage->payload['schema'] as $column) {
-            $outputColumns->push($left->storage->key.'_'.$column['name']);
+            $outputColumns->push($column['name']);
             $selectColumns->push($left->storage->key.'.'.$column['name']);
         }
 
         foreach($right->storage->payload['schema'] as $column) {
-            $outputColumns->push($right->storage->key.'_'.$column['name']);
+            if ($outputColumns->contains($column['name'])) {
+                $outputColumns->push('right_'.$column['name']);
+            } else {
+                $outputColumns->push($column['name']);
+            }
             $selectColumns->push($right->storage->key.'.'.$column['name']);
         }
 

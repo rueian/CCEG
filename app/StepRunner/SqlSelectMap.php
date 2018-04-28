@@ -103,7 +103,7 @@ class SqlSelectMap implements Runner
                                         'type' => 'string'
                                     ],
                                     'as' => [
-                                        'title' => '輸出欄位名稱',
+                                        'title' => '輸出欄位名稱(限英數底線)',
                                         'type' => 'string'
                                     ],
                                     'type' => [

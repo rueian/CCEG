@@ -56,10 +56,21 @@ class BlueprintController extends Controller
 
     public function addStorage($id, Request $request)
     {
-        $request->validate([
-            'name' => 'regex:/^[\w-]*$/',
-            'schema.*.name' => 'regex:/^[\w-]*$/'
-        ]);
+        if (!preg_match('/^[\w]*$/', $request->input('name'))) {
+            return response('儲存空間名稱僅可以是英數字與底線組合', 422);
+        }
+
+        // check duplication field name
+        $schema = $request->input('schema');
+        $fields = array_pluck($schema, 'name');
+        if (count($fields) != count(array_unique($fields))) {
+            return response('請移除重複的欄位名稱', 422);
+        }
+        foreach ($fields as $field) {
+            if (!preg_match('/^[\w]*$/', $field)) {
+                return response('欄位名稱僅可以是英數字與底線組合', 422);
+            }
+        }
 
         $blueprint = Blueprint::findOrFail($id);
         $payload = $blueprint->payload;
@@ -91,8 +102,11 @@ class BlueprintController extends Controller
             $payload['steps'] = [];
         }
 
-        $stepCount = count($payload['steps']);
-        $stepKey = 'step_' . strval($stepCount + 1);
+        if (!isset($payload['stepSeq'])) {
+            $payload['stepSeq'] = 0;
+        }
+        $payload['stepSeq']++;
+        $stepKey = 'step_' . strval($payload['stepSeq']);
         $stepOutputKey = $stepKey . '_result';
 
         if (isset($payload['steps'][$stepKey])) {
@@ -106,6 +120,17 @@ class BlueprintController extends Controller
         $outputPayload = $stepRunner::getBlueprintStepStorage($payload['storages'], $stepPayload);
         $outputPayload['generated'] = true;
         $outputPayload['name'] = $stepOutputKey;
+
+        // check duplication field name
+        $fields = array_pluck($outputPayload['schema'], 'name');
+        if (count($fields) != count(array_unique($fields))) {
+            return response('請移除重複的輸出欄位名稱', 422);
+        }
+        foreach ($fields as $field) {
+            if (!preg_match('/^[\w]*$/', $field)) {
+                return response('輸出欄位名稱僅可以是英數字與底線組合', 422);
+            }
+        }
 
         $payload['storages'][$stepOutputKey] = $outputPayload;
         $payload['steps'][$stepKey] = $stepPayload;

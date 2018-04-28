@@ -14,12 +14,9 @@ class ColumnCreator extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.formData) {
-            if (nextProps.formData.name !== this.state.name || nextProps.formData.type !== this.state.type) {
-                this.setState({
-                    name: nextProps.formData.name,
-                    type: nextProps.formData.type
-                });
-            }
+            this.setState({
+                ...nextProps.formData
+            });
         }
     }
 
