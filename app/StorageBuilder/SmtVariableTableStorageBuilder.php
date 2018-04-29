@@ -13,7 +13,7 @@ class SmtVariableTableStorageBuilder implements Builder
 {
     static function getName()
     {
-        return "SMT 替換表格";
+        return "SMT Replace Table";
     }
 
     static function build($runtime, $key, $name, $payload)

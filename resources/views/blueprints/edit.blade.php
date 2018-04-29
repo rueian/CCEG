@@ -398,10 +398,12 @@
                 Object.keys(blueprint.payload.storages).forEach(function(key) {
                     var storage = blueprint.payload.storages[key];
 
+                    var name = window.Props.storageFormSchema[storage.type].name;
+
                     if (storage.generated) {
-                        elements.push(getStorageShape('#B0E0E6', key, storage).setText('儲存空間\n\n' + storage.name));
+                        elements.push(getStorageShape('#B0E0E6', key, storage).setText(name + '\n\n' + storage.name));
                     } else {
-                        elements.push(getStorageShape('ivory', key, storage).setText('儲存空間\n\n' + storage.name));
+                        elements.push(getStorageShape('ivory', key, storage).setText(name + '\n\n' + storage.name));
                     }
                 });
             }
@@ -409,7 +411,8 @@
             if (blueprint.payload && blueprint.payload.steps) {
                 Object.keys(blueprint.payload.steps).forEach(function(key) {
                     var step = blueprint.payload.steps[key];
-                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟 ' + key + '\n\n' + step.name));
+                    var name = window.Props.stepFormSchema[step.type].name;
+                    elements.push(getStepShape('#F0FFFF', key, step).setText('步驟 ' + key + '\n' + name + '\n' + step.name));
 
                     Object.keys(step.inputs).forEach(function(input) {
                         let labelMap = {

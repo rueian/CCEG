@@ -9,7 +9,7 @@ class TableStorageBuilder implements Builder
 {
     static function getName()
     {
-        return 'SQL 表格';
+        return 'SQL Table';
     }
 
     static function getFormUISchema()

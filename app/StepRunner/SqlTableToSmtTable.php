@@ -13,7 +13,7 @@ class SqlTableToSmtTable implements Runner
 
     static function getName()
     {
-        return 'SQL Table to SMT Table';
+        return 'SQL Table to SMT Replace Table';
     }
 
     static function getFormUISchema()

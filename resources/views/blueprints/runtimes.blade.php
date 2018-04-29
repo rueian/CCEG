@@ -374,7 +374,7 @@
                     Object.keys(blueprint.payload.storages).forEach(function(key) {
                         var storage = blueprint.payload.storages[key];
 
-                        let name = '儲存空間\n\n' + storage.name;
+                        let name = window.Props.storageFormSchema[storage.type].name + '\n\n' + storage.name;
                         let color = storage.generated ? '#B0E0E6' : 'ivory';
 
                         if (storages[key].state === 'init') {
@@ -392,8 +392,7 @@
                 if (blueprint.payload && blueprint.payload.steps) {
                     Object.keys(blueprint.payload.steps).forEach(function(key) {
                         var step = blueprint.payload.steps[key];
-
-                        let name = '步驟 ' + key + '\n\n' + step.name;
+                        let name = '步驟 ' + key + '\n' + window.Props.stepFormSchema[step.type].name + '\n' + step.name;
 
                         if (steps[key].state === 'init') {
                             elements.push(getStepShape('white', key, step).setText(name));
