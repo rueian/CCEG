@@ -1,0 +1,14 @@
+.git
+.idea
+.vagrant
+node_modules
+_ide_helper.php
+.phpstorm.meta.php
+Homestead.yaml
+bootstrap/cache/*.php
+storage/app/public/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
