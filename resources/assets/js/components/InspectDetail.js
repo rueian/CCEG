@@ -126,11 +126,14 @@ export default class InspectDetail extends Component {
                 downloading: true,
             });
             axios.get(`/storages/${storage.id}/export`).then((res) => {
-                this.setState({
-                    ...this.state,
-                    downloading: false,
-                    export: res.data.data,
-                })
+                // wait to avoid HotTable rendering before modal show up
+                setTimeout(() => {
+                    this.setState({
+                        ...this.state,
+                        downloading: false,
+                        export: res.data.data,
+                    })
+                }, 1000);
             }).catch(handleAxiosError);
         }
     }
@@ -238,7 +241,7 @@ export default class InspectDetail extends Component {
                                     <label>指定欄位名稱</label>
                                     <p className="help-block">請將上方儲存空間定義的欄位名稱 ({target.schema.map((s) => s.name).join(', ')}) 填入下方表格預覽中的第一列，以標明對應的欄位位置</p>
                                     <div style={{ overflow: 'hidden'}}>
-                                        <HotTable root="hot" settings={{
+                                        <HotTable settings={{
                                             data: this.state.data.slice(0, 5),
                                             colHeaders: false,
                                             rowHeaders: true,
@@ -283,12 +286,12 @@ export default class InspectDetail extends Component {
                         {
                             (!this.state.downloading && storage.type === 'table' && this.state.export.length > 0) ? (
                                 <div style={{ overflow: 'hidden'}}>
-                                    <HotTable root="hot-export" settings={{
+                                    <HotTable settings={{
                                         data: this.state.export,
                                         colHeaders: false,
                                         rowHeaders: true,
                                         height: 400,
-                                        renderAllRowsBoolean: false,
+                                        renderAllRows: true,
                                         cells: function(row, col, prop) {
                                             return {
                                                 readOnly: true
