@@ -59,6 +59,9 @@ class BlueprintController extends Controller
         if (!preg_match('/^[\w]*$/', $request->input('name'))) {
             return response('儲存空間名稱僅可以是英數字與底線組合', 422);
         }
+        if ($this->checkReservedWord($request->input('name'))) {
+            return response('儲存空間名稱 ' . $request->input('name') . ' 是保留字，請更換', 422);
+        }
 
         // check duplication field name
         $schema = $request->input('schema');
@@ -125,6 +128,9 @@ class BlueprintController extends Controller
         $outputPayload = $stepRunner::getBlueprintStepStorage($payload['storages'], $stepPayload);
         $outputPayload['generated'] = true;
         $outputPayload['name'] = $stepOutputKey;
+        if ($this->checkReservedWord($outputPayload['name'])) {
+            return response('儲存空間名稱 ' . $outputPayload['name'] . ' 是保留字，請更換', 422);
+        }
 
         // check duplication field name
         $fields = array_pluck($outputPayload['schema'], 'name');
