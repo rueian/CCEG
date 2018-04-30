@@ -12,6 +12,8 @@ services:
       DB_PASSWORD: secret
     ports:
       - "80:80"
+    volumes:
+      - ".:/src"
   mysql:
     image: mysql:8.0
     restart: always
