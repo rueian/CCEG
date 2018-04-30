@@ -166,7 +166,7 @@ class SqlJoin implements Runner
             }
             if ($contains) {
                 $targetSchema[] = [
-                    'name' => 'right_'.$column['name'],
+                    'name' => $rightTable . '_' . $column['name'],
                     'type' => $column['type']
                 ];
             } else {
@@ -211,7 +211,7 @@ class SqlJoin implements Runner
 
         foreach($right->storage->payload['schema'] as $column) {
             if ($outputColumns->contains($column['name'])) {
-                $outputColumns->push('right_'.$column['name']);
+                $outputColumns->push($right->storage->name.'_'.$column['name']);
             } else {
                 $outputColumns->push($column['name']);
             }
