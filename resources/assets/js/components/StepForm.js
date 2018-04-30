@@ -29,7 +29,8 @@ export default class StepForm extends Component {
     handleTypeChange(e) {
         this.setState({
             ...this.state,
-            type: e.target.value
+            type: e.target.value,
+            formData: {}
         });
     };
 
