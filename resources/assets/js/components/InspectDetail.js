@@ -291,7 +291,7 @@ export default class InspectDetail extends Component {
                                         colHeaders: false,
                                         rowHeaders: true,
                                         height: 400,
-                                        renderAllRows: true,
+                                        renderAllRows: false,
                                         cells: function(row, col, prop) {
                                             return {
                                                 readOnly: true
