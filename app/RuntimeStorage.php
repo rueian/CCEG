@@ -62,20 +62,19 @@ class RuntimeStorage extends Model
         if ($this->type == 'table') {
             $header = $data[0];
 
-            $rows = [];
+            $rows = collect();
             for ($i = 1; $i < count($data); $i++) {
                 $d = [];
                 for ($j = 0; $j < count($data[$i]); $j++) {
-                    if ($this->payload['schema'][$j]['type'] == 'varchar(255)') {
-                        $d[] = '"' . $data[$i][$j] . '"';
-                    } else {
-                        $d[] = strlen($data[$i][$j]) > 0 ? $data[$i][$j] : 'NULL';
-                    }
+                    $input = trim($data[$i][$j]);
+                    $d[$header[$j]] = strlen($input) > 0 ? $input : null;
                 }
-                $rows[] = implode($d, ',');
+                $rows->push($d);
             }
 
-            DB::statement('INSERT INTO ' . $this->payload['table'] . '(' . implode($header, ',') . ') VALUES (' . implode($rows, '),(') . ')');
+            foreach($rows->chunk(5) as $chunk) {
+                DB::table($this->payload['table'])->insert($chunk->toArray());
+            }
 
             return;
         }
