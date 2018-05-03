@@ -103,7 +103,11 @@ class Smt implements Runner
     {
         preg_match('/\(([^<]*?)\)/', $line, $matches);
         if (count($matches) > 1) {
-            return explode(' ', $matches[1]);
+            $arr = [];
+            foreach(explode(' ', $matches[1]) as $v) {
+                if ($v) $arr[] = $v;
+            }
+            return $arr;
         } else {
             return [];
         }
@@ -115,7 +119,11 @@ class Smt implements Runner
         $list = [];
         if (count($matches) > 1) {
             foreach ($matches[1] as $bracket) {
-                $list[] = explode(' ', $bracket);
+                $arr = [];
+                foreach(explode(' ', $bracket) as $v) {
+                    if ($v) $arr[] = $v;
+                }
+                $list[] = $arr;
             }
         }
         return $list;
