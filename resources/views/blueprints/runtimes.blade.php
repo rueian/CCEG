@@ -47,6 +47,11 @@
                             <h5 class="mb-0">編號:{{ $r->id }}</h5>
                             <small>{{ $r->created_at }}</small>
                         </a>
+                        @if($runtime->id > $r->id)
+                            <a href="{{ url('/runtimes/' . $runtime->id . '/import/' . $r->id) }}" data-confirm="確定要從舊的執行副本 {{ $r->id }} 匯入輸入資料至當前的執行副本 {{ $runtime->id }} 嗎？ 當前已上傳的資料可能會被覆蓋。" data-remote="true" data-method="post" class="badge badge-info badge-pill">
+                                <i class="fas fa-upload"></i>
+                            </a>
+                        @endif
                         <a href="{{ url('/blueprints/' . $blueprint->id . '/runtimes?runtime_id=' . $r->id) }}" data-confirm="確定要刪除嗎？將會清空該次執行的所有資料" data-remote="true" data-method="delete" class="badge badge-danger badge-pill">
                             <i class="fas fa-times"></i>
                         </a>
