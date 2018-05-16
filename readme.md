@@ -32,9 +32,10 @@ app/Runtime.php | 副本的 ORM Model
 app/RuntimeStorage.php | 儲存的 ORM Model
 app/Step.php | 步驟的 ORM Model
 app/StepConnection.php | 連結的 ORM Model
+database/migrations/*.php | 資料庫所需的表格、欄位、索引定義
 resources/views/*.php | 由 controller 執行用來回給前端 html+js 的程式
 resources/assets/*.js | 前端所需的靜態 js
-z3 | SMT 流程步驟中所使用的 Microsoft Z3 Solver 執行檔
+z3 | SMT 流程步驟中所使用的 Microsoft Z3 Solver 執行檔, 來源為 [z3-4.5.0-x64-debian-8.5.zip](https://github.com/Z3Prover/z3/releases)
 
 目前主要的開發工作都會是在 php 這端，包含擴充儲存空間與流程步驟
 
