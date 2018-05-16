@@ -1,53 +1,71 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+# CCEG 流程平台
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+![screenshot](screenshot.png)
 
-## About Laravel
+本專案使用 PHP 7 撰寫
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+## 本地測試與開發
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. 請先於開發環境準備 docker 與 docker-compose
+2. 執行 ./docker-composer-start.sh 腳本
+3. 即可於 localhost:8080 開始測試
+4. 因為此專案資料夾有透過 docker compose 掛入容器之中，所以修改檔案就可以直接看到變動，方便開發
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+## 部署注意事項
 
-## Learning Laravel
+1. 需要滿足 Laravel 5.5 部署需求 https://laravel.com/docs/5.5#installation
+2. 需要使用 MySQL, 因為有使用到跨資料庫的 SQL 語法。建議使用 MySQL 5.6 或 5.7, 最好是用 8.0 以上, 因為有 8.0 以上有支援 SQL Window Functions 在使用上會比較方便。
+3. 本專案使用的 MySQL 帳號必須有 CREATE DATABASE 權限
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+## 程式結構
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
+本專案使用 Laravel 框架，重要的幾個檔案如下：
 
-## Laravel Sponsors
+檔名 | 用途
+------------ | -------------
+routes/web.php | 定義 HTTP endpoints
+app/Http/Controllers/*.php | 處理 HTTP endpoints 的入口
+app/StorageBuilder/*.php | 各種儲存空間的實作
+app/StepRunner/*.php | 各種流程步驟的實作
+app/Blieprint.php | 藍圖的 ORM Model
+app/Runtime.php | 副本的 ORM Model
+app/RuntimeStorage.php | 儲存的 ORM Model
+app/Step.php | 步驟的 ORM Model
+app/StepConnection.php | 連結的 ORM Model
+resources/views/*.php | 由 controller 執行用來回給前端 html+js 的程式
+resources/assets/*.js | 前端所需的靜態 js
+z3 | SMT 流程步驟中所使用的 Microsoft Z3 Solver 執行檔
 
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
+目前主要的開發工作都會是在 php 這端，包含擴充儲存空間與流程步驟
 
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
+如果有需要做 UI 元件的變動就需要處理到 resources/assets/ 底下的檔案。
 
-## Contributing
+*特別注意* 若 resources/assets/ 有變動的話需要重新執行 `npm run dev` 或 `npm run prod` 重新組合壓縮這些 js 檔
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
 
-## Security Vulnerabilities
+## StorageBuilder/Builder 與 StepRunner/Runner 介面
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+這兩個介面定義了系統抽象化儲存空間與流程步驟，可以透過實作新的 StorageBuilder 與 StepRunner 來擴充系統的流程處理功能。
 
-## License
+```php
+interface Builder
+{
+    static function getName();
+    static function build($runtime, $key, $name, $payload);
+    static function getFormSchema();
+    static function getFormUISchema();
+}
 
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+interface Runner
+{
+    static function run($step);
+    static function getBlueprintStepStorage($bluePrintStorages, $bluePrintStepPayload);
+    static function supportedInputStorageType();
+    static function getName();
+    static function getFormSchema($bluePrintStorages);
+    static function getFormUISchema();
+}
+```
+
+實作的參考可以看 app/StorageBuilder 與 app/StepRunner 資料夾
+
