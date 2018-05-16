@@ -1,10 +1,9 @@
 version: '3'
+volumes:
+  ccegcomposervendor:
 services:
   cceg:
     image: rueian/cceg:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
@@ -18,6 +17,9 @@ services:
       - "8080:80"
     volumes:
       - ".:/src"
+      # create a named volume to the /src/vendor in the image,
+      # in order to prevent from being overwritten by the above ".:/src".
+      - "ccegcomposervendor:/src/vendor"
   mysql:
     image: mysql:8.0
     environment:
