@@ -1,22 +1,25 @@
 version: '3'
 services:
   cceg:
-    image: cceg:latest
+    image: rueian/cceg:latest
     build:
       context: .
       dockerfile: Dockerfile
     environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_LOG_LEVEL: debug
+      APP_KEY: "base64:F7WWsnDemc9MBOJ03My7BhGiBNToth+wNEUIzZ8oOsA="
       DB_HOST: mysql
       DB_DATABASE: cceg
       DB_USERNAME: root
       DB_PASSWORD: secret
     ports:
-      - "80:80"
+      - "8080:80"
     volumes:
       - ".:/src"
   mysql:
     image: mysql:8.0
-    restart: always
     environment:
       MYSQL_DATABASE: cceg
       MYSQL_ROOT_PASSWORD: secret
